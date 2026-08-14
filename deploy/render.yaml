@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: neon-fist
+    env: node
+    plan: starter
+    buildCommand: npm ci
+    startCommand: node src/server/index.js
+    healthCheckPath: /health
+    envVars:
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: SUPABASE_ANON_KEY
+        sync: false

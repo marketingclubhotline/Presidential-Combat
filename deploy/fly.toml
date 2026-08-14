@@ -1,0 +1,25 @@
+# fly.io — the signaling server must be a single stateful region for the
+# in-memory queue to work. Scale to multiple regions only after moving
+# the queue into Redis.
+app = "neon-fist"
+primary_region = "sin"
+
+[build]
+  dockerfile = "../Dockerfile"
+
+[http_service]
+  internal_port = 8787
+  force_https = true
+  auto_stop_machines = false     # a stopped machine drops live WebSockets
+  auto_start_machines = true
+  min_machines_running = 1
+
+[[http_service.checks]]
+  interval = "30s"
+  timeout = "3s"
+  method = "GET"
+  path = "/health"
+
+[env]
+  PORT = "8787"
+# secrets: fly secrets set SUPABASE_URL=... SUPABASE_SERVICE_ROLE_KEY=...

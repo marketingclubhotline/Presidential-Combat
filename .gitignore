@@ -1,0 +1,27 @@
+# secrets — never commit
+.env
+.env.*
+!.env.example
+*.pem
+.netrc
+.git-credentials
+
+# deps & build
+node_modules/
+dist/
+build/
+coverage/
+.cache/
+
+# os / editor
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
+
+# runtime artefacts
+*.log
+npm-debug.log*
+shot_*.png
+_*.mjs
