@@ -1,0 +1,82 @@
+{
+  "version": 1,
+  "mobileFirst": true,
+  "stageSelection": {
+    "initialMatch": "random-from-unlocked",
+    "rematch": "winner-may-keep-or-request-reroll",
+    "competitiveRule": "both players confirm a stage change; no gameplay advantage from stages"
+  },
+  "stages": [
+    {
+      "id": "trump-white-house",
+      "kind": "signature",
+      "owner": "trump",
+      "image": "art/approved/trump-arena.png",
+      "status": "prototype"
+    },
+    {
+      "id": "obama-chicago",
+      "kind": "signature",
+      "owner": "obama",
+      "image": "art/approved/obama-arena.png",
+      "status": "art-ready"
+    },
+    {
+      "id": "putin-russia",
+      "kind": "signature",
+      "owner": "putin",
+      "image": "art/approved/putin-arena.png",
+      "status": "art-ready"
+    },
+    {
+      "id": "isaias-eritrea",
+      "kind": "signature",
+      "owner": "isaias",
+      "image": "art/approved/eritrea-arena.png",
+      "status": "art-ready"
+    },
+    {
+      "id": "world-leaders-championship",
+      "kind": "shared-tournament",
+      "owner": null,
+      "image": null,
+      "status": "concept",
+      "artDirection": "grand world stadium, international flags, animated crowd, giant championship displays"
+    },
+    {
+      "id": "presidential-combat-underground",
+      "kind": "shared-tournament",
+      "owner": null,
+      "image": null,
+      "status": "concept",
+      "artDirection": "underground world-leaders tournament, cinematic lighting, international audience"
+    },
+    {
+      "id": "presidential-combat-training-facility",
+      "kind": "shared-training",
+      "owner": null,
+      "image": null,
+      "music": null,
+      "status": "concept",
+      "availableTo": "all-fighters",
+      "artDirection": "premium arcade boxing training facility, Presidential Combat branding, heavy bags, speed bags, weights, gym equipment, subtle animated background",
+      "practiceLocations": [
+        "training-facility",
+        "unlocked-home-arena"
+      ],
+      "practiceFeatures": [
+        "dummy",
+        "blocking",
+        "counterattack",
+        "combos",
+        "roundhouse",
+        "finisher-practice"
+      ],
+      "audioRule": "independent training theme and separate effects volume"
+    }
+  ],
+  "futureRosterNotes": {
+    "italyCandidate": "Benito Mussolini",
+    "musicDirection": "original Italian orchestral arcade fight theme with energetic training montage feel; do not reproduce existing film theme"
+  }
+}

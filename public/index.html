@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<title>NEON FIST — 2D Fighter</title>
+<title>PRESIDENTIAL COMBAT — Prototype</title>
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#8b7bff">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Neon Fist">
+<meta name="apple-mobile-web-app-title" content="Presidential Combat">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 <link rel="icon" href="icons/icon-192.png" type="image/png">
 <style>
@@ -47,11 +47,48 @@
   #combo1,#combo2{position:absolute;top:15vh;font-size:clamp(11px,2.2vh,20px);
     color:#ffd23f;text-shadow:0 2px 0 #40260a;opacity:0;transition:opacity .2s;}
   #combo1{left:3vw;} #combo2{right:3vw;text-align:right;}
+  /* PC arcade captions v1: visually echoes the metallic VS emblem. */
+  #combo1,#combo2{z-index:5;top:18vh;font-weight:1000;font-style:italic;
+    font-size:clamp(20px,4.2vw,52px);letter-spacing:.035em;color:#ffe18a;
+    -webkit-text-stroke:1px #92331e;text-shadow:3px 4px 0 #8d2430,0 0 22px #ffb12a;
+    filter:drop-shadow(0 4px 2px #07091b);}
+  #combo1:not(:empty),#combo2:not(:empty){animation:pcComboPop .25s ease-out;}
+  @keyframes pcComboPop{from{scale:.6}to{scale:1}}
+  @media(prefers-reduced-motion:reduce){#combo1,#combo2{animation:none!important}}
+
   #center{position:absolute;left:50%;top:44%;transform:translate(-50%,-50%);text-align:center;
     font-size:clamp(30px,10vh,110px);font-weight:900;letter-spacing:.08em;
     text-shadow:0 0 30px #ff2f5e,0 6px 0 #2a0a18;opacity:0;white-space:nowrap;}
   #sub{position:absolute;left:50%;top:60%;transform:translate(-50%,-50%);text-align:center;
     font-size:clamp(11px,2.2vh,20px);letter-spacing:.2em;opacity:0;}
+  /* Dramatic arcade-versus presentation; keep countdown visible above it. */
+  #matchupGuide{inset:0!important;left:0!important;bottom:0!important;transform:none!important;width:100%!important;max-width:none!important;padding:0!important;border:0!important;border-radius:0!important;background:linear-gradient(112deg,#0d1b37 0%,#254269 45%,#170d2c 51%,#51182b 100%)!important;overflow:hidden;}
+  #matchupGuide:before{content:'';position:absolute;inset:-60%;background:repeating-linear-gradient(115deg,transparent 0 28px,#ffffff0b 30px 32px);animation:vsDrift 9s linear infinite;}
+  #matchupGuide .vs-portrait{position:absolute;top:7%;height:70%;width:43%;background-repeat:no-repeat;background-size:contain;filter:drop-shadow(0 0 18px #000);}
+  #matchupGuide .vs-portrait.trump{left:4%;background-image:url('art/fighters-master.png');background-size:200% auto;background-position:left 18%;}
+  #matchupGuide .vs-portrait.kim{right:4%;background-image:url('art/fighters-master.png');background-size:200% auto;background-position:right 18%;transform:none;}
+  #matchupGuide .vs{position:absolute;z-index:2;top:21%;left:50%;transform:translateX(-50%) rotate(-11deg);font-size:clamp(75px,23vh,240px)!important;font-weight:1000;font-style:italic;letter-spacing:-.12em;color:#fff1ac!important;-webkit-text-stroke:3px #8d2c17;text-shadow:7px 9px 0 #b32637,0 0 40px #ffbd39;animation:vsPulse 1.1s ease-in-out infinite alternate;}
+  #matchupGuide .vs .vs-names{display:none;}
+  #matchupGuide{background-image:linear-gradient(#06091488,#070716a8),url('art/approved/versus-loading.png')!important;background-size:cover!important;background-position:center!important;}
+  #matchupGuide .vs-portrait{border-radius:18px;mask-image:linear-gradient(to bottom,#000 0%,#000 70%,transparent 99%);-webkit-mask-image:linear-gradient(to bottom,#000 0%,#000 70%,transparent 99%);}
+  #matchupGuide .vs-nameplates span{border-radius:6px;box-shadow:0 8px 25px #000b;}
+  #matchupGuide:after{content:'PRESIDENTIAL COMBAT';position:absolute;z-index:2;top:3%;left:0;right:0;text-align:center;font-weight:1000;font-size:clamp(15px,3.3vh,34px);letter-spacing:.22em;color:#fff2b2;text-shadow:2px 3px #7d2130;pointer-events:none;}
+  #matchupGuide .vs-nameplates{position:absolute;z-index:2;bottom:23%;left:4%;right:4%;display:flex;justify-content:space-between;gap:12px;}
+  #matchupGuide .vs-nameplates span{font-weight:1000;font-style:italic;font-size:clamp(17px,5vh,45px);letter-spacing:.06em;text-shadow:3px 4px #000;padding:4px 12px;background:#080c21c9;border-bottom:4px solid #ffd25e;}
+  #matchupGuide .moves{position:absolute;z-index:2;bottom:4%;left:5%;right:5%;margin:0!important;background:#08091bd9;padding:7px 12px;border-radius:9px;}
+  #matchupGuide .secrets{position:absolute;bottom:0;left:0;right:0;z-index:2;margin:0!important;background:#08091bd9;padding:3px;}
+  #hud #center{z-index:4;top:47%;color:#fff;text-shadow:5px 5px 0 #b32637,0 0 30px #ffb12b;}
+  #hud #sub{z-index:4;top:58%;}
+  @keyframes vsPulse{from{filter:brightness(1);scale:1}to{filter:brightness(1.3);scale:1.05}}
+  @keyframes vsDrift{to{transform:translateX(70px)}}
+  @media(max-height:470px){#matchupGuide .vs-nameplates{bottom:26%}#matchupGuide .vs-portrait{height:63%}#matchupGuide .moves{bottom:5%}}
+  #matchupGuide{display:none;position:absolute;z-index:3;left:50%;bottom:17%;transform:translateX(-50%);width:min(720px,94vw);padding:12px 15px;border:1px solid #bda36a;border-radius:12px;background:rgba(7,6,17,.88);text-align:center;pointer-events:none;}
+  #matchupGuide.show{display:block;}
+  #matchupGuide .vs{font-weight:900;color:#ffe29c;font-size:clamp(15px,3.5vh,28px);}
+  #matchupGuide .moves{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px;text-align:left;font-size:clamp(9px,1.5vh,13px);line-height:1.5;color:#d6d1e6;}
+  #matchupGuide .moves b{color:#ffe29c;}
+  #matchupGuide .secrets{font-size:clamp(8px,1.3vh,11px);color:#a9a1bb;margin-top:7px;}
+  @media(max-height:470px){#matchupGuide{bottom:11%;padding:5px 9px}#matchupGuide .moves{line-height:1.25;margin-top:3px}}
   #touch{position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .25s;}
   #touch.on{opacity:1;}
   .zone{position:absolute;bottom:2.5vh;pointer-events:auto;display:grid;gap:8px;}
@@ -93,6 +130,43 @@
   #boot h1{margin:0;font-size:clamp(30px,9vh,90px);letter-spacing:.14em;
     background:linear-gradient(180deg,#fff,#8b7bff);-webkit-background-clip:text;background-clip:text;color:transparent;}
   #boot p,#netui p{margin:0;opacity:.72;font-size:clamp(10px,1.8vh,15px);letter-spacing:.1em;text-align:center;line-height:1.9;}
+  /* Presidential Combat roster: first two playable, future slots intentionally anonymous. */
+  #boot{gap:1.2vh;overflow-y:auto;}
+  #boot h1{font-size:clamp(23px,6vh,58px);}
+  .roster{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:clamp(4px,1vw,12px);width:min(850px,94vw);}
+  .roster-card{min-width:0;min-height:clamp(65px,15vh,135px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;border:2px solid #51446b;border-radius:9px;background:linear-gradient(150deg,#232039,#0b0b15);color:#e5e2f2;font:inherit;font-size:clamp(8px,1.5vh,13px);text-align:center;padding:5px;}
+  .roster-card.active{border-color:#f1c45b;background:linear-gradient(145deg,#263450,#16131e);box-shadow:0 0 12px #ad874944;cursor:pointer;}
+  .roster-card.locked{opacity:.43;cursor:not-allowed;}
+  .roster-card .portrait{font-size:clamp(23px,5.5vh,48px);line-height:1.1;}
+  .roster-card .fighter-photo{display:block;width:100%;height:clamp(43px,10vh,92px);background-image:url('art/fighters-master.png');background-size:200% auto;background-repeat:no-repeat;background-position:left 13%;border-radius:5px;}
+  .roster-card .fighter-photo.kim{background-position:right 13%;}
+
+  .roster-card .legend-art{display:block;width:100%;height:clamp(43px,10vh,92px);border-radius:5px;background-size:cover;background-position:center;filter:saturate(.85) brightness(.8);}
+  .roster-card .country{color:#e3b95b;font-size:.85em;}
+  .roster-card.selected{outline:3px solid #f1c45b;outline-offset:1px;}
+  #rosterStatus{color:#e3b95b;font-size:clamp(10px,1.6vh,14px);text-align:center;}
+  @media(max-width:600px){.roster{grid-template-columns:repeat(6,minmax(0,1fr));}.roster-card{min-height:58px;padding:3px;}.roster-card .portrait{font-size:22px;}.roster-card .fighter-photo{height:44px;}.roster-card .country{display:none;}}
+  /* Post-match finishers are presentation only, never part of rollback simulation. */
+  #finisherUI{display:none;position:absolute;z-index:12;left:50%;top:48%;transform:translate(-50%,-50%);width:min(540px,92vw);padding:20px;border:2px solid #e4b94e;border-radius:16px;background:rgba(10,8,20,.95);color:white;text-align:center;box-shadow:0 0 40px #d5a63a66;}
+  #finisherUI.show{display:block;}
+  #finisherUI h2{margin:0 0 9px;color:#ffcf66;letter-spacing:.1em;font-size:clamp(18px,4vw,29px);}
+  #finisherUI p{font-size:12px;color:#c8c1d3;}
+  #finisherUI .row{margin-top:12px;}
+  #finisherFX{display:none;position:absolute;z-index:13;inset:0;pointer-events:none;align-items:center;justify-content:center;background:radial-gradient(ellipse,#ff8a1828,#000b 75%);text-align:center;}
+  #finisherFX.show{display:flex;animation:pcFlash 2.6s ease-out forwards;}
+  #finisherFX .fxwords{font-weight:1000;font-size:clamp(30px,9vw,110px);color:#ffdf66;text-shadow:0 5px 0 #b32718,0 0 40px #ff5500;transform:rotate(-5deg);}
+  #finisherFX .fxemoji{font-size:clamp(45px,12vw,145px);animation:pcBounce .4s infinite alternate;}
+  @keyframes pcBounce{from{transform:translateY(15px) rotate(-8deg)}to{transform:translateY(-20px) rotate(8deg)}}
+  @keyframes pcFlash{0%{opacity:0}15%{opacity:1}80%{opacity:1}100%{opacity:0}}
+  #fairnessPanel{display:none;position:fixed;z-index:20;inset:0;background:rgba(3,4,14,.96);overflow:auto;padding:clamp(16px,4vw,48px);color:#f2efff;}
+  #fairnessPanel.open{display:block;}
+  #fairnessPanel article{max-width:780px;margin:0 auto;line-height:1.6;font-size:clamp(12px,2vh,16px);}
+  #fairnessPanel h2{font-size:clamp(22px,5vh,42px);color:#ffd477;}
+  #fairnessPanel h3{color:#ffd477;margin-bottom:4px;}
+  #fairnessPanel p{margin:7px 0 15px;}
+  #fairnessPanel table{border-collapse:collapse;width:100%;font-size:.9em;}
+  #fairnessPanel td,#fairnessPanel th{padding:8px;border-bottom:1px solid #655b7b;text-align:left;}
+  #fairnessPanel .fine{color:#bfb6d2;font-size:.85em;}
   .btn{font:inherit;font-size:clamp(11px,2.1vh,18px);letter-spacing:.14em;padding:.75em 1.6em;
     border-radius:12px;border:2px solid #8b7bff;background:#150f26;color:#fff;cursor:pointer;}
   .btn:active{transform:scale(.97);}
@@ -101,21 +175,88 @@
   textarea{width:min(660px,86vw);height:16vh;background:#0d0918;color:#9fe;border:1px solid #372a55;
     border-radius:8px;font:11px/1.4 ui-monospace,monospace;padding:8px;resize:none;}
   #netstat{font-size:clamp(9px,1.6vh,13px);color:#9fe;min-height:1.4em;}
+
+/* Approved artwork: VS splash, character selection and stage imagery. */
+#loading{background:linear-gradient(#070816bb,#070816dd),url('art/approved/versus-loading.png') center/cover no-repeat!important;}
+#boot{background:linear-gradient(#070816df,#070816b0),url('art/approved/global-glory.png') center/cover no-repeat!important;}
+#matchupGuide{background:linear-gradient(#07081645,#0708168a),url('art/approved/versus-trump-kim.png') center/cover no-repeat!important;}
+#matchupGuide .vs-portrait{display:none!important;}
+#matchupGuide .vs{top:31%;font-size:clamp(75px,19vh,190px)!important;}
+.roster-card.active .fighter-photo{background-image:url('art/approved/versus-trump-kim.png')!important;background-size:220% auto!important;background-position:left 25%!important;}
+/* Use Kim's own sprite, not the fixed-direction composite versus artwork. */
+.roster-card.active .fighter-photo.kim{background-image:url('art/sprites/kim-idle.png')!important;background-size:contain!important;background-repeat:no-repeat!important;background-position:center center!important;transform:scaleX(-1);}
+#opponentPreviewImg{transform:scaleX(-1);}
+#matchupGuide .vs-portrait{display:block!important;}
+#matchupGuide{background:linear-gradient(#07081645,#0708168a),url('art/stages/neutral-world-tournament.png') center/cover no-repeat!important;}
+#matchupGuide .vs-portrait.trump{background-image:url('art/sprites/trump-idle.png');background-size:contain;background-position:center;}
+#matchupGuide .vs-portrait.kim{background-image:url('art/sprites/kim-idle.png');background-size:contain;background-position:center;transform:scaleX(-1);}
+
+.roster-card.active{box-shadow:0 0 16px #ffcb5577,inset 0 0 10px #ffcb5525;}
+
+#fighterEntrance{position:absolute;inset:0;z-index:8;overflow:hidden;isolation:isolate;
+  background:linear-gradient(0deg,#08050eee 0%,#15102122 70%),url('art/approved/trump-arena.png') center/cover;
+  pointer-events:auto;}
+#fighterEntrance[hidden],#fighterEntrance [hidden]{display:none;}
+#fighterEntrance img{position:absolute;bottom:0;left:50%;height:112%;width:92%;object-fit:contain;
+  object-position:50% 0;filter:drop-shadow(0 0 22px #e5a84366);transform:translateX(-50%);}
+#fighterEntrance[data-side="trump"] img{animation:trumpEntrance 2.4s ease-out both;}
+#fighterEntrance[data-side="kim"] img{animation:kimEntrance 1.5s ease-out both;}
+@keyframes trumpEntrance{from{transform:translateX(-67%) scale(.95);opacity:0} 28%{opacity:1} to{transform:translateX(-50%) scale(1.12)}}
+@keyframes kimEntrance{from{transform:translateX(-34%) scale(.95);opacity:0} 28%{opacity:1} to{transform:translateX(-50%) scale(1.12)}}
+#entranceName{position:absolute;left:5%;bottom:12%;margin:0;color:#ffe5a5;
+  font-size:clamp(26px,7vw,80px);font-weight:1000;font-style:italic;text-shadow:3px 4px #681b21,0 3px 12px #000;}
+#skipEntrance{position:absolute;right:4%;bottom:4%;z-index:1;}
+@media(prefers-reduced-motion:reduce){#fighterEntrance[data-side] img{animation:none;}}
+
+/* Arcade character-select layout: large preview over a bottom-aligned roster. */
+#fighterPreview{width:min(900px,97vw)!important;height:clamp(160px,37vh,340px)!important;gap:clamp(8px,2vw,26px)!important;}
+#fighterPreview .pc-side{width:43%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;border:1px solid #d2a34a66;border-radius:12px;background:linear-gradient(160deg,#20243b99,#090a1599);overflow:hidden;}
+#fighterPreview .pc-side img{height:88%;width:95%;object-fit:contain;}
+#fighterPreview .pc-versus{font-size:clamp(27px,5vw,66px);font-weight:1000;color:#ffd477;text-shadow:0 0 16px #ed8c31;}
+#boot .roster{gap:5px!important;margin-top:auto!important;}
+#boot .roster-card{min-height:clamp(65px,11vh,110px)!important;}
+
+#boot{justify-content:flex-start;gap:7px;padding:12px 3vw 14px;background-color:#070816;}
+#boot h1{font-size:clamp(25px,5vh,56px);margin:0;flex-shrink:0;text-shadow:0 3px 18px #000;}
+#fighterPreview{height:clamp(125px,29vh,290px);width:min(680px,92vw);display:flex;align-items:center;justify-content:center;position:relative;flex-shrink:0;overflow:hidden;border-radius:14px;background:radial-gradient(ellipse at 50% 85%,#d2a34a40,transparent 65%);}
+#fighterPreview img{height:92%;max-width:90%;object-fit:contain;animation:pcPreviewBounce .62s ease-in-out infinite alternate;filter:drop-shadow(0 0 18px #ffc85a70);}
+#fighterPreview .preview-label{position:absolute;bottom:3px;left:0;right:0;text-align:center;font-weight:900;font-size:clamp(13px,2.5vh,23px);letter-spacing:.12em;color:#ffe0a1;text-shadow:0 2px 7px #000;}
+@keyframes pcPreviewBounce{from{transform:translate(-4px,3px) rotate(-1.5deg) scaleX(var(--pc-preview-facing, 1)) scaleY(.985)}to{transform:translate(4px,-5px) rotate(1.5deg) scaleX(var(--pc-preview-facing, 1)) scaleY(1.015)}}
+#boot .roster{width:min(1080px,98vw);margin-top:auto;gap:clamp(5px,1vw,12px);}
+#boot .roster-card{min-height:clamp(82px,14vh,145px);font-size:clamp(11px,1.7vh,17px);gap:4px;}
+#boot .roster-card strong{font-size:clamp(12px,1.9vh,18px);}
+#boot .roster-card .country{display:block;font-size:clamp(10px,1.35vh,14px);}
+#boot .roster-card:hover,#boot .roster-card:focus-visible{border-color:#ffda6c;box-shadow:0 0 18px #f9bd5688;transform:translateY(-2px);}
+#boot .roster-card.active{opacity:1;}
+#boot #start{display:none;}
+#boot .roster-card .fighter-photo,#boot .roster-card .legend-art{height:clamp(44px,8vh,86px);}
+#boot #legendRosterNote{font-size:11px!important;margin:2px auto!important;}
+#boot p{font-size:clamp(9px,1.25vh,13px);line-height:1.4;}
+#boot{background-size:cover!important;}
+#boot::before{content:"";position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 35%,#c9a15c18,transparent 60%);animation:pcMenuGlow 7s ease-in-out infinite alternate;}
+@keyframes pcMenuGlow{from{opacity:.2}to{opacity:.9}}
+@media(max-height:680px){#fighterPreview{height:clamp(95px,22vh,175px)}#boot .roster-card{min-height:70px}#boot{gap:4px}}
+
+/* Persistent brand overlay across menus, combat, training and victory. */
+#pcBrand{position:fixed;z-index:9999;top:max(6px,env(safe-area-inset-top));left:50%;transform:translateX(-50%);pointer-events:none;white-space:nowrap;padding:3px 13px;border:1px solid #e2ba6580;border-radius:6px;background:linear-gradient(90deg,#101222d9,#30231bd9);color:#ffe1a0;font:900 clamp(10px,1.5vw,15px)/1.2 system-ui,sans-serif;letter-spacing:.13em;text-shadow:0 1px 5px #000;box-shadow:0 2px 12px #0009}
+#pcBrand span{color:#fff4d3}
+@media(max-width:600px){#pcBrand{top:max(3px,env(safe-area-inset-top));font-size:10px;padding:2px 8px;letter-spacing:.06em}}
 </style>
 </head>
 <body>
+<div id="pcBrand" aria-label="Presidential Combat" title="Presidential Combat">PRESIDENTIAL <span>COMBAT</span></div>
 <div id="wrap">
   <canvas id="game"></canvas>
   <div id="hud">
     <div class="bars">
       <div class="side left">
-        <div class="name" id="n1">PLAYER 1</div>
+        <div class="name" id="n1">DONALD TRUMP</div>
         <div class="hpouter"><div class="hpghost" id="g1"></div><div class="hpfill" id="h1"></div></div>
         <div class="meterouter"><div class="meterfill" id="m1"></div></div>
         <div class="pips"><div class="pip" id="p1a"></div><div class="pip" id="p1b"></div></div>
       </div>
       <div class="side right">
-        <div class="name" id="n2">CPU</div>
+        <div class="name" id="n2">KIM JONG UN</div>
         <div class="hpouter"><div class="hpghost" id="g2"></div><div class="hpfill" id="h2"></div></div>
         <div class="meterouter"><div class="meterfill" id="m2"></div></div>
         <div class="pips"><div class="pip" id="p2a"></div><div class="pip" id="p2b"></div></div>
@@ -125,12 +266,21 @@
     <div id="combo1"></div><div id="combo2"></div>
     <div id="center"></div><div id="sub"></div>
     <div id="diag"></div>
+    <div id="matchupGuide" aria-live="off"><div class="vs-portrait trump"></div><div class="vs-portrait kim"></div><div class="vs"><span class="vs-names">TRUMP </span>VS<span class="vs-names"> KIM JONG UN</span></div><div class="vs-nameplates"><span>DONALD TRUMP</span><span>KIM JONG UN</span></div><div class="moves"><div><b>TRUMP · P1</b><div>←/→ move · ↑ jump · ↓ crouch · A punch · S kick · D block</div><div>SPECIAL: ← ← → + A · MAGA Boomerang (planned)</div><div>EXECUTIONS: ↑ You're Fired · ← Hair Apparent</div></div><div><b>KIM · P2</b><div>J/L move · I jump · K crouch · 1 punch · 2 kick · 3 block</div><div>SPECIAL: ← ← → + 1 · Missile Strike (planned)</div><div>EXECUTIONS: ↑ Supreme Inspection · ← Grand Parade</div></div></div><div class="secrets">More special moves are discoverable online · Hidden executions are not shown here · Execution inputs work after an offline match</div></div>
   </div>
+  <section id="fighterEntrance" aria-label="Fighter entrances" hidden>
+    <img src="art/sprites/trump-win.png" alt="" data-entrance="trump">
+    <img src="art/sprites/kim-idle.png" alt="" data-entrance="kim" hidden>
+    <p id="entranceName" aria-live="polite"></p>
+    <button class="btn sm" id="skipEntrance" type="button">SKIP INTROS</button>
+  </section>
+  <div id="finisherUI" aria-live="polite"><h2>PRESIDENTIAL FINISH!</h2><p id="finisherHint">Choose a finisher, or enter a secret direction combo.</p><div class="row"><button class="btn sm" id="finishOne">FINISH 1 · ↑</button><button class="btn sm" id="finishTwo">FINISH 2 · ←</button><button class="btn sm" id="finishSkip">REMATCH</button></div></div>
+  <div id="finisherFX" aria-live="polite"><div><div class="fxemoji" id="fxEmoji">🔥</div><div class="fxwords" id="fxWords">YOU'RE FIRED!</div></div></div>
   <div id="topbar">
     <button class="tgl" id="tBox">HITBOX</button>
     <button class="tgl" id="tDiag">DIAG</button>
     <button class="tgl" id="tPad">PAD</button>
-    <button class="tgl" id="tCpu">CPU</button>
+    <button class="tgl" id="tCpu">CPU</button><button class="tgl" id="tTraining" title="Practice attacks against a stationary opponent">TRAINING</button>
     <button class="tgl" id="tMute">SOUND</button>
     <button class="tgl" id="tNet">NETPLAY</button>
   </div>
@@ -165,17 +315,52 @@
     </div>
     <div id="netstat"></div>
   </div>
+  <section id="fairnessPanel" role="dialog" aria-modal="true" aria-labelledby="fairnessTitle" aria-hidden="true"><article>
+    <button class="btn sm" id="fairnessClose" type="button">← BACK TO FIGHTERS</button>
+    <h2 id="fairnessTitle">COMPETITIVE FAIRNESS</h2>
+    <p><strong>Every leader has a fighting chance.</strong> Our goal is for skill, timing, strategy and practice—not a fighter's country or political identity—to decide the winner.</p>
+    <h3>How we balance moves</h3>
+    <p>High damage must have a meaningful trade-off. A powerful move may require a longer startup, more recovery after a miss, shorter range, meter expenditure, a stricter input, or an opening for the opponent to counter. Difficult inputs alone do not justify an uncounterable move.</p>
+    <table><thead><tr><th>Factor</th><th>What it means</th></tr></thead><tbody>
+    <tr><td>Damage / chip</td><td>Health lost on a clean hit / while blocking</td></tr>
+    <tr><td>Startup</td><td>Frames before the attack becomes active</td></tr>
+    <tr><td>Active frames</td><td>Frames during which the attack can connect</td></tr>
+    <tr><td>Recovery</td><td>Frames before the attacker can safely act again</td></tr>
+    <tr><td>Range / speed</td><td>How far and how quickly an attack can reach</td></tr>
+    <tr><td>Meter / risk</td><td>Resources spent and vulnerability if blocked or missed</td></tr>
+    <tr><td>Counterplay</td><td>Whether opponents can block, evade, interrupt or punish it</td></tr>
+    </tbody></table>
+    <h3>Same rules, different personalities</h3>
+    <p>National symbols, comedy, voice lines and animations do not automatically make a fighter stronger. Comparable attacks should offer comparable value; fighters may differ in offense, defense, reach and mobility, but each must have practical winning strategies.</p>
+    <h3>How we check fairness</h3>
+    <p>We compare damage, frame data, resource cost, risk and counterplay; then test both sides of each matchup, monitor results across skill levels, review player feedback, and adjust outliers. A 50/50 win rate alone does not prove balance.</p>
+    <p class="fine">This is our balancing policy and development target, not a claim that all matchups have already been proven fair. This prototype is still being tested. Published move values and balance changes will be documented as the roster expands.</p>
+    <button class="btn sm" id="fairnessCloseBottom" type="button">BACK</button>
+  </article></section>
   <div id="loading">
-    <div class="lg">NEON FIST</div>
+    <div class="lg">PRESIDENTIAL COMBAT</div>
     <div class="lbar"><div class="lfill" id="loadBar"></div></div>
     <div class="llabel" id="loadLabel">STARTING</div>
   </div>
   <div id="boot">
-    <h1>NEON FIST</h1>
-    <p>MOVE A/D · JUMP W · CROUCH S · PUNCH J · KICK K · BLOCK L<br>
-       <b>FIREBALL</b> ↓ ↘ → + P &nbsp;·&nbsp; <b>UPPERCUT</b> → ↓ ↘ + P &nbsp;·&nbsp; <b>SPIN KICK</b> ↓ ↙ ← + K<br>
-       Cancel a connected normal straight into a special. P2 uses arrows + 1/2/3.</p>
+    <h1>PRESIDENTIAL COMBAT</h1>
+    <div id="rosterStatus">HOVER TO PREVIEW · CLICK A READY FIGHTER TO START</div>
+    <div id="fighterPreview" aria-live="polite"><div class="pc-side"><img id="fighterPreviewImg" src="art/sprites/trump-idle.png" alt="Trump fighting stance preview"><div class="preview-label" id="fighterPreviewLabel">DONALD TRUMP · USA</div></div><div class="pc-versus">VS</div><div class="pc-side"><img id="opponentPreviewImg" src="art/sprites/kim-idle.png" alt="Kim Jong Un fighting stance preview"><div class="preview-label" id="opponentPreviewLabel">KIM JONG UN · NORTH KOREA</div></div></div>
+    <div class="roster" role="group" aria-label="Character selection">
+      <button class="roster-card active selected" data-character="trump" aria-pressed="true"><span class="fighter-photo trump" aria-hidden="true"></span><strong>TRUMP</strong><span class="country">USA</span></button>
+      <button class="roster-card active" data-character="kim" aria-pressed="false"><span class="fighter-photo kim" aria-hidden="true"></span><strong>KIM</strong><span class="country">N. KOREA</span></button>
+      <button class="roster-card locked legend-card" type="button" data-legend="lincoln" aria-label="Preview ABRAHAM LINCOLN"><span class="legend-art" style="background-image:url('art/approved/asset-poster.png')" aria-hidden="true"></span><strong>LINCOLN</strong><span class="country">LEGEND</span></button>      <button class="roster-card locked legend-card" type="button" data-legend="napoleon" aria-label="Preview NAPOLEON BONAPARTE"><span class="legend-art" style="background-image:url('art/approved/leader-showdown.png')" aria-hidden="true"></span><strong>BONAPARTE</strong><span class="country">LEGEND</span></button>      <button class="roster-card locked legend-card" type="button" data-legend="castro" aria-label="Preview FIDEL CASTRO"><span class="legend-art" style="background-image:url('art/approved/global-glory.png')" aria-hidden="true"></span><strong>CASTRO</strong><span class="country">LEGEND</span></button>      <button class="roster-card locked legend-card" type="button" data-legend="elizabeth" aria-label="Preview QUEEN ELIZABETH II"><span class="legend-art" style="background-image:url('art/approved/global-glory.png')" aria-hidden="true"></span><strong>II</strong><span class="country">LEGEND</span></button>      <button class="roster-card locked legend-card" type="button" data-legend="caesar" aria-label="Preview JULIUS CAESAR"><span class="legend-art" style="background-image:url('art/approved/asset-poster.png')" aria-hidden="true"></span><strong>CAESAR</strong><span class="country">LEGEND</span></button>      <button class="roster-card locked legend-card" type="button" data-legend="saddam" aria-label="Preview SADDAM HUSSEIN"><span class="legend-art" style="background-image:url('art/approved/leader-showdown.png')" aria-hidden="true"></span><strong>HUSSEIN</strong><span class="country">LEGEND</span></button>      <button class="roster-card locked legend-card" type="button" data-legend="bush" aria-label="Preview GEORGE W. BUSH"><span class="legend-art" style="background-image:url('art/approved/trump-arena.png')" aria-hidden="true"></span><strong>BUSH</strong><span class="country">LEGEND</span></button>      <button class="roster-card locked legend-card" type="button" data-legend="obama" aria-label="Preview BARACK OBAMA"><span class="legend-art" style="background-image:url('art/approved/obama-arena.png')" aria-hidden="true"></span><strong>OBAMA</strong><span class="country">LEGEND</span></button>      <button class="roster-card locked legend-card" type="button" data-legend="biden" aria-label="Preview JOE BIDEN"><span class="legend-art" style="background-image:url('art/approved/trump-arena.png')" aria-hidden="true"></span><strong>BIDEN</strong><span class="country">LEGEND</span></button>      <button class="roster-card locked legend-card" type="button" data-legend="clinton" aria-label="Preview BILL CLINTON"><span class="legend-art" style="background-image:url('art/approved/obama-arena.png')" aria-hidden="true"></span><strong>CLINTON</strong><span class="country">LEGEND</span></button>
+      <button class="roster-card locked legend-card" type="button" data-legend="selassie" aria-label="Preview HAILE SELASSIE"><strong>SELASSIE</strong><span class="country">ETHIOPIA</span></button>
+    </div>
+    <div id="legendRosterNote" style="max-width:760px;margin:10px auto;color:#e2d4ae;font-size:clamp(11px,1.6vh,14px)">LOCKED PREVIEWS · Stage/concept artwork shown until individual portraits are ready. Select a locked character to preview their moves, two finishers and counterplay. Gameplay unlocks are not yet available.</div>
+    <section id="legendPreview" aria-live="polite" style="display:none;max-width:760px;margin:8px auto;padding:12px;border:1px solid #a88856;background:#10101e;border-radius:9px;text-align:left;font-size:clamp(11px,1.8vh,15px);line-height:1.5"></section>
+    <p>P1: ARROWS ← → MOVE · ↑ JUMP · ↓ CROUCH · A PUNCH · S KICK · D BLOCK<br>
+       <b>FIREBALL</b> ↓ ↘ → + A &nbsp;·&nbsp; <b>UPPERCUT</b> → ↓ ↘ + A &nbsp;·&nbsp; <b>SPIN KICK</b> ↓ ↙ ← + S<br>
+       Double-tap punch for Barrel Spin Punch or kick for Roundhouse.<br>
+       Cancel a connected normal straight into a special. P2: J/L MOVE · I JUMP · K CROUCH · 1 PUNCH · 2 KICK · 3 BLOCK.</p>
+    <button class="btn sm" id="menuMusicToggle" type="button" aria-pressed="false">♫ PLAY MENU MUSIC</button>
     <button class="btn" id="start">ENTER THE RING</button>
+    <button class="btn sm" id="fairnessOpen" type="button">ABOUT · COMPETITIVE FAIRNESS</button>
   </div>
 </div>
 <script type="module">
@@ -198,7 +383,7 @@ const PLAYER_ID = (()=>{ try{
   return id;
 }catch{ return 'anon'; } })();
 /* =====================================================================
-   NEON FIST — single-file 2D fighting engine (Phases 1-10)
+   PRESIDENTIAL COMBAT — single-file 2D fighting engine (Phases 1-10)
    P1 canvas/loop/physics/boxes   P2 input+FSM        P3 frame data
    P4 sprites/anim/UI             P5 WebAudio         P6 flow + AI
    P7 buffering/motions/cancels   P8 juice/camera     P9 pooling/atlas
@@ -348,6 +533,8 @@ const FRAME_MAPS = {
   kick:     {s:[0],a:[1],r:[2]},
   lowKick:  {s:[0],a:[1],r:[2]},
   jumpKick: {s:[0],a:[0],r:[0]},
+  roundhouse: {s:[0],a:[1],r:[2]},
+  barrelPunch:{s:[0],a:[1],r:[2]},
   fireball: {s:[0],a:[1],r:[2]},
   uppercut: {s:[0],a:[1],r:[2]},
   spinKick: {s:[0],a:[1,2],r:[3],altRate:3}
@@ -415,6 +602,8 @@ function drawCell(g,i,P){
   g.moveTo(lean-22,headY+34); g.lineTo(lean+22,headY+34);
   g.lineTo(16,hipY+6); g.lineTo(-16,hipY+6); g.closePath(); g.fill();
   g.fillStyle=trim; g.fillRect(-17,hipY-4,34,9);
+  if(P.style==='suit'){ g.fillStyle='#f3f2ee'; g.beginPath(); g.moveTo(lean-7,headY+35); g.lineTo(lean+7,headY+35); g.lineTo(lean,headY+70); g.closePath(); g.fill(); g.fillStyle='#d52c3e'; g.fillRect(lean-3,headY+42,6,25); }
+  if(P.style==='tunic'){ g.fillStyle='#5d646b'; g.fillRect(lean-2,headY+36,4,50); for(let b=0;b<4;b++)g.fillRect(lean+2,headY+43+b*11,3,3); }
   limb(0,hipY,S.lf[0]*0.55,(hipY+S.lf[1])/2, 16, gi);
   limb(S.lf[0]*0.55,(hipY+S.lf[1])/2,S.lf[0],S.lf[1], 14, skin);
   if(S.foot){ g.fillStyle=trim; g.beginPath(); g.arc(S.lf[0],S.lf[1],10,0,7); g.fill(); }
@@ -423,7 +612,7 @@ function drawCell(g,i,P){
   g.beginPath(); g.ellipse(lean, headY+12, 17, 20, 0,0,7); g.fill();
   g.fillStyle=P.hair;
   g.beginPath(); g.ellipse(lean, headY+1, 18, 12, 0,Math.PI,0); g.fill();
-  g.fillStyle=trim; g.fillRect(lean-19,headY+6,38,5);
+  if(P.style==='tunic'){g.fillStyle=P.hair;g.fillRect(lean-17,headY-7,34,10);g.fillRect(lean-19,headY-3,38,7);} else {g.fillStyle=P.hair;g.fillRect(lean-16,headY-8,31,8);}
   if(!S.hurt){ g.fillStyle='#120c18'; g.fillRect(lean+5,headY+12,7,3); }
   else { g.strokeStyle='#120c18'; g.lineWidth=2;
     g.beginPath(); g.moveTo(lean+3,headY+10); g.lineTo(lean+11,headY+16);
@@ -439,8 +628,8 @@ function drawCell(g,i,P){
 }
 
 const PAL = {
-  p1:{skin:'#f2c39b',gi:'#2ee0c2',trim:'#0f2f38',dark:'#1a9c8a',hair:'#20303a',glove:'#ff5a3c'},
-  p2:{skin:'#e8b48c',gi:'#ff5a7a',trim:'#3a0f22',dark:'#c33456',hair:'#2b1520',glove:'#ffd23f'}
+  p1:{skin:'#f2c39b',gi:'#172a51',trim:'#cf263a',dark:'#101c36',hair:'#e8cf67',glove:'#cf263a',style:'suit'},
+  p2:{skin:'#e8b48c',gi:'#252c35',trim:'#555d65',dark:'#171c22',hair:'#12151a',glove:'#666d75',style:'tunic'}
 };
 
 /* ---- 9.1 skyline texture-atlas packer ------------------------------ */
@@ -508,7 +697,87 @@ function packAtlas(){
    removes the per-hit allocation that otherwise triggers GC sweeps.    */
 const Audio5 = (()=>{
   let ac=null, master=null, sfxBus=null, musBus=null, buffers={}, ready=false, muted=false;
-  let musSrc=null;
+  let musSrc=null, musicWanted=false, recordedMusic=null;
+  let announcerSource=null, fighterSource=null;
+  // Optional recorded fighter lines: decode in the background and limit overlap.
+  const fighterLines={trump:[],kim:[]}, voiceLast={trump:-Infinity,kim:-Infinity};
+  const voiceCursor={trump:0,kim:0};
+  const trumpEntranceFile='fv_donald-trump_1794530329315_h2mo55-04.wav';
+  function loadFighterLines(){
+    fetch('audio/voice-packs/manifest.json').then(r=>r.ok?r.json():Promise.reject())
+      .then(manifest=>{
+        // The current playable fighter with a supplied voice pack is Trump.
+        // Keep the rest staged until their playable fighter IDs exist.
+        // The WAV files are individual lines. The MP3 contains the full reel.
+        (manifest.trump||[]).filter(url=>url.toLowerCase().endsWith('.wav') &&
+          !url.endsWith('/'+trumpEntranceFile)).forEach((url,i)=>{
+          fetch(encodeURI(url)).then(r=>r.ok?r.arrayBuffer():Promise.reject())
+            .then(bytes=>ac.decodeAudioData(bytes))
+            .then(buffer=>{fighterLines.trump[i]=buffer;}).catch(()=>{});
+        });
+      }).catch(()=>{});
+  }
+  // Shared male combat-vocal pool: provisional until clips are auditioned and tagged.
+  // Limited to offline play: online deterministic simulation and announcements stay intact.
+  const masterCombatVoices=[];
+  let masterVoiceCursor=0,masterVoiceLast=-Infinity;
+  function loadMasterCombatVoices(){
+    fetch('audio/master-combat-moves/manifest.json').then(r=>r.ok?r.json():Promise.reject())
+      .then(data=>(data.clips||[]).forEach((item,i)=>{
+        fetch(encodeURI(item.file)).then(r=>r.ok?r.arrayBuffer():Promise.reject())
+          .then(bytes=>ac.decodeAudioData(bytes))
+          .then(buffer=>{masterCombatVoices[i]=buffer;}).catch(()=>{});
+      })).catch(()=>{});
+  }
+  function playMasterCombatVoice(volume=0.24){
+    if(!ready||muted||announcerSource||fighterSource||!masterCombatVoices.length)return;
+    if(ac.currentTime-masterVoiceLast<0.85)return;
+    const available=masterCombatVoices.filter(Boolean);
+    if(!available.length)return;
+    masterVoiceLast=ac.currentTime;
+    const src=ac.createBufferSource(),gain=ac.createGain();
+    src.buffer=available[masterVoiceCursor++%available.length];
+    src.playbackRate.value=0.92+Math.random()*0.17;
+    gain.gain.value=volume;
+    src.connect(gain);gain.connect(sfxBus);src.start();
+    src.onended=()=>{src.disconnect();gain.disconnect();};
+  }
+  function playFighterLine(id,volume=0.55){
+    if(!ready||muted||announcerSource||fighterSource||!fighterLines[id])return;
+    const lines=id==='kim'?[buffers.voiceKim].filter(Boolean):fighterLines[id].filter(Boolean);
+    if(!lines.length||ac.currentTime-(voiceLast[id]||0)<4)return;
+    voiceLast[id]=ac.currentTime;
+    const src=ac.createBufferSource(),gain=ac.createGain();
+    src.buffer=lines[voiceCursor[id]++%lines.length];
+    gain.gain.value=volume;
+    src.connect(gain);gain.connect(sfxBus);src.start();
+    fighterSource=src;
+    src.onended=()=>{
+      if(fighterSource===src) fighterSource=null;
+      src.disconnect();gain.disconnect();
+    };
+  }
+  const recordedCues={
+    roundOne:'round-one',roundTwo:'round-two',finalRound:'final-round',
+    three:'three',two:'two',one:'one',fight:'fight',
+    presidentialCombo:'presidential-combo',superCombo:'super-combo',doubleKnockout:'double-knockout',
+    perfectVictory:'perfect-victory',youWin:'you-win',youLose:'you-lose',
+    executiveExecution:'executive-execution'
+  };
+  function downloadAudio(url){
+    return fetch(url).then(r=>r.ok?r.arrayBuffer():null).catch(()=>null);
+  }
+  const openingAudio={
+    voiceTrump:downloadAudio('audio/trump-maga.wav'),
+    trumpEntrance:downloadAudio('audio/voice-packs/trump/'+trumpEntranceFile),
+    voiceKim:downloadAudio('audio/kim-balsa.wav'),
+    roundOne:downloadAudio('audio/recorded-announcer/round-one.wav'),
+    fight:downloadAudio('audio/recorded-announcer/fight.wav')
+  };
+  function decodeCue(name,download){
+    return download.then(bytes=>bytes && ac.decodeAudioData(bytes))
+      .then(decoded=>{if(decoded) buffers[name]=decoded;}).catch(()=>{});
+  }
   const gainPool=[]; let poolMade=0;
 
   function init(){
@@ -520,6 +789,21 @@ const Audio5 = (()=>{
     render();
     for(let i=0;i<24;i++){ const g=ac.createGain(); g.connect(sfxBus); gainPool.push(g); poolMade++; }
     ready=true;
+    loadFighterLines();
+    loadMasterCombatVoices();
+    for(const [name,download] of Object.entries(openingAudio)) decodeCue(name,download);
+    for(const [name,file] of Object.entries(recordedCues)){
+      if(!(name in openingAudio)) decodeCue(name,downloadAudio('audio/recorded-announcer/'+file+'.wav'));
+    }
+    // Optional recorded assets: retain synthesized sounds when a file is missing.
+    for(const [name,url] of Object.entries({
+      annRound1:'audio/ann-round-one.wav',annRound2:'audio/ann-round-two.wav',
+      annFinal:'audio/ann-final-round.wav',annFight:'audio/ann-fight.wav',
+      annKnockout:'audio/ann-knockout.wav',annVictory:'audio/ann-victory.wav',
+      annCombo:'audio/ann-presidential-combo.wav',annFinish:'audio/ann-presidential-finish.wav'
+    })){
+      decodeCue(name,downloadAudio(url));
+    }
   }
   const SR = ()=>ac.sampleRate;
   function buf(sec){ return ac.createBuffer(1, Math.ceil(SR()*sec), SR()); }
@@ -556,6 +840,9 @@ const Audio5 = (()=>{
     buffers.kick   = mix(noise(0.20,2.6,0.26), tone(0.16,150,45,3.4,'sin',0.9));
     buffers.block  = mix(noise(0.09,5,0.85),  tone(0.07,900,520,6,'sq',0.25));
     buffers.whiff  = noise(0.12,4.5,0.12);
+    buffers.swish  = noise(0.18,3.4,0.18);
+    buffers.hurt   = mix(tone(0.22,190,85,3,'saw',0.3),noise(0.17,3,0.12));
+    buffers.execute= mix(tone(0.75,300,55,2,'saw',0.35),noise(0.65,1.8,0.2));
     buffers.jump   = tone(0.14,300,620,3,'sin',0.4);
     buffers.land   = mix(noise(0.10,4,0.2), tone(0.09,120,60,4,'sin',0.5));
     buffers.ko     = mix(tone(0.7,180,40,1.6,'saw',0.6), noise(0.55,1.8,0.15));
@@ -565,7 +852,14 @@ const Audio5 = (()=>{
     buffers.fire   = mix(tone(0.42,140,620,1.8,'saw',0.35), noise(0.42,2.2,0.09));
     buffers.boom   = mix(tone(0.34,220,50,2.2,'sin',0.8), noise(0.34,2.0,0.2));
     buffers.counter= mix(tone(0.5,1320,880,2.2,'sq',0.3), tone(0.5,660,440,2,'saw',0.2));
+    // Synthesized crowd swells are temporary placeholders, no external licenses.
+    buffers.crowdCheer=mix(noise(1.2,1.4,0.016),tone(1.2,370,260,1.7,'saw',0.13));
+    buffers.crowdRoar=mix(noise(2.0,1.1,0.023),tone(2.0,290,210,1.5,'saw',0.19));
+    buffers.finishCall=mix(tone(0.8,250,95,1.6,'saw',0.55),noise(0.7,1.9,0.12));
     buffers.music  = makeMusic();
+    // Load the current arena theme without blocking gameplay.
+    loadStageMusic(window.pcCurrentStageMusic || 'audio/trump-arena-theme.mp3');
+
   }
   function makeMusic(){
     const bpm=142, beat=60/bpm, bars=8, dur=beat*4*bars;
@@ -624,12 +918,41 @@ const Audio5 = (()=>{
     g.gain.value = vol==null?1:vol;
     s.connect(g); s.start();
     s.onended=()=>{ s.disconnect(); if(gainPool.length<32) gainPool.push(g); else g.disconnect(); };
+    return s;
+  }
+  function announce(name,fallback,interrupt=true){
+    if(!ready||muted) return false;
+    const cue=buffers[name]?name:fallback;
+    if(!buffers[cue] || (announcerSource && !interrupt)) return false;
+    announcerSource?.stop();
+    fighterSource?.stop();
+    fighterSource=null;
+    const source=play(cue,0.9);
+    announcerSource=source;
+    const release=source.onended;
+    source.onended=()=>{
+      if(announcerSource===source) announcerSource=null;
+      release();
+    };
+    duck(0.12,buffers[cue].duration+0.15);
+    return true;
+  }
+  let musicLoadSerial=0;
+  function loadStageMusic(path){
+    const serial=++musicLoadSerial;
+    fetch(path).then(r=>{if(!r.ok)throw Error('theme missing');return r.arrayBuffer();})
+      .then(bytes=>ac.decodeAudioData(bytes)).then(decoded=>{
+        if(serial!==musicLoadSerial)return;
+        recordedMusic=decoded;
+        if(musSrc){try{musSrc.stop();}catch(e){}musSrc.disconnect();musSrc=null;music(true);}
+      }).catch(()=>{});
   }
   function music(on){
     if(!ready) return;
+    musicWanted=on;
     if(on){
       if(musSrc) return;
-      musSrc=ac.createBufferSource(); musSrc.buffer=buffers.music;
+      musSrc=ac.createBufferSource(); musSrc.buffer=recordedMusic||buffers.music;
       musSrc.loop=true; musSrc.connect(musBus); musSrc.start();
     }else if(musSrc){ try{musSrc.stop();}catch(e){} musSrc.disconnect(); musSrc=null; }
   }
@@ -640,7 +963,8 @@ const Audio5 = (()=>{
     g.linearRampToValueAtTime(0.34,ac.currentTime+(t||1.2));
   }
   return {
-    init, play, music, duck,
+    setStageMusic:loadStageMusic,
+    init, play, announce, playFighterLine, playMasterCombatVoice, music, duck,
     get muted(){return muted;},
     set muted(v){ muted=v; if(master) master.gain.value = v?0:0.9; },
     get poolInfo(){ return gainPool.length+'/'+poolMade; },
@@ -659,9 +983,11 @@ const BIT_OF = { left:BTN.LEFT, right:BTN.RIGHT, up:BTN.UP, crouch:BTN.DOWN,
                  punch:BTN.PUNCH, kick:BTN.KICK, block:BTN.BLOCK };
 
 const KEYMAP = {
-  0:{ KeyA:BTN.LEFT, KeyD:BTN.RIGHT, KeyW:BTN.UP, KeyS:BTN.DOWN,
-      KeyJ:BTN.PUNCH, KeyK:BTN.KICK, KeyL:BTN.BLOCK },
-  1:{ ArrowLeft:BTN.LEFT, ArrowRight:BTN.RIGHT, ArrowUp:BTN.UP, ArrowDown:BTN.DOWN,
+  // Player 1: arcade-style arrow joystick, adjacent A/S/D action buttons.
+  0:{ ArrowLeft:BTN.LEFT, ArrowRight:BTN.RIGHT, ArrowUp:BTN.UP, ArrowDown:BTN.DOWN,
+      KeyA:BTN.PUNCH, KeyS:BTN.KICK, KeyD:BTN.BLOCK },
+  // Player 2: separate I/J/K/L joystick and 1/2/3 attacks; no shared keys.
+  1:{ KeyJ:BTN.LEFT, KeyL:BTN.RIGHT, KeyI:BTN.UP, KeyK:BTN.DOWN,
       Digit1:BTN.PUNCH, Numpad1:BTN.PUNCH, Digit2:BTN.KICK, Numpad2:BTN.KICK,
       Digit3:BTN.BLOCK, Numpad3:BTN.BLOCK }
 };
@@ -747,6 +1073,9 @@ window.addEventListener('pointerup',e=>{ touchOwner.delete('m'+e.pointerId); rec
 
 /* ------- 7.1 input buffer: ring of masks + edge-triggered queue ------ */
 let BUFFER_LEN = 10;     // overwritten by rules.json
+// Count distinct presses in simulated frames so touch and rollback use the same timing.
+const DOUBLE_TAP_FRAMES = 12;
+const DOUBLE_TAP_MOVES = {punch:'barrelPunch', kick:'roundhouse'};
 class InputBuffer{
   constructor(){
     this.hist   = new Int32Array(64);   // raw masks, ring
@@ -790,6 +1119,15 @@ class InputBuffer{
      and not yet spent by an action */
   avail(k){ return !this.consumed[k] && this.pressAge[k] <= BUFFER_LEN; }
   consume(k){ this.consumed[k]=true; }
+  doubleTapped(button){
+    if(!this.avail(button)) return false;
+    const bit = BIT_OF[button];
+    for(let age=this.pressAge[button]+1; age<=this.pressAge[button]+DOUBLE_TAP_FRAMES; age++){
+      const frame = (this.head-age+64)&63;
+      if((this.hist[frame]&bit) && !(this.hist[(frame+63)&63]&bit)) return true;
+    }
+    return false;
+  }
   dirAgo(n){ return this.dirs[(this.head-n+64)&63]; }
 
   /* ---- 7.2 motion parser -------------------------------------------
@@ -845,6 +1183,24 @@ const STATES = {
   frozen:     {busy:true,  anim:'idle',        hurt:'stand'}
 };
 
+/* Shared visual animation policy for every current and future fighter.
+   Per-fighter artwork may vary; timing and stance behavior do not. */
+const FIGHTER_ANIMATION_STANDARD=Object.freeze({
+  idleBounce:1.5, idleSway:2.0, breathe:0.008,
+  kickHoldFrames:3, kickRecoveryVisual:'idle',
+  faceOpponent:true, sharedReactionStates:['attack','block','hit','victory']
+});
+function fighterVisualFacing(f){
+  // Source sprites for the second fighter were exported facing the opposite way.
+  return f.face*(f.side==='p2'?-1:1);
+}
+function fighterIdleMotion(f,frame){
+  if(!f.onGround||f.move||!['idle','walk','back'].includes(f.state))return null;
+  const t=frame*0.105+(f.side==='p2'?1.7:0);
+  return {x:Math.sin(t*0.5)*FIGHTER_ANIMATION_STANDARD.idleSway,
+    y:Math.sin(t)*FIGHTER_ANIMATION_STANDARD.idleBounce,
+    scaleY:1+Math.sin(t*0.5+0.8)*FIGHTER_ANIMATION_STANDARD.breathe};
+}
 /* ============================ FIGHTER ============================== */
 class Fighter{
   constructor(idx,x,pal,name){
@@ -950,7 +1306,10 @@ class Fighter{
     if(m.riseVel){ this.vy=m.riseVel; this.onGround=false; }
     if(m.driveVel){ this.vx=this.face*m.driveVel; }
     if(isCancel){ FX.cancelFlash(this); Audio5.play('counter',0.35,1.4); }
-    Audio5.play(m.special?'fire':'whiff', m.special?0.5:0.25, 0.9+Rng.range(0,0.2));
+    // Wind-up is a whoosh; impact sounds remain tied to actual contact in takeHit.
+    Audio5.play(m.special?'fire':'swish',m.special?0.5:0.32,0.9+Rng.range(0,0.2));
+    if(!Net.active) Audio5.playMasterCombatVoice(m.special?0.32:0.22);
+    if(m.special && this.idx===0 && m.key!=='fireball') Audio5.playFighterLine('trump');
     return true;
   }
 
@@ -996,10 +1355,16 @@ class Fighter{
     else if(!this.onGround) this.vy = Math.min(this.vy, -3);
 
     attacker.combo++; attacker.comboTimer = SCALING.comboDecay;
+    if(!Net.active && this.hp>0 && attacker.combo===3)
+      Audio5.announce('presidentialCombo','annCombo',false);
+    if(!Net.active && (attacker.combo===5 || attacker.combo===10)){
+      if(this.hp>0) Audio5.announce('superCombo',null,false);
+      Audio5.play('crowdRoar',0.16);
+    }
     attacker.comboDamage += dmg;
     attacker.addMeter(atk.meter);
     this.addMeter(atk.meter*0.5);
-    if(!atk.multiHit || this.stun>0) Audio5.play(atk.sfx, 1, 0.92+Rng.range(0,0.16));
+    if(!atk.multiHit || this.stun>0){ Audio5.play(atk.sfx, 1, 0.92+Rng.range(0,0.16)); Audio5.play('hurt',0.25); }
     FX.spark(atk,this,false,attacker);
     Juice.impact(atk, this, false);
     if(atk.cancelInto && atk.cancelInto.length) attacker.canCancel=true;  // 7.3
@@ -1053,6 +1418,16 @@ class Fighter{
         }
       }
 
+      // A second tap can follow the matching standing normal on hit or whiff.
+      const button = m.key;
+      const followup = DOUBLE_TAP_MOVES[button];
+      if(this.onGround && !this.buf.held(BTN.DOWN|BTN.BLOCK) &&
+         followup && MOVES[followup] && this.buf.doubleTapped(button)){
+        this.buf.consume(button);
+        this.startMove(followup,false);
+        this.applyPhysics(opp); this.advanceAnim(); return;
+      }
+
       if(this.moveFrame>=total){
         this.move=null; this.canCancel=false;
         const down = this.buf.held(BTN.DOWN);
@@ -1083,6 +1458,11 @@ class Fighter{
         this.vx = clamp(this.vx + dir*PHYS.airDrift*0.35, -6.2, 6.2);
         this.setState('jump', this.vy<0?'jump':'fall');
       }
+    } else if(this.buf.avail('up') && !down){
+      this.buf.consume('up');
+      this.vy = PHYS.jumpVel; this.onGround=false;
+      this.vx = dir*4.4;
+      this.setState('jump'); Audio5.play('jump',0.4);
     } else if(held&BTN.BLOCK){
       this.setState(down?'crouchBlock':'block');
     } else if(this.buf.avail('punch') && down){
@@ -1090,16 +1470,13 @@ class Fighter{
     } else if(this.buf.avail('kick') && down){
       this.buf.consume('kick'); this.startMove('lowKick');
     } else if(this.buf.avail('punch')){
-      this.buf.consume('punch'); this.startMove('punch');
+      const move = MOVES.barrelPunch && this.buf.doubleTapped('punch') ? 'barrelPunch' : 'punch';
+      this.buf.consume('punch'); this.startMove(move);
     } else if(this.buf.avail('kick')){
-      this.buf.consume('kick'); this.startMove('kick');
+      const move = MOVES.roundhouse && this.buf.doubleTapped('kick') ? 'roundhouse' : 'kick';
+      this.buf.consume('kick'); this.startMove(move);
     } else if(down){
       this.setState('crouch');
-    } else if(this.buf.avail('up')){
-      this.buf.consume('up');
-      this.vy = PHYS.jumpVel; this.onGround=false;
-      this.vx = dir*4.4;
-      this.setState('jump'); Audio5.play('jump',0.4);
     } else if(dir!==0){
       const fwd = (dir===this.face);
       this.vx = dir * (fwd?PHYS.walkSpeed:PHYS.backSpeed);
@@ -1358,7 +1735,7 @@ const Juice = {
     if(atk.multiHit){ hs=2; shake=4; }
     Game.hitstop = Math.max(Game.hitstop, hs);
     Cam.shake(shake);
-    if(!blocked) Cam.flash(atk.weight==='heavy'?0.30:0.16);
+    if(!blocked) Cam.flash(atk.key==='barrelPunch'?0.35:atk.weight==='heavy'?0.30:0.16);
     // 8.2 corner emphasis
     if(def.x<=WALL_L+8 || def.x>=WALL_R-8){
       Cam.shake(shake*1.5);
@@ -1372,7 +1749,7 @@ const Projectiles = (()=>{
   const MAXP=8;
   const list=new Array(MAXP);
   for(let i=0;i<MAXP;i++) list[i]={active:false,x:0,y:0,vx:0,owner:0,life:0,anim:0};
-  const DATA={ damage:10, chip:2, hitstun:24, blockstun:12, pushHit:7, pushBlock:4.5,
+  const DATA={ damage:15, chip:3, hitstun:24, blockstun:12, pushHit:7, pushBlock:4.5,
                height:'mid', weight:'light', sfx:'boom', meter:5, key:'fireballShot',
                cancelInto:[], multiHit:0, selfPush:0 };
   return {
@@ -1383,7 +1760,10 @@ const Projectiles = (()=>{
         if(!p.active){
           p.active=true; p.owner=f.idx; p.x=f.x+f.face*54; p.y=f.y-98;
           p.vx=f.face*8.6; p.life=150; p.anim=0;
-          Audio5.play('fire',0.7,1); return p;
+          Audio5.play('fire',0.7,1);
+          if(f.idx===0) Audio5.playFighterLine('trump');
+          else Audio5.playFighterLine('kim',0.65);
+          return p;
         }
       }
       return null;
@@ -1414,6 +1794,23 @@ const Projectiles = (()=>{
         const p=list[i]; if(!p.active) continue;
         const t=p.anim*0.35;
         const r=17+Math.sin(t)*2.5;
+        // Cosmetic owner-specific projectile art. Both use the exact same
+        // hitbox, damage, chip, stun, push, speed and lifetime.
+        if(p.owner===0){
+          g.save();g.translate(p.x,p.y);g.rotate(t*0.45);
+          g.fillStyle='#d72632';g.beginPath();g.ellipse(0,0,23,10,0,0,6.2832);g.fill();
+          g.fillStyle='#f6f0dc';g.fillRect(-12,-7,24,6);
+          g.fillStyle='#d72632';g.fillRect(-9,-19,18,15);
+          g.strokeStyle='#ffe4c7';g.lineWidth=2;g.strokeRect(-9,-19,18,15);
+          g.restore();continue;
+        }
+        if(p.owner===1){
+          g.save();g.translate(p.x,p.y);if(p.vx<0)g.scale(-1,1);
+          g.fillStyle='#e2e5e8';g.beginPath();g.moveTo(27,0);g.lineTo(7,-11);g.lineTo(-23,-11);g.lineTo(-23,11);g.lineTo(7,11);g.closePath();g.fill();
+          g.fillStyle='#ee5c3d';g.fillRect(-16,-5,16,10);
+          g.fillStyle='#ffc34d';g.beginPath();g.moveTo(-23,-7);g.lineTo(-37,0);g.lineTo(-23,7);g.fill();
+          g.restore();continue;
+        }
         const grd=g.createRadialGradient(p.x,p.y,2,p.x,p.y,r*1.6);
         grd.addColorStop(0,'rgba(255,255,255,.95)');
         grd.addColorStop(.35,p.owner===0?'rgba(90,255,225,.85)':'rgba(255,120,160,.85)');
@@ -1440,8 +1837,8 @@ const Game = {
   cpu:true, frame:0, winner:null
 };
 
-const P1 = new Fighter(0, 330, PAL.p1, 'PLAYER 1');
-const P2 = new Fighter(1, 630, PAL.p2, 'CPU');
+const P1 = new Fighter(0, 330, PAL.p1, 'DONALD TRUMP');
+const P2 = new Fighter(1, 630, PAL.p2, 'KIM JONG UN');
 const FIGHTERS=[P1,P2];
 
 const UI = {
@@ -1482,37 +1879,104 @@ const UI = {
     this.p1b.classList.toggle('on',P1.rounds>=2);
     this.p2a.classList.toggle('on',P2.rounds>=1);
     this.p2b.classList.toggle('on',P2.rounds>=2);
-    const c1=P1.combo>1?(P1.combo+' HITS  '+P1.comboDamage+' DMG'):'';
-    const c2=P2.combo>1?(P2.combo+' HITS  '+P2.comboDamage+' DMG'):'';
+    const comboLabel = f => f.combo>1 ? (f.combo>=10 ? 'PRESIDENTIAL 10+ COMBO! · ' : f.combo>=5 ? 'SUPER COMBO! · ' : '') + f.combo+' HITS  '+f.comboDamage+' DMG' : '';
+    const c1=comboLabel(P1);
+    const c2=comboLabel(P2);
     if(this._c1!==c1){ this._c1=c1; this.c1.textContent=c1; this.c1.style.opacity=c1?1:0; }
     if(this._c2!==c2){ this._c2=c2; this.c2.textContent=c2; this.c2.style.opacity=c2?1:0; }
-    const n2=Net.active?'REMOTE':(Game.cpu?'CPU':'PLAYER 2');
+    const n2='KIM JONG UN' + (Net.active?' · ONLINE':(Game.cpu?' · CPU':''));
     if(this._n2!==n2){ this._n2=n2; this.n2.textContent=n2; }
   }
 };
 
-function startRound(){
+const fighterEntrance = document.getElementById('fighterEntrance');
+const entranceName = document.getElementById('entranceName');
+const trumpEntranceFrames = 144;
+const kimEntranceFrames = 84;
+const openingFightFrame = 330;
+let entranceVoice;
+let roundHasEntrances = false;
+
+function showEntrance(side, name){
+  fighterEntrance.hidden = false;
+  fighterEntrance.dataset.side = side;
+  for(const image of fighterEntrance.querySelectorAll('[data-entrance]')){
+    image.hidden = image.dataset.entrance !== side;
+  }
+  entranceName.textContent = name;
+}
+function playEntranceVoice(voice,fallback){
+  Audio5.duck(0.10,1.35);
+  entranceVoice = Audio5.play(voice,0.85) || (fallback && Audio5.play(fallback,0.85));
+}
+function closeEntrance(){
+  fighterEntrance.hidden = true;
+  entranceVoice?.stop();
+  entranceVoice = undefined;
+}
+document.getElementById('skipEntrance').onclick = () => {
+  if(Game.phase !== 'intro' || fighterEntrance.hidden || Net.active) return;
+  closeEntrance();
+  Game.phaseT = openingFightFrame-1;
+};
+
+function startRound(withEntrances=false){
   P1.reset(false); P2.reset(false);
   FX.clear(); Projectiles.clear(); Cam.reset();
   Game.timer=99; Game.timerSub=0; Game.hitstop=0; Game.slowmo=0;
   Game.phase='intro'; Game.phaseT=0;
+  closeEntrance();
+  roundHasEntrances = withEntrances;
+  document.getElementById('matchupGuide').classList.toggle('show',!withEntrances);
   UI.sync();
-  UI.show('ROUND '+Game.round, Game.round===3?'FINAL ROUND':'');
+  if(withEntrances){
+    UI.hide();
+    showEntrance('trump',P1.name);
+    return;
+  }
+  UI.show('5', 'ROUND '+Game.round+' · GET READY');
   Audio5.play('bell',0.7);
+  if(Game.round===1) Audio5.announce('roundOne','annRound1');
+  else if(Game.round===2) Audio5.announce('roundTwo','annRound2');
+  else Audio5.announce('finalRound','annFinal');
 }
-function startMatch(){
+function startMatch(withEntrances=false){
   P1.rounds=0; P2.rounds=0; Game.round=1; Game.frame=0;
   Rng.seed(0x1234abc);
   Audio5.music(true);
-  startRound();
+  startRound(withEntrances && !Net.active);
 }
 
 function updateFlow(){
   Game.phaseT++;
   const T=Game.phaseT;
   if(Game.phase==='intro'){
-    if(T===70){ UI.show('READY'); Audio5.play('count',0.6); }
-    if(T===130){ UI.show('FIGHT!'); Audio5.play('go',0.9); Audio5.duck(0.12,1.0);
+    // Five-second synchronized countdown, shared by local and rollback simulation.
+    if(!fighterEntrance.hidden){
+      if(T===12) playEntranceVoice('trumpEntrance','voiceTrump');
+      if(T===trumpEntranceFrames){
+        closeEntrance();
+        showEntrance('kim',P2.name);
+        playEntranceVoice('voiceKim');
+      }
+      if(T===trumpEntranceFrames+kimEntranceFrames){
+        closeEntrance();
+        UI.show('ROUND 1');
+        Audio5.play('bell',0.7);
+        Audio5.announce('roundOne','annRound1');
+      }
+      return;
+    }
+    if(!roundHasEntrances && T<300 && T%60===0){
+      UI.show(String(5-T/60),'ROUND '+Game.round+' · GET READY');
+      const cue={120:'three',180:'two',240:'one'}[T];
+      if(!cue || !Audio5.announce(cue)) Audio5.play('count',0.45);
+    }
+    if(T===(roundHasEntrances?openingFightFrame:300)){
+      document.getElementById('matchupGuide').classList.remove('show');
+      UI.show('FIGHT!');
+      if(!Audio5.announce('fight','annFight')) Audio5.play('go',0.9);
+      Audio5.play('crowdCheer',0.16);
       P1.setState('idle'); P2.setState('idle'); Game.phase='fight'; Game.phaseT=0;
       setTimeout(()=>UI.hide(),700);
     }
@@ -1539,7 +2003,16 @@ function updateFlow(){
         Game.phase='matchEnd'; Game.phaseT=0;
         const champ = P1.rounds>P2.rounds ? P1.name : (P2.rounds>P1.rounds? P2.name : 'DRAW GAME');
         UI.show(P1.rounds===P2.rounds?'DRAW GAME':champ+' WINS','TAP OR PRESS ENTER FOR REMATCH');
+        if(!Net.active && Game.winner!=='draw')pcFinisherOpen();
         Audio5.duck(0.1,2.5);
+        if(P1.rounds!==P2.rounds){
+          const champion=P1.rounds>P2.rounds?P1:P2;
+          const listener=Net.active?Net.localPlayer:0;
+          const cue=champion.idx!==listener?'youLose':
+            w===champion.side && champion.hp===100?'perfectVictory':'youWin';
+          Audio5.announce(cue,'annVictory');
+          Audio5.play('crowdCheer',0.24);
+        }
       }else{ Game.phase='roundEnd'; Game.phaseT=0; }
     }
     return;
@@ -1556,8 +2029,10 @@ function endRound(winner, byKo){
   const loser = winner==='p1'?P2:(winner==='p2'?P1:null);
   if(loser){ loser.setState('ko'); loser.vx=-loser.face*7; loser.vy=-8; loser.onGround=false; }
   else { P1.setState('ko'); P2.setState('ko'); }
-  UI.show(byKo?'K.O.':'TIME UP', winner==='draw'?'DOUBLE KO':'');
+  UI.show(byKo?'K.O.':'TIME UP', byKo&&winner==='draw'?'DOUBLE KO':'');
   Audio5.play('ko',1); Audio5.duck(0.08,2.2);
+  if(byKo) Audio5.announce(winner==='draw'?'doubleKnockout':'annKnockout','annKnockout');
+  Audio5.play('crowdRoar',0.16);
   Cam.shake(20); Cam.flash(0.5);
 }
 
@@ -1844,6 +2319,39 @@ const Net = (()=>{
 
 /* ============================ RENDERING ============================ */
 let bgCanvas=null, bgFar=null;
+const PC_APPROVED_ARENA=new Image();
+// Home stages. Press G in local matches to cycle arenas; keep online matches deterministic.
+const PC_STAGES=[
+  {id:'training',name:'Presidential Combat — Training Facility',src:'art/stages/neutral-training-facility.png'},
+  {id:'tournament',name:'World Tournament — Neutral Arena',src:'art/stages/neutral-world-tournament.png'},
+  {id:'dojo',name:'Underground Sparring — Neutral Arena',src:'art/stages/neutral-sparring-dojo.png'},
+  {id:'trump',name:'Trump — Presidential Arena',src:'art/approved/trump-arena.png'},
+  {id:'kim',name:'Kim — Pyongyang Night',src:'art/stages/kim-north-korea.png'},
+  {id:'putin',name:'Putin — Winter Plaza',src:'art/stages/putin-russia.png'},
+  {id:'selassie',name:'Haile Selassie — Imperial Lions',src:'art/stages/selassie-ethiopia.png'},
+  {id:'bush',name:'Bush — Texas Ranch',src:'art/stages/bush-texas.png'},
+  {id:'obama',name:'Obama — Presidential Arena',src:'art/approved/obama-arena.png'},
+  {id:'isaias',name:'Isaias — Eritrean Arena',src:'art/approved/eritrea-arena.png'},
+  {id:'mandela',name:'Mandela — South African Arena',src:'art/stages/neutral-world-tournament.png'}
+];
+let pcStageIndex=3;
+PC_APPROVED_ARENA.src=PC_STAGES[pcStageIndex].src;
+function pcSelectStage(index){
+  pcStageIndex=(index+PC_STAGES.length)%PC_STAGES.length;
+  PC_APPROVED_ARENA.src=PC_STAGES[pcStageIndex].src;
+  const themes={selassie:'audio/stage-music/selassie.mp3',bush:'audio/stage-music/bush.mp3',kim:'audio/stage-music/kim.mp3',mandela:'audio/stage-music/mandela.mp3',putin:'audio/putin-arena-theme.mp3',isaias:'audio/eritrea-arena-theme.mp3'};
+  window.pcCurrentStageMusic=themes[PC_STAGES[pcStageIndex].id]||'audio/trump-arena-theme.mp3';
+  Audio5.setStageMusic(window.pcCurrentStageMusic);
+  const entrance=document.getElementById('fighterEntrance');
+  if(entrance) entrance.style.backgroundImage='linear-gradient(0deg,#08050eee 0%,#15102122 70%),url("'+PC_STAGES[pcStageIndex].src+'")';
+  const label=document.getElementById('pcStageLabel');
+  if(label)label.textContent='ARENA: '+PC_STAGES[pcStageIndex].name+' · G to change';
+}
+window.addEventListener('keydown',e=>{
+  if(e.code==='KeyG'&&!e.repeat&&!Net.active&& !['INPUT','TEXTAREA','SELECT'].includes(document.activeElement?.tagName)) pcSelectStage(pcStageIndex+1);
+});
+
+
 function buildBackground(){
   const c=document.createElement('canvas'); c.width=VW; c.height=VH;
   const g=c.getContext('2d');
@@ -1885,10 +2393,210 @@ function buildBackground(){
   // corner markers so the camera bounds read clearly
   g.fillStyle='rgba(255,90,176,.25)';
   g.fillRect(WALL_L-26,FLOOR-260,4,260); g.fillRect(WALL_R+22,FLOOR-260,4,260);
+  // Arcade White House stage preview. Approved photographic artwork is still pending import.
+  g.save();
+  const lawn=FLOOR-60;
+  g.fillStyle='#dce7f0';g.fillRect(VW/2-230,lawn-205,460,180);
+  g.fillStyle='#f7f3e7';g.fillRect(VW/2-255,lawn-35,510,35);
+  g.fillStyle='#c5d6e8';g.beginPath();g.moveTo(VW/2-255,lawn-205);g.lineTo(VW/2,lawn-270);g.lineTo(VW/2+255,lawn-205);g.closePath();g.fill();
+  for(let i=-4;i<=4;i++){g.fillStyle='#fff8ed';g.fillRect(VW/2+i*48-12,lawn-195,24,160);g.fillStyle='#9aaec3';g.fillRect(VW/2+i*48-17,lawn-198,34,9);}
+  g.fillStyle='#26344b';g.fillRect(VW/2-37,lawn-105,74,75);
+  g.fillStyle='#15243c';g.fillRect(VW/2-260,lawn,520,9);
+  // Cartoon limousine and spectators behind the playable floor.
+  g.fillStyle='#111827';g.fillRect(70,lawn-30,190,27);g.fillRect(105,lawn-48,95,20);
+  g.fillStyle='#9ee4ff';g.fillRect(116,lawn-43,70,13);
+  for(let x of [110,222]){g.fillStyle='#0a0a14';g.beginPath();g.arc(x,lawn-2,15,0,Math.PI*2);g.fill();}
+  for(let i=0;i<30;i++){const x=20+i*36,y=lawn-11+(i%3)*5;g.fillStyle=['#70452f','#bb8968','#e2bd95','#59382d'][i%4];g.beginPath();g.arc(x,y-27,9,0,7);g.fill();g.fillStyle=['#e23c43','#3a5a9b','#f2e9d5'][i%3];g.fillRect(x-10,y-17,20,19);}
+  for(const [x,t] of [[135,'MAGA'],[820,'USA'],[955,'MAGA']]){g.fillStyle='#fff5d8';g.fillRect(x-37,lawn-100,74,27);g.strokeStyle='#e63e42';g.lineWidth=3;g.strokeRect(x-37,lawn-100,74,27);g.fillStyle='#ad2235';g.font='bold 17px sans-serif';g.textAlign='center';g.fillText(t,x,lawn-80);}
+  g.restore();
   bgCanvas=c;
 }
 
+/* Presidential Combat concept sprite layer. Rendering-only: no physics or netcode changes.
+   Placeholder single poses are intentionally held until in-between animation is authored. */
+// Non-destructive runtime matte cleanup: removes only near-white pixels
+// connected to the transparent/exterior background, preserving interior whites.
+function pcCleanSprite(im){
+  const w=im.naturalWidth,h=im.naturalHeight,n=w*h;
+  const c=document.createElement('canvas');c.width=w;c.height=h;
+  const cx=c.getContext('2d',{willReadFrequently:true});cx.drawImage(im,0,0);
+  const frame=cx.getImageData(0,0,w,h),d=frame.data;
+  const outside=new Uint8Array(n),q=new Int32Array(n);let head=0,tail=0;
+  const white=i=>{const j=i*4,r=d[j],g=d[j+1],b=d[j+2];
+    return d[j+3]<8||(r>239&&g>239&&b>239&&Math.max(r,g,b)-Math.min(r,g,b)<14);};
+  const add=i=>{if(!outside[i]&&white(i)){outside[i]=1;q[tail++]=i;}};
+  for(let x=0;x<w;x++){add(x);add((h-1)*w+x);}
+  for(let y=0;y<h;y++){add(y*w);add(y*w+w-1);}
+  while(head<tail){const i=q[head++],x=i%w;
+    if(x>0)add(i-1);if(x<w-1)add(i+1);
+    if(i>=w)add(i-w);if(i<n-w)add(i+w);
+  }
+  for(let i=0;i<n;i++)if(outside[i])d[i*4+3]=0;
+  // Despill the last pale fringe only when adjacent to the removed matte.
+  for(let i=0;i<n;i++){
+    if(outside[i])continue;
+    const x=i%w,j=i*4,r=d[j],g=d[j+1],b=d[j+2];
+    const edge=(x>0&&outside[i-1])||(x<w-1&&outside[i+1])||
+      (i>=w&&outside[i-w])||(i<n-w&&outside[i+w]);
+    if(edge&&r>190&&g>190&&b>190&&Math.max(r,g,b)-Math.min(r,g,b)<35)
+      d[j+3]=Math.min(d[j+3],105);
+  }
+  cx.putImageData(frame,0,0);
+  // Normalize each pose to its visible silhouette rather than the export canvas.
+  // This keeps the feet on the stage and prevents block/kick sprites resizing.
+  let left=w,top=h,right=-1,bottom=-1;
+  for(let y=0;y<h;y++)for(let x=0;x<w;x++){
+    if(d[(y*w+x)*4+3]<90)continue;
+    if(x<left)left=x;if(x>right)right=x;
+    if(y<top)top=y;if(y>bottom)bottom=y;
+  }
+  if(right<left)return c;
+  const cropped=document.createElement('canvas');
+  cropped.width=right-left+1;cropped.height=bottom-top+1;
+  cropped.getContext('2d').drawImage(c,left,top,cropped.width,cropped.height,0,0,cropped.width,cropped.height);
+  return cropped;
+}
+const PC_SPRITES={p1:{},p2:{}};
+for(const [side,name] of [['p1','trump'],['p2','kim']]){
+  for(const pose of ['idle','walk','punch','kick','dodge','win']){
+    const im=new Image();
+    PC_SPRITES[side][pose]=im;
+    im.onload=()=>{try{PC_SPRITES[side][pose]=pcCleanSprite(im);}catch(e){console.warn('sprite matte cleanup skipped',name,pose,e);}};
+    im.src='art/sprites/'+name+'-'+pose+'.png';
+  }
+}
+function pcPose(f){
+  const move = f.move;
+  if(move && ['kick','lowKick','jumpKick','roundhouse','barrelPunch'].includes(move.key) &&
+     (f.moveFrame < move.startup || f.moveFrame >= move.startup+move.active)){
+    return move.key==='lowKick' ? 'dodge' : 'idle';
+  }
+  if(f.anim==='win')return 'win';
+  if(f.anim==='ko'||f.state==='ko')return 'dodge';
+  if(f.anim==='walk'||f.anim==='back')return 'walk';
+  if(f.anim==='punch'||f.anim==='uppercut'||f.anim==='fireball')return 'punch';
+  if(f.anim==='kick'||f.anim==='crouchKick'||f.anim==='jumpKick'||f.anim==='spinKick')return 'kick';
+  if(f.anim==='block'||f.anim==='blockstun')return 'dodge';
+  if(f.anim==='crouch'||f.anim==='crouchBlock'||f.anim==='hit')return 'dodge';
+  return 'idle';
+}
+// Facial animation standard V1: optional per-character transparent PNG overlays.
+// Existing full-body poses remain the fallback until matching facial art is supplied.
+const PC_FACIAL_STATES=['idle','blink','attack','hurt','block','super','victory'];
+const PC_FACES={};
+function pcRegisterFaces(character){
+  if(PC_FACES[character])return PC_FACES[character];
+  const faces=PC_FACES[character]={};
+  for(const state of PC_FACIAL_STATES){
+    const im=new Image();
+    im.onload=()=>{faces[state]=im;};
+    im.onerror=()=>{faces[state]=null;};
+    im.src='art/faces/'+character+'/'+state+'.png';
+  }
+  return faces;
+}
+function pcFacialState(f){
+  if(f.state==='win'||f.anim==='win')return 'victory';
+  if(f.state==='hitstun'||f.state==='airstun'||f.anim==='hit')return 'hurt';
+  if(f.state==='block'||f.state==='crouchBlock'||f.state==='blockstun')return 'block';
+  if(f.move?.special)return 'super';
+  if(f.move||['punch','kick','uppercut','spinKick','jumpKick'].includes(f.anim))return 'attack';
+  if(f.state==='idle'&&Math.floor((Game.frame+(f.side==='p2'?61:0))%211)<7)return 'blink';
+  return 'idle';
+}
+function pcDrawFace(g,f,character,bodyWidth,bodyHeight){
+  const cfg=PC_FACE_CONFIG[character];
+  if(!cfg)return;
+  const faces=pcRegisterFaces(character);
+  const state=pcFacialState(f);
+  const face=faces[state]||faces.idle;
+  if(!face||!face.complete||!face.naturalWidth)return;
+  // Coordinates are fractions of the rendered body sprite. The face artwork
+  // is an overlay with transparent padding, not a replacement for the body.
+  const w=bodyWidth*cfg.width,h=w*(face.naturalHeight/face.naturalWidth);
+  g.drawImage(face,-bodyWidth/2+bodyWidth*cfg.x-w/2,-bodyHeight+bodyHeight*cfg.y-h/2,w,h);
+}
+const PC_FACE_CONFIG={
+  trump:{x:0.50,y:0.19,width:0.30},
+  kim:{x:0.50,y:0.19,width:0.30}
+};
 function drawFighter(g,f){
+  const art=PC_SPRITES[f.side]?.[pcPose(f)];
+  if(art && (art instanceof HTMLCanvasElement || art.complete) && (art.naturalWidth||art.width)>0){
+    const aw=art.naturalWidth||art.width,ah=art.naturalHeight||art.height;
+    // Match each pose to the character's idle silhouette height, not its
+    // own export dimensions. Preserve a stable foot baseline across poses.
+    const idleArt=PC_SPRITES[f.side]?.idle;
+    const idleH=(idleArt?.height||idleArt?.naturalHeight||ah);
+    const fighterHeight=205;
+    const scale=fighterHeight/idleH;
+    g.save();g.translate(f.x,f.y);
+    // Subtle arcade fighting stance: visual-only idle breathing, weight shift and bounce.
+    // No movement of hitboxes, player coordinates or network simulation state.
+    const idleMotion=fighterIdleMotion(f,Game.frame);
+    if(idleMotion){
+      g.translate(idleMotion.x,idleMotion.y);g.scale(1,idleMotion.scaleY);
+      // Gentle alternating guard tilt: adds motion without altering hitboxes.
+      const guard=Math.sin(Game.frame*0.105+(f.side==='p2'?1.7:0));
+      g.rotate(guard*0.016);
+    }
+    // Backstep gait: alternating weight shifts, rather than a frozen sliding pose.
+    if((f.state==='win'||(Game.phase==='matchEnd'&&Game.winner===f.side)) && f.onGround){
+      const t=Game.frame*.11+(f.side==='p2'?1:0);
+      g.translate(Math.sin(t*.6)*3,0);
+      g.rotate(Math.sin(t*.7)*.018);
+    }
+    // Distinct forward/back footfalls with two alternating weight transfers.
+    // Purely visual: no changes to deterministic combat movement or hitboxes.
+    if((f.state==='back'||f.state==='walk') && f.onGround){
+      const reverse=f.state==='back'?-1:1;
+      const phase=Game.frame*0.31+(f.side==='p2'?1.2:0);
+      const step=Math.sin(phase),lift=Math.max(0,Math.sin(phase*2));
+      g.translate(reverse*step*4.5,-lift*4);
+      g.rotate(reverse*step*0.035);
+      g.transform(1,0,reverse*step*0.045,1,0,0);
+    }
+    // Knocked-out fighter visibly tumbles and remains horizontal on the floor.
+    if(f.state==='ko' && f.onGround){
+      // Four shared knockdown silhouettes, chosen deterministically by round
+      // and fighter; rotate around the grounded body center, not the feet.
+      const downAngles=[1.42,1.57,1.70,1.49];
+      const pose=(Game.round*2+f.idx)%downAngles.length;
+      const angle=downAngles[pose]*f.face;
+      g.translate(0,-22);
+      g.rotate(angle);
+      g.translate(0,fighterHeight*0.48);
+    }
+    // Kim source sprites are opposite-facing; compensate only for his artwork.
+    if(f.move?.key==='roundhouse' && f.moveFrame>=f.move.startup &&
+       f.moveFrame<f.move.startup+f.move.active){
+      g.save();
+      g.scale(f.face,1);
+      g.strokeStyle='#ffcf79';
+      g.globalAlpha=0.72*(1-(f.moveFrame-f.move.startup)/f.move.active);
+      g.lineWidth=5;
+      g.beginPath();
+      g.ellipse(28,-102,85,22,-0.16,-1.95,0.55);
+      g.stroke();
+      g.restore();
+    }
+    g.scale(fighterVisualFacing(f),1);
+    if(f.move?.key==='roundhouse' || f.move?.key==='barrelPunch'){
+      // Complete the turn at contact, then return to the guard pose.
+      const turn = Math.min(1,f.moveFrame/f.move.startup)*Math.PI*2;
+      g.scale(Math.cos(turn)*0.86+0.14,1);
+      g.rotate(Math.sin(turn)*(f.move.key==='roundhouse' ? 0.10 : 0.25));
+    }
+    if(f.flash>0)g.filter='brightness(2.4) saturate(0.4)';
+    else if(f.invuln>0&&(Game.frame>>1)%2===0)g.filter='brightness(1.6) hue-rotate(70deg)';
+    g.drawImage(art,-aw*scale/2,-fighterHeight,aw*scale,fighterHeight);
+    pcDrawFace(g,f,f.side==='p1'?'trump':'kim',aw*scale,fighterHeight);
+    if(f.state==='block'||f.state==='crouchBlock'||f.state==='blockstun'){
+      g.strokeStyle='#73d9ff';g.lineWidth=5;g.shadowColor='#4dcfff';g.shadowBlur=16;
+      g.beginPath();g.ellipse(35,-100,22,64,-0.2,-Math.PI/2,Math.PI/2);g.stroke();
+    }
+    g.restore();return;
+  }
   const fr=Atlas.frames[f.side+':'+f.cell()];
   if(!fr) return;
   g.save();
@@ -1901,11 +2609,8 @@ function drawFighter(g,f){
   g.restore();
 }
 function drawShadow(g,f){
-  const h = FLOOR - f.y;
-  const s = clamp(1 - h/420, 0.35, 1);
-  g.globalAlpha=0.34*s; g.fillStyle='#000';
-  g.beginPath(); g.ellipse(f.x, FLOOR+4, 40*s, 9*s, 0,0,6.2832); g.fill();
-  g.globalAlpha=1;
+  // Character art already includes grounding; avoid the artificial black oval.
+  // Intentionally no additional shadow under fighters.
 }
 function drawBoxes(g,f){
   g.lineWidth=2;
@@ -1948,7 +2653,66 @@ function render(){
   g.translate(-Cam.x + Cam.shakeX, -Cam.y + Cam.shakeY);
 
   g.drawImage(bgCanvas,0,0);
-  drawShadow(g,P1); drawShadow(g,P2);
+  if(PC_APPROVED_ARENA.complete&&PC_APPROVED_ARENA.naturalWidth){
+    const im=PC_APPROVED_ARENA,w=VW,h=FLOOR+20,scale=Math.max(w/im.naturalWidth,h/im.naturalHeight);
+    const dw=im.naturalWidth*scale,dh=im.naturalHeight*scale;
+    g.drawImage(im,(w-dw)/2,(h-dh)/2,dw,dh);
+  }
+  // Lightweight arena atmosphere: moving light, fountain glints and wind wisps.
+  // Keep subtle so the actual approved background remains visible.
+  if(PC_APPROVED_ARENA.complete && PC_APPROVED_ARENA.naturalWidth){
+    g.save();
+    const t=Game.frame;
+    const glow=g.createRadialGradient(VW*.50,FLOOR*.37,8,VW*.50,FLOOR*.37,VW*.36);
+    glow.addColorStop(0,'rgba(255,231,165,'+(0.045+0.017*Math.sin(t*.024))+')');
+    glow.addColorStop(1,'rgba(255,231,165,0)');
+    g.fillStyle=glow;g.fillRect(0,0,VW,FLOOR);
+    // Tiny specular droplets, moving upward and fading (no large opaque overlay).
+    for(let i=0;i<13;i++){
+      const phase=(t*.65+i*19)%92;
+      const x=VW*.51+Math.sin(i*2.4+phase*.07)*(5+phase*.18);
+      const y=FLOOR*.77-phase*.66;
+      g.globalAlpha=.10*(1-phase/92);
+      g.fillStyle='#d3edff';g.beginPath();g.arc(x,y,1.1+(i%3)*.35,0,Math.PI*2);g.fill();
+    }
+    g.globalAlpha=.075;g.strokeStyle='#fff5d4';g.lineWidth=1.2;
+    for(let i=0;i<4;i++){
+      const drift=(t*.24+i*173)%VW;
+      const y=FLOOR*(.32+i*.105);
+      g.beginPath();g.moveTo(drift-16,y+Math.sin(t*.025+i)*4);
+      g.quadraticCurveTo(drift,y-3,drift+24,y+2);g.stroke();
+    }
+    g.restore();
+  }
+  // Animated arcade spectators: small cheering silhouettes behind both fighters.
+  // Stable phases keep the crowd lively without frame-to-frame randomness.
+  if(Game.phase==='fight'||Game.phase==='intro'||Game.phase==='ko'||Game.phase==='matchEnd'){
+    g.save();
+    for(let i=0;i<10;i++){
+      const x=i<5?28+i*36:VW-28-(i-5)*36;
+      const y=FLOOR-70+(i%3)*5;
+      const celebration=Game.phase==='ko'||Game.phase==='matchEnd';
+      const comboBurst=Math.max(P1.combo||0,P2.combo||0)>=5;
+      const wave=Math.sin(Game.frame*(celebration?0.19:comboBurst?0.14:0.085)+i*1.7);
+      const lift=(celebration?9:comboBurst?6:2.8)*wave;
+      g.globalAlpha=0.62;
+      g.strokeStyle=i%3===0?'#e5c17d':i%3===1?'#63758d':'#9a534a';
+      g.lineWidth=3.2;g.lineCap='round';
+      g.beginPath();g.moveTo(x,y+5);g.lineTo(x,y-7+lift);
+      g.moveTo(x,y-2);g.lineTo(x-8,y-(celebration?24:14)-lift*1.8);
+      g.moveTo(x,y-2);g.lineTo(x+8,y-(celebration?24:13)+lift*2);
+      g.stroke();
+      g.fillStyle=i%3===0?'#b78a67':'#78533f';
+      g.beginPath();g.arc(x,y-12+lift,3.5,0,Math.PI*2);g.fill();
+      if(i===1||i===8){
+        g.strokeStyle='#d8c8b2';g.lineWidth=1.5;
+        g.beginPath();g.moveTo(x+8,y-15+lift*2);g.lineTo(x+8,y-36+lift*2);g.stroke();
+        g.fillStyle='#b33137';g.fillRect(x+9,y-36+lift*2,11,6);
+      }
+    }
+    g.restore();
+  }
+  // No artificial ground ellipses: approved arena already supplies floor detail.
   const order = P1.y<=P2.y ? [P1,P2] : [P2,P1];
   for(const f of order) drawFighter(g,f);
   Projectiles.draw(g,Game.frame);
@@ -2006,8 +2770,9 @@ function stepLocal(){
   if(Game.paused) return;
   const t0=performance.now();
   const a = localMask();
-  const b = Game.cpu ? cpuMask(P2,P1) : LiveInput[1];
+  const b = pcTrainingMode ? 0 : (Game.cpu ? cpuMask(P2,P1) : LiveInput[1]);
   simulate(a,b);
+  if(pcTrainingMode && Game.phase==='fight'){P1.hp=100;P2.hp=100;Game.timer=99;Game.timerSub=0;}
   DEBUG.stepMs = performance.now()-t0;
 }
 
@@ -2074,20 +2839,30 @@ function frame(now){
 /* ============================== BOOT =============================== */
 const tBox=document.getElementById('tBox'), tPad=document.getElementById('tPad'),
       tCpu=document.getElementById('tCpu'), tMute=document.getElementById('tMute'),
-      tDiag=document.getElementById('tDiag'), tNet=document.getElementById('tNet');
+      tDiag=document.getElementById('tDiag'), tNet=document.getElementById('tNet'),
+      tTraining=document.getElementById('tTraining');
+let pcTrainingMode=false;
 function syncToggles(){
   tBox.classList.toggle('on',DEBUG.boxes);
   tDiag.classList.toggle('on',DEBUG.diag);
   diagEl.classList.toggle('on',DEBUG.diag);
   tPad.classList.toggle('on',touchRoot.classList.contains('on'));
   tCpu.classList.toggle('on',Game.cpu);
+  tTraining.classList.toggle('on',pcTrainingMode);
   tMute.classList.toggle('on',!Audio5.muted);
   tNet.classList.toggle('on',Net.active);
 }
 tBox.onclick=()=>{DEBUG.boxes=!DEBUG.boxes;syncToggles();};
 tDiag.onclick=()=>{DEBUG.diag=!DEBUG.diag;syncToggles();};
 tPad.onclick=()=>{touchRoot.classList.toggle('on');cachePadRects();syncToggles();};
-tCpu.onclick=()=>{Game.cpu=!Game.cpu;syncToggles();UI.sync();};
+tCpu.onclick=()=>{if(pcTrainingMode)pcTrainingMode=false;Game.cpu=!Game.cpu;syncToggles();UI.sync();};
+tTraining.onclick=()=>{
+  if(Net.active){UI.show('TRAINING UNAVAILABLE','DISCONNECT ONLINE MATCH FIRST',1800);return;}
+  pcTrainingMode=!pcTrainingMode;
+  if(pcTrainingMode){Game.cpu=false;P1.hp=100;P2.hp=100;Game.timer=99;Game.timerSub=0;}
+  syncToggles();UI.sync();
+  UI.show(pcTrainingMode?'TRAINING MODE':'NORMAL MODE',pcTrainingMode?'STATIONARY OPPONENT · NO TIME LIMIT':'PRACTICE DISABLED',1400);
+};
 tMute.onclick=()=>{Audio5.muted=!Audio5.muted;syncToggles();};
 tNet.onclick=()=>{ document.getElementById('netui').style.display='flex'; };
 document.getElementById('nClose').onclick=()=>{ document.getElementById('netui').style.display='none'; };
@@ -2100,20 +2875,240 @@ document.getElementById('nCopy').onclick=()=>{
   try{ document.execCommand('copy'); document.getElementById('netstat').textContent='copied'; }catch(e){}
 };
 
+/* Presidential Finishers v0.1: strictly cosmetic post-match interaction.
+   No HP, state, random seed, simulation or network packets are changed. */
+const PC_FINISH={
+  p1:[{name:"YOU'RE FIRED!",emoji:'🔥',hint:'Executive order · MAGA hat victory pose'},
+      {name:'AMERICAN EAGLE',emoji:'🦅',hint:'Dollar-bill eagle carries the opponent away'},
+      {name:'MIC DROP',emoji:'🎤',hint:'Microphone cable grapple and uppercut'}],
+  p2:[{name:'SUPREME INSPECTION',emoji:'🔭',hint:'Binoculars surprise'},
+      {name:'THE GRAND PARADE',emoji:'🥁',hint:'Confetti parade'},
+      {name:'ROCKET-POWERED CONFETTI',emoji:'🎉',hint:'Hidden cartoon spectacle'}]
+};
+// The active engine currently supports Trump vs Kim. Other presidents' finisher
+// catalogs live in design/finisher-catalog.json until fighter selection is wired.
+
+let pcFinishSequence=[],pcFinisherShown=false,pcFinisherTimer=null,pcFinishInputTimer=null,pcFinishCountdown=null;
+const pcFinishUI=document.getElementById('finisherUI');
+function pcFinisherOpen(){
+  if(Game.phase!=='matchEnd'||Net.active||Game.winner==='draw')return;
+  pcFinishSequence=[];clearTimeout(pcFinishInputTimer);pcFinisherShown=true;
+  UI.hide(); // The match-end overlay must not cover the finisher controls.
+  const fighter=Game.winner==='p1'?'TRUMP':'KIM';
+  const hint=document.getElementById('finisherHint');
+  let seconds=7;
+  const renderHint=()=>{hint.textContent=fighter+' WINS · FINISH WINDOW '+seconds+'s · ↑ / ← or tap a finisher';};
+  renderHint();clearInterval(pcFinishCountdown);
+  pcFinishCountdown=setInterval(()=>{
+    if(!pcFinisherShown){clearInterval(pcFinishCountdown);return;}
+    seconds--;renderHint();
+    if(seconds<=0){pcFinisherClose();UI.show('VICTORY','FINISH WINDOW EXPIRED · ENTER TO REMATCH');}
+  },1000);
+  pcFinishUI.classList.add('show');
+}
+function pcFinisherClose(){clearInterval(pcFinishCountdown);clearTimeout(pcFinishInputTimer);pcFinishUI.classList.remove('show');pcFinisherShown=false;pcFinishSequence=[];}
+function pcFinisherPlay(index){
+  if(!pcFinisherShown||Game.phase!=='matchEnd'||Net.active)return;
+  const moves=PC_FINISH[Game.winner];if(!moves)return;
+  const move=moves[index];if(!move)return;
+  pcFinisherClose();
+  UI.hide();
+  Audio5.play('execute',0.85); Audio5.play('boom',0.7); Audio5.play('crowdRoar',0.2); Audio5.announce('executiveExecution','annFinish');
+  const fx=document.getElementById('finisherFX');
+  document.getElementById('fxEmoji').textContent=move.emoji;
+  document.getElementById('fxWords').textContent=move.name;
+  fx.classList.remove('show');void fx.offsetWidth;fx.classList.add('show');
+  clearTimeout(pcFinisherTimer);
+  pcFinisherTimer=setTimeout(()=>{fx.classList.remove('show');UI.show('PRESIDENTIAL FINISH!',move.hint+' · TAP OR ENTER FOR REMATCH');},2600);
+}
+function pcFinisherDirection(direction){
+  if(!pcFinisherShown)return false;
+  clearTimeout(pcFinishInputTimer);
+  pcFinishSequence.push(direction);pcFinishSequence=pcFinishSequence.slice(-6);
+  const seq=pcFinishSequence.join(',');
+  const secret='up,up,down,down,left,right';
+  if(seq===secret){pcFinisherPlay(2);return true;}
+  if(secret.startsWith(seq)){
+    // Allow 1.2 seconds between inputs; do not fire ↑ immediately because
+    // the hidden sequence begins with ↑↑.
+    pcFinishInputTimer=setTimeout(()=>{
+      if(pcFinisherShown&&pcFinishSequence.join(',')==='up')pcFinisherPlay(0);
+      else pcFinishSequence=[];
+    },1200);
+    return true;
+  }
+  if(seq==='left'){pcFinisherPlay(1);return true;}
+  pcFinishSequence=[];
+  return true;
+}
+document.getElementById('finishOne').onclick=()=>pcFinisherPlay(0);
+document.getElementById('finishTwo').onclick=()=>pcFinisherPlay(1);
+document.getElementById('finishSkip').onclick=()=>{pcFinisherClose();UI.hide();startMatch();};
+window.addEventListener('keydown',e=>{
+  if(!pcFinisherShown||e.repeat)return;
+  const dirs={ArrowUp:'up',ArrowDown:'down',ArrowLeft:'left',ArrowRight:'right',KeyI:'up',KeyK:'down',KeyJ:'left',KeyL:'right'};
+  if(dirs[e.code]){e.preventDefault();pcFinisherDirection(dirs[e.code]);}
+});
 function rematchIfDone(){
-  if(Game.phase==='matchEnd'){ UI.hide(); startMatch(); return true; }
+  if(pcFinisherShown)return false;
+  if(Game.phase==='matchEnd'){ pcFinisherClose();UI.hide();startMatch(); return true; }
   return false;
 }
 window.addEventListener('keydown',e=>{ if(e.code==='Enter') rematchIfDone(); });
 cv.addEventListener('pointerdown',()=>{Audio5.resume();rematchIfDone();});
 
+// Character selection: preview only for now; combat roster stays fixed to preserve deterministic netplay.
+// Locked legends are inspectable design previews, not selectable combat fighters.
+const PC_LEGENDS = [{"id":"selassie","name":"HAILE SELASSIE","country":"ETHIOPIA","voicePreview":true},{"id":"lincoln","name":"ABRAHAM LINCOLN","country":"USA","style":"Reach / grapples","unlocked":false,"unlock":"Legends challenge (planned)","specials":[{"name":"Top Hat Toss","input":"Back, Back, Forward + Punch"},{"name":"Gettysburg Spin","input":"Down, Back + Kick"}],"finishers":["Four Score Fury","Emancipation Slam"],"counterplay":"Tall reach; punishable recovery","prototypeStatus":"design only; not playable"},{"id":"napoleon","name":"NAPOLEON BONAPARTE","country":"FRANCE","style":"Mobile / tactical","unlocked":false,"unlock":"Legends challenge (planned)","specials":[{"name":"Musket Volley","input":"Back, Back, Forward + Punch"},{"name":"Cavalry Spin","input":"Down, Back + Kick"}],"finishers":["Waterloo Stampede","Imperial Sword Salute"],"counterplay":"Short musket range; long cavalry startup","prototypeStatus":"design only; not playable"},{"id":"castro","name":"FIDEL CASTRO","country":"CUBA","style":"Feints / defense","unlocked":false,"unlock":"Legends challenge (planned)","specials":[{"name":"Cigar Smoke Screen","input":"Back, Back, Forward + Punch"},{"name":"Revolutionary Sweep","input":"Down, Back + Kick"}],"finishers":["The Endless Speech","Havana Shuffle"],"counterplay":"Smoke is brief; sweep punishable on block","prototypeStatus":"design only; not playable"},{"id":"elizabeth","name":"QUEEN ELIZABETH II","country":"UK","style":"Counters / zoning","unlocked":false,"unlock":"Legends challenge (planned)","specials":[{"name":"Royal Hat Toss","input":"Back, Back, Forward + Punch"},{"name":"Tea-Time Spin","input":"Down, Back + Kick"}],"finishers":["Royal Corgi Parade","The Crown Jewels"],"counterplay":"Hat return delay; tea spin unsafe if missed","prototypeStatus":"design only; not playable"},{"id":"caesar","name":"JULIUS CAESAR","country":"ANCIENT ROME","style":"Technical / stance","unlocked":false,"unlock":"Secret historical gauntlet","specials":[{"name":"Laurel Crown Toss","input":"Back, Back, Forward + Punch"},{"name":"Legionary Shield Spin","input":"Down, Back + Kick"}],"finishers":["Veni Vidi Vici","Et Tu? Counter"],"counterplay":"Strict inputs; shield recovery","prototypeStatus":"design only; not playable"},{"id":"saddam","name":"SADDAM HUSSEIN","country":"IRAQ","style":"Decoys / midrange","unlocked":false,"unlock":"Legends challenge (planned)","specials":[{"name":"Parade Decoy","input":"Back, Back, Forward + Punch"},{"name":"Commanding Sweep","input":"Down, Back + Kick"}],"finishers":["Statue Topple","Parade Misfire"],"counterplay":"Decoy does no damage; punishable commands","prototypeStatus":"design only; not playable"},{"id":"bush","name":"GEORGE W. BUSH","country":"USA","style":"High defense / evasive","unlocked":false,"unlock":"Legends challenge (planned)","specials":[{"name":"Shoe Shuffle Counter","input":"Back, Back, Forward + Punch"},{"name":"Ranch-House Spin","input":"Down, Back + Kick"}],"finishers":["Mission Accomplished","Double Duck Finale"],"counterplay":"Counter loses to grabs and low attacks","prototypeStatus":"design only; not playable"},{"id":"obama","name":"BARACK OBAMA","country":"USA","style":"Footwork / precision","unlocked":false,"unlock":"Legends challenge (planned)","specials":[{"name":"Presidential Strut","input":"Back, Back, Forward + Punch"},{"name":"Smooth Operator Spin","input":"Down, Back + Kick"}],"finishers":["Yes We Can Combo","Sunglasses Shuffle"],"counterplay":"Low damage per hit; vulnerable during feints","prototypeStatus":"design only; not playable"},{"id":"biden","name":"JOE BIDEN","country":"USA","style":"Counter / patience","unlocked":false,"unlock":"Legends challenge (planned)","specials":[{"name":"Power Nap Counter","input":"Back, Back, Forward + Punch"},{"name":"Aviator Spin","input":"Down, Back + Kick"}],"finishers":["Sleeping Giant","Ice Cream Victory Lap"],"counterplay":"Nap loses to low attacks and throws","prototypeStatus":"design only; not playable"},{"id":"clinton","name":"BILL CLINTON","country":"USA","style":"Trickster / rhythm","unlocked":false,"unlock":"Legends challenge (planned)","specials":[{"name":"Saxophone Soundwave","input":"Back, Back, Forward + Punch"},{"name":"Scandal Shuffle","input":"Down, Back + Kick"}],"finishers":["Sax Attack Encore","Presidential Jam Session"],"counterplay":"Soundwave startup; weak close defense","prototypeStatus":"design only; not playable"}];
+let legendVoicePreview;
+async function addLegendVoicePreview(preview,f){
+  const response=await fetch('audio/voice-packs/manifest.json',{cache:'no-cache'});
+  if(!response.ok) throw new Error('Voice manifest unavailable');
+  const manifest=await response.json();
+  if(document.getElementById('rosterStatus')?.textContent!==f.name+' · LEGEND PREVIEW' ||
+     preview.querySelector('audio')) return;
+  const label=document.createElement('label');
+  label.textContent='Voice clip ';
+  const select=document.createElement('select');
+  const clips=(manifest[f.id]||[]).filter(path=>/\.(wav|mp3)$/i.test(path));
+  if(!clips.length) throw new Error('No recorded clips for '+f.id);
+  for(const path of clips){
+    const number=path.split('/').pop().replace(/\.(wav|mp3)$/i,'');
+    select.add(new Option(f.id==='selassie' && clips.length===1?'Full voice reel':'Clip '+number,encodeURI(path)));
+  }
+  const audio=document.createElement('audio');
+  audio.controls=true;
+  audio.preload='none';
+  audio.style.cssText='display:block;width:100%;margin-top:6px';
+  audio.setAttribute('aria-label',f.name+' voice preview');
+  audio.src=select.value;
+  select.onchange=()=>{audio.src=select.value;};
+  label.append(select);
+  preview.append(label,audio);
+  legendVoicePreview=audio;
+}
+for(const card of document.querySelectorAll('.legend-card')){
+  card.addEventListener('click',()=>{
+    const f=PC_LEGENDS.find(item=>item.id===card.dataset.legend);
+    if(!f)return;
+    const preview=document.getElementById('legendPreview');
+    legendVoicePreview?.pause();
+    legendVoicePreview=null;
+    preview.replaceChildren();
+    const add=(tag,text)=>{const e=document.createElement(tag);e.textContent=text;preview.appendChild(e);};
+    add('strong',f.name+' · '+f.country+' · LOCKED / PREVIEW ONLY');
+    if(f.style){
+      add('div','STYLE: '+f.style);
+      f.specials.forEach(m=>add('div','SPECIAL: '+m.name+' — '+m.input+' (planned command)'));
+      f.finishers.forEach((m,i)=>add('div','FINISHER '+(i+1)+': '+m+' (planned)'));
+      add('div','BALANCE / COUNTERPLAY: '+f.counterplay);
+      add('div','UNLOCK: '+f.unlock+' · Not yet playable; no unlock progress is tracked.');
+    }
+    const homeStage=PC_STAGES.find(stage=>stage.id===f.id);
+    if(homeStage){
+      const stagePreview=document.createElement('img');
+      stagePreview.src=homeStage.src;
+      stagePreview.alt=f.name+' home arena concept';
+      stagePreview.style.cssText='display:block;width:100%;max-height:160px;object-fit:cover;margin-top:8px;border-radius:8px';
+      preview.appendChild(stagePreview);
+      add('div','HOME ARENA: '+homeStage.name+' · stage art preview; fighter not yet playable');
+    }
+    preview.style.display='block';
+    document.getElementById('rosterStatus').textContent=f.name+' · LEGEND PREVIEW';
+    if(f.voicePreview || f.id==='bush' || f.id==='obama') addLegendVoicePreview(preview,f).catch(()=>{
+      if(document.getElementById('rosterStatus')?.textContent===f.name+' · LEGEND PREVIEW')
+        add('div','Voice preview unavailable. Reopen the fighter preview to try again.');
+    });
+  });
+}
+const pcStageLabel=document.createElement('div');
+pcStageLabel.id='pcStageLabel';
+pcStageLabel.style.cssText='position:fixed;bottom:7px;left:12px;z-index:4;color:#f5d58c;background:#080a16bb;padding:3px 8px;border-radius:4px;font:12px sans-serif;pointer-events:none';
+pcStageLabel.textContent='ARENA: Trump — Presidential Arena · G to change';
+document.body.appendChild(pcStageLabel);
+const pcPreviewImg=document.getElementById('fighterPreviewImg');
+const pcOpponentImg=document.getElementById('opponentPreviewImg');
+const pcOpponentLabel=document.getElementById('opponentPreviewLabel');
+const pcPreviewLabel=document.getElementById('fighterPreviewLabel');
+// Trump faces right and Kim faces left in the source poses.
+function pcOrientVersusPreview(){
+  const facing = pcPreviewName === 'kim' ? -1 : 1;
+  pcPreviewImg.style.setProperty('--pc-preview-facing', facing);
+  // Opponent artwork faces the opposite direction from the selected fighter.
+  pcOpponentImg.style.setProperty('--pc-preview-facing', -facing);
+}
+
+let pcPreviewName='trump';
+pcOrientVersusPreview();
+let pcPreviewTick=0;
+// Actual existing character pose frames, not merely a static image bob.
+const pcPreviewTimer=setInterval(()=>{
+  if(!document.getElementById('fighterPreview')){clearInterval(pcPreviewTimer);return;}
+  const phase=(pcPreviewTick++%12);
+  const pose=(phase===3||phase===9)?'walk':'idle';
+  const next='art/sprites/'+pcPreviewName+'-'+pose+'.png';
+  if(!pcPreviewImg.src.endsWith(next))pcPreviewImg.src=next;
+  const other=pcPreviewName==='trump'?'kim':'trump';
+  const otherPose=(phase===5||phase===11)?'walk':'idle';
+  const otherSrc='art/sprites/'+other+'-'+otherPose+'.png';
+  if(!pcOpponentImg.src.endsWith(otherSrc))pcOpponentImg.src=otherSrc;
+},155);
+const pcShowFighterPreview=(name)=>{
+  pcPreviewName=name;
+  pcOrientVersusPreview();
+  const opponent = name === 'kim' ? 'trump' : 'kim';
+  pcPreviewImg.src='art/sprites/'+name+'-idle.png';
+  pcOpponentImg.src='art/sprites/'+opponent+'-idle.png';
+  pcPreviewTick=0;
+  pcPreviewImg.alt=(name==='kim'?'Kim Jong Un':'Donald Trump')+' animated fighting stance preview';
+  pcOpponentImg.alt=(opponent==='kim'?'Kim Jong Un':'Donald Trump')+' animated fighting stance preview';
+  pcPreviewLabel.textContent=name==='kim'?'KIM JONG UN · NORTH KOREA':'DONALD TRUMP · USA';
+  pcOpponentLabel.textContent=name==='kim'?'DONALD TRUMP · USA':'KIM JONG UN · NORTH KOREA';
+};
+for(const card of document.querySelectorAll('.roster-card.active')){
+  card.addEventListener('mouseenter',()=>pcShowFighterPreview(card.dataset.character));
+  card.addEventListener('focus',()=>pcShowFighterPreview(card.dataset.character));
+}
+for(const card of document.querySelectorAll('.roster-card.active')){
+  card.addEventListener('click',()=>{
+    document.querySelectorAll('.roster-card.active').forEach(c=>{c.classList.remove('selected');c.setAttribute('aria-pressed','false');});
+    card.classList.add('selected');card.setAttribute('aria-pressed','true');
+    document.getElementById('rosterStatus').textContent=card.dataset.character==='trump'?'DONALD TRUMP SELECTED · VS KIM JONG UN':'KIM JONG UN SELECTED · VS DONALD TRUMP (PREVIEW)';
+    pcShowFighterPreview(card.dataset.character);
+    document.getElementById('start').click();
+  });
+}
+const fairnessPanel=document.getElementById('fairnessPanel');
+const fairnessOpen=document.getElementById('fairnessOpen');
+const fairnessClose=()=>{fairnessPanel.classList.remove('open');fairnessPanel.setAttribute('aria-hidden','true');fairnessOpen.focus();};
+fairnessOpen.addEventListener('click',()=>{fairnessPanel.classList.add('open');fairnessPanel.setAttribute('aria-hidden','false');document.getElementById('fairnessClose').focus();});
+document.getElementById('fairnessClose').addEventListener('click',fairnessClose);
+document.getElementById('fairnessCloseBottom').addEventListener('click',fairnessClose);
+window.addEventListener('keydown',e=>{if(e.key==='Escape'&&fairnessPanel.classList.contains('open'))fairnessClose();});
+// Menu music begins after the first user gesture, as required by browsers.
+const PC_MENU_MUSIC=new Audio('audio/main-menu-theme.mp3');
+PC_MENU_MUSIC.loop=true;PC_MENU_MUSIC.volume=0.65;PC_MENU_MUSIC.preload='auto';
+const pcMusicButton=document.getElementById('menuMusicToggle');
+const pcStartMenuMusic=()=>{
+  if(!document.getElementById('boot'))return;
+  PC_MENU_MUSIC.play().then(()=>{pcMusicButton.textContent='♫ PAUSE MENU MUSIC';pcMusicButton.setAttribute('aria-pressed','true');})
+    .catch(()=>{pcMusicButton.textContent='♫ TAP TO PLAY MUSIC';});
+};
+pcMusicButton.addEventListener('click',()=>{
+  if(PC_MENU_MUSIC.paused)pcStartMenuMusic();
+  else {PC_MENU_MUSIC.pause();pcMusicButton.textContent='♫ PLAY MENU MUSIC';pcMusicButton.setAttribute('aria-pressed','false');}
+});
+document.getElementById('boot').addEventListener('pointerdown',e=>{if(e.target.id!=='start'&&e.target.id!=='menuMusicToggle')pcStartMenuMusic();},{once:true});
+document.getElementById('boot').addEventListener('keydown',e=>{if(e.target.id!=='start'&&e.target.id!=='menuMusicToggle')pcStartMenuMusic();},{once:true});
 document.getElementById('start').addEventListener('click',()=>{
   Audio5.init(); Audio5.resume();
+  legendVoicePreview?.pause();
+  PC_MENU_MUSIC.pause();PC_MENU_MUSIC.currentTime=0;
   document.getElementById('boot').remove();
   if('ontouchstart' in window) touchRoot.classList.add('on');
   cachePadRects();
   syncToggles();
-  startMatch();
+  startMatch(true);
 });
 
 /* ================= PHASE 11.2 — PRELOADER BOOT SEQUENCE =================

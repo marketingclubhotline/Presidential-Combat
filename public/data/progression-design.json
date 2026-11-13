@@ -1,0 +1,8 @@
+{
+  "status": "design-only-not-connected-to-accounts-or-payments",
+  "currency": {"name": "Presidential Points", "earnedBy": ["completed matches", "wins", "training challenges", "daily missions"], "premiumPurchase": "planned; no payment implementation"},
+  "spending": {"characterUnlocks": true, "costumes": true, "superMoveUnlocks": "planned after move balance review", "statUpgrades": "arcade-and-casual-only-planned"},
+  "costumeExamples": {"trump": ["classic navy suit", "military-inspired costume", "ceremonial suit"]},
+  "competitivePolicy": {"ranked": "normalized combat stats; cosmetic unlocks allowed", "arcade": "earned upgrades planned", "casual": "optional upgraded fighter matches planned"},
+  "implementationNote": "No accounts, balances, purchases, unlock transactions, or saved progression are implemented by this file."
+}

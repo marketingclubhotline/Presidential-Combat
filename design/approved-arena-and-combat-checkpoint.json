@@ -1,0 +1,53 @@
+{
+  "version": 2,
+  "status": "approved visual references; image transfer and engine wiring pending",
+  "arenas": [
+    {
+      "id": "moscow-square",
+      "fighter": "putin",
+      "title": "Putin's Arena — Red Square",
+      "visual": "approved Moscow neon arcade image, tanks, flags, bear billboard, fireworks",
+      "music": "Russian.mp3",
+      "musicStatus": "received in chat; not installed"
+    },
+    {
+      "id": "asmara-showdown",
+      "fighter": "isaias-afwerki",
+      "title": "Eritrea Arena — Asmara Showdown",
+      "visual": "final selected version: bareheaded soldiers with Eritrean patches, distinct spectators, women in varied embroidered zurias, camel, Fiat Tagliero, Red Sea, flags",
+      "music": "Eritrean video game.mp3",
+      "musicStatus": "received in chat; not installed"
+    },
+    {
+      "id": "chicago-obama",
+      "fighter": "barack-obama",
+      "title": "Obama's Chicago Arena",
+      "visual": "approved revised Chicago skyline, L train, Bean, diverse crowd, Yes We Can signs",
+      "music": "Obama Theme 1.mp3",
+      "musicStatus": "received in chat; not installed"
+    },
+    {
+      "id": "white-house-trump",
+      "fighter": "donald-trump",
+      "title": "Trump's White House Showdown",
+      "visual": "approved White House, limousine, fireworks, MAGA hats and Make America Great Again signs",
+      "music": "Trump Scene background instrumental.mp3",
+      "musicStatus": "received in chat; not installed"
+    }
+  ],
+  "mechanics": {
+    "retain": "current basic punch, kick, block, specials, hitstun, scaling and existing finisher inputs",
+    "superCombo": {
+      "targetHits": 10,
+      "unlock": "future progression unlock, no paid advantage in ranked multiplayer",
+      "balance": "meter cost, punishable startup, damage scaling, combo escape/counterplay",
+      "status": "design; not yet executable"
+    },
+    "finishers": {
+      "name": "Presidential Finish",
+      "type": "non-graphic satirical post-match cinematic",
+      "status": "existing Trump/Kim cosmetic finisher works; four fighter-specific cinematics pending"
+    }
+  },
+  "notes": "Do not overwrite existing engine or claim assets installed before actual transfer."
+}

@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "scope": "local two-player prototype; retain existing input mappings and balanced baseline attacks",
+  "arenas": [
+    {"id":"massawa-red-sea","fighter":"isaias-afwerki","sign":"MASSAWA","setting":"Red Sea waterfront, boats, palms, Eritrean flags and cheering cartoon uniformed spectators","ambient":"gentle surf and distant crowd","humor":"occasional background camel cameo","special":"Red Sea Wave"},
+    {"id":"chicago-night","fighter":"barack-obama","sign":"CHICAGO","setting":"night skyline, streetlights and cheering crowd","ambient":"city crowd","humor":"spectators do a synchronized victory dance","special":"Swagger Counter"},
+    {"id":"dc-showdown","fighter":"donald-trump","sign":"WASHINGTON D.C.","setting":"stylized White House lawn and crowds","ambient":"crowd chant","humor":"a wind gust rearranges a cartoon hair silhouette","special":"Executive Airstrike"},
+    {"id":"moscow-square","fighter":"vladimir-putin","sign":"MOSCOW","setting":"stylized Red Square and winter flags","ambient":"winter wind and crowd","humor":"a cartoon bear applauds from the stands","special":"Red Button"}
+  ],
+  "audioPolicy": "Voice clips require review for timing and rights; no unverified voice line is assigned to a move.",
+  "implementation": "Concept data only until wired into renderer and gameplay; preserve original upstream and AI Ring Assistant."
+}

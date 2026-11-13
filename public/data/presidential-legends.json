@@ -1,0 +1,274 @@
+{
+  "version": 1,
+  "fairness": "All moves are design concepts; no damage, frame data or unlock conditions finalized. Higher damage requires increased risk, resource cost or counterplay.",
+  "fighters": [
+    {
+      "id": "lincoln",
+      "name": "ABRAHAM LINCOLN",
+      "country": "USA",
+      "style": "Reach / grapples",
+      "unlocked": false,
+      "unlock": "Legends challenge (planned)",
+      "specials": [
+        {
+          "name": "Top Hat Toss",
+          "input": "Back, Back, Forward + Punch"
+        },
+        {
+          "name": "Gettysburg Spin",
+          "input": "Down, Back + Kick"
+        }
+      ],
+      "finishers": [
+        "Four Score Fury",
+        "Emancipation Slam"
+      ],
+      "counterplay": "Tall reach; punishable recovery",
+      "prototypeStatus": "design only; not playable"
+    },
+    {
+      "id": "napoleon",
+      "name": "NAPOLEON BONAPARTE",
+      "country": "FRANCE",
+      "style": "Mobile / tactical",
+      "unlocked": false,
+      "unlock": "Legends challenge (planned)",
+      "specials": [
+        {
+          "name": "Musket Volley",
+          "input": "Back, Back, Forward + Punch"
+        },
+        {
+          "name": "Cavalry Spin",
+          "input": "Down, Back + Kick"
+        }
+      ],
+      "finishers": [
+        "Waterloo Stampede",
+        "Imperial Sword Salute"
+      ],
+      "counterplay": "Short musket range; long cavalry startup",
+      "prototypeStatus": "design only; not playable"
+    },
+    {
+      "id": "castro",
+      "name": "FIDEL CASTRO",
+      "country": "CUBA",
+      "style": "Feints / defense",
+      "unlocked": false,
+      "unlock": "Legends challenge (planned)",
+      "specials": [
+        {
+          "name": "Cigar Smoke Screen",
+          "input": "Back, Back, Forward + Punch"
+        },
+        {
+          "name": "Revolutionary Sweep",
+          "input": "Down, Back + Kick"
+        }
+      ],
+      "finishers": [
+        "The Endless Speech",
+        "Havana Shuffle"
+      ],
+      "counterplay": "Smoke is brief; sweep punishable on block",
+      "prototypeStatus": "design only; not playable"
+    },
+    {
+      "id": "elizabeth",
+      "name": "QUEEN ELIZABETH II",
+      "country": "UK",
+      "style": "Counters / zoning",
+      "unlocked": false,
+      "unlock": "Legends challenge (planned)",
+      "specials": [
+        {
+          "name": "Royal Hat Toss",
+          "input": "Back, Back, Forward + Punch"
+        },
+        {
+          "name": "Tea-Time Spin",
+          "input": "Down, Back + Kick"
+        }
+      ],
+      "finishers": [
+        "Royal Corgi Parade",
+        "The Crown Jewels"
+      ],
+      "counterplay": "Hat return delay; tea spin unsafe if missed",
+      "prototypeStatus": "design only; not playable"
+    },
+    {
+      "id": "caesar",
+      "name": "JULIUS CAESAR",
+      "country": "ANCIENT ROME",
+      "style": "Technical / stance",
+      "unlocked": false,
+      "unlock": "Secret historical gauntlet",
+      "specials": [
+        {
+          "name": "Laurel Crown Toss",
+          "input": "Back, Back, Forward + Punch"
+        },
+        {
+          "name": "Legionary Shield Spin",
+          "input": "Down, Back + Kick"
+        }
+      ],
+      "finishers": [
+        "Veni Vidi Vici",
+        "Et Tu? Counter"
+      ],
+      "counterplay": "Strict inputs; shield recovery",
+      "prototypeStatus": "design only; not playable"
+    },
+    {
+      "id": "saddam",
+      "name": "SADDAM HUSSEIN",
+      "country": "IRAQ",
+      "style": "Decoys / midrange",
+      "unlocked": false,
+      "unlock": "Legends challenge (planned)",
+      "specials": [
+        {
+          "name": "Parade Decoy",
+          "input": "Back, Back, Forward + Punch"
+        },
+        {
+          "name": "Commanding Sweep",
+          "input": "Down, Back + Kick"
+        }
+      ],
+      "finishers": [
+        "Statue Topple",
+        "Parade Misfire"
+      ],
+      "counterplay": "Decoy does no damage; punishable commands",
+      "prototypeStatus": "design only; not playable"
+    },
+    {
+      "id": "bush",
+      "name": "GEORGE W. BUSH",
+      "country": "USA",
+      "style": "High defense / evasive",
+      "unlocked": false,
+      "unlock": "Legends challenge (planned)",
+      "specials": [
+        {
+          "name": "Shoe Shuffle Counter",
+          "input": "Back, Back, Forward + Punch"
+        },
+        {
+          "name": "Ranch-House Spin",
+          "input": "Down, Back + Kick"
+        }
+      ],
+      "finishers": [
+        "Mission Accomplished",
+        "Double Duck Finale"
+      ],
+      "counterplay": "Counter loses to grabs and low attacks",
+      "prototypeStatus": "design only; not playable",
+      "visualIdentity": {
+        "idle": "Subtle asymmetrical crooked grin, raised eyebrow, relaxed shoulders",
+        "dodge": "Quick sideways lean followed by camera-facing smirk",
+        "counter": "Smirk transitions to surprised snap counterpunch",
+        "win": "Straightens jacket, winks and gives a crooked grin"
+      },
+      "additionalMoveConcepts": [
+        {
+          "name": "The Bush Smirk",
+          "type": "taunt/counter stance",
+          "counterplay": "Vulnerable to grabs and delayed attacks"
+        },
+        {
+          "name": "The Shoe Matrix",
+          "type": "evasion",
+          "counterplay": "Low attacks and delayed timing beat the dodge"
+        },
+        {
+          "name": "Fool Me Twice",
+          "type": "counter combo",
+          "counterplay": "Punishable when baited"
+        },
+        {
+          "name": "Texas Two-Step",
+          "type": "low spinning sweep",
+          "counterplay": "Block low, punish on miss"
+        }
+      ]
+    },
+    {
+      "id": "obama",
+      "name": "BARACK OBAMA",
+      "country": "USA",
+      "style": "Footwork / precision",
+      "unlocked": false,
+      "unlock": "Legends challenge (planned)",
+      "specials": [
+        {
+          "name": "Presidential Strut",
+          "input": "Back, Back, Forward + Punch"
+        },
+        {
+          "name": "Smooth Operator Spin",
+          "input": "Down, Back + Kick"
+        }
+      ],
+      "finishers": [
+        "Yes We Can Combo",
+        "Sunglasses Shuffle"
+      ],
+      "counterplay": "Low damage per hit; vulnerable during feints",
+      "prototypeStatus": "design only; not playable"
+    },
+    {
+      "id": "biden",
+      "name": "JOE BIDEN",
+      "country": "USA",
+      "style": "Counter / patience",
+      "unlocked": false,
+      "unlock": "Legends challenge (planned)",
+      "specials": [
+        {
+          "name": "Power Nap Counter",
+          "input": "Back, Back, Forward + Punch"
+        },
+        {
+          "name": "Aviator Spin",
+          "input": "Down, Back + Kick"
+        }
+      ],
+      "finishers": [
+        "Sleeping Giant",
+        "Ice Cream Victory Lap"
+      ],
+      "counterplay": "Nap loses to low attacks and throws",
+      "prototypeStatus": "design only; not playable"
+    },
+    {
+      "id": "clinton",
+      "name": "BILL CLINTON",
+      "country": "USA",
+      "style": "Trickster / rhythm",
+      "unlocked": false,
+      "unlock": "Legends challenge (planned)",
+      "specials": [
+        {
+          "name": "Saxophone Soundwave",
+          "input": "Back, Back, Forward + Punch"
+        },
+        {
+          "name": "Scandal Shuffle",
+          "input": "Down, Back + Kick"
+        }
+      ],
+      "finishers": [
+        "Sax Attack Encore",
+        "Presidential Jam Session"
+      ],
+      "counterplay": "Soundwave startup; weak close defense",
+      "prototypeStatus": "design only; not playable"
+    }
+  ]
+}

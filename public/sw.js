@@ -9,7 +9,7 @@
  *     being pinned forever by an immutable cache.
  *   - never cache /ws or /health — signaling must always hit the network.
  */
-const VERSION = 'neon-fist-v1.0.0';
+const VERSION = 'presidential-combat-audio-v6';
 const SHELL = `${VERSION}-shell`;
 const DATA = `${VERSION}-data`;
 
@@ -62,6 +62,12 @@ self.addEventListener('fetch', (e) => {
         })
         .catch(() => caches.match(e.request))
     );
+    return;
+  }
+
+  // HTML must be network-first so local playtests show the latest changes.
+  if (url.pathname === '/' || url.pathname.endsWith('/index.html')) {
+    e.respondWith(fetch(e.request, {cache:'no-store'}).catch(() => caches.match(e.request)));
     return;
   }
 

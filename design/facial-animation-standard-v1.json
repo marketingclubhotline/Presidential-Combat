@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "standard": "Transparent facial PNG overlays triggered by game state",
+  "states": [
+    "idle",
+    "blink",
+    "attack",
+    "hurt",
+    "block",
+    "super",
+    "victory"
+  ],
+  "assetPattern": "public/art/faces/{character}/{state}.png",
+  "characters": [
+    "trump",
+    "kim",
+    "obama",
+    "putin",
+    "isaias-afwerki"
+  ],
+  "notes": "Only Trump and Kim are currently playable. Overlay frames are not yet authored. Do not use opaque face photos. Facial overlays need matching pose and alignment review. Existing full-body sprite remains fallback. No simulation or netcode changes."
+}

@@ -10,7 +10,10 @@ export async function run(t) {
   // --- the shipped configs must be valid ---
   t.ok(validateFighter(fighter), 'shipped fighter.neon.json validates');
   t.ok(validateRules(rules), 'shipped rules.json validates');
-  t.eq(Object.keys(fighter.moves).length, 7, 'all 7 moves externalized');
+  for (const move of ['punch', 'kick', 'lowKick', 'jumpKick', 'fireball', 'uppercut',
+    'spinKick', 'roundhouse', 'barrelPunch']) {
+    t.ok(fighter.moves[move], `${move} is externalized`);
+  }
   t.eq(fighter.moves.punch.startup, 4, 'punch startup came from JSON, not code');
   t.eq(fighter.moves.kick.damage, 13, 'kick damage came from JSON');
   t.ok(fighter.physics.gravity > 0, 'physics externalized');

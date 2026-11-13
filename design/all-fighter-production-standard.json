@@ -1,0 +1,50 @@
+{
+  "version": 1,
+  "scope": "All future Presidential Combat fighters",
+  "pipeline": [
+    "Character reference and approved arcade portrait",
+    "Full-body PNG poses with transparent alpha, remove white matte and interior gaps",
+    "Per-character seven-state face overlays: idle blink attack hurt block super victory",
+    "Distinct idle stance, punches, kicks, roundhouse, blocks, hit reactions, signature special, finisher",
+    "Action-specific SFX, recorded voices and ducked looping arena music",
+    "Approved country/city arena art, animated crowds, signs, flags, clothing",
+    "Character selection portrait and 5-second VS countdown",
+    "Offline test, visual QA, then deterministic multiplayer regression"
+  ],
+  "balance": {
+    "principle": "No paid competitive advantage",
+    "requirements": [
+      "damage scaling",
+      "startup and recovery",
+      "block/chip tuning",
+      "counterplay",
+      "meter costs",
+      "fair hitboxes"
+    ]
+  },
+  "characterSpecific": {
+    "bush": {
+      "defense": "Shoe Shuffle perfect dodge",
+      "visual": "duck, glance toward camera, smirk",
+      "status": "design only"
+    }
+  },
+  "current": {
+    "playable": "Trump vs Kim only",
+    "implemented": [
+      "facial overlay loader and state selection; no authored expression PNGs yet",
+      "sprite white-matte runtime cleanup",
+      "idle fighter bounce",
+      "block effect",
+      "action audio cue selection",
+      "VS screen master artwork and countdown"
+    ],
+    "pending": [
+      "approved art assets not found on Mac",
+      "voice and music files not verified in project",
+      "all new fighters require sprites and animations",
+      "visual QA on device",
+      "super moves and finishers require further work"
+    ]
+  }
+}

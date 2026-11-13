@@ -1,0 +1,557 @@
+{
+  "status": "imported-unassigned",
+  "note": "Clips imported, but dialogue-to-move mapping awaits listening QA; no assumptions about numbered filenames.",
+  "packs": {
+    "trump": [
+      {
+        "file": "audio/voicepacks/trump/fv_donald-trump_1794527160023_s2r14c-06.wav",
+        "bytes": 259078,
+        "assignedMove": null,
+        "durationSeconds": 1.77,
+        "sampleRate": 48000,
+        "channels": 1
+      },
+      {
+        "file": "audio/voicepacks/trump/fv_donald-trump_1794527160023_s2r14c-08.wav",
+        "bytes": 293046,
+        "assignedMove": null,
+        "durationSeconds": 2.01,
+        "sampleRate": 48000,
+        "channels": 1
+      },
+      {
+        "file": "audio/voicepacks/trump/fv_donald-trump_1794527160023_s2r14c-10.wav",
+        "bytes": 251358,
+        "assignedMove": null,
+        "durationSeconds": 1.72,
+        "sampleRate": 48000,
+        "channels": 1
+      },
+      {
+        "file": "audio/voicepacks/trump/fv_donald-trump_1794527160023_s2r14c-11.wav",
+        "bytes": 336282,
+        "assignedMove": null,
+        "durationSeconds": 2.3,
+        "sampleRate": 48000,
+        "channels": 1
+      },
+      {
+        "file": "audio/voicepacks/trump/fv_donald-trump_1794530329315_h2mo55-04.wav",
+        "bytes": 299222,
+        "assignedMove": null,
+        "durationSeconds": 2.05,
+        "sampleRate": 48000,
+        "channels": 1
+      },
+      {
+        "file": "audio/voicepacks/trump/fv_donald-trump_1794530329315_h2mo55-06.wav",
+        "bytes": 416578,
+        "assignedMove": null,
+        "durationSeconds": 2.86,
+        "sampleRate": 48000,
+        "channels": 1
+      },
+      {
+        "file": "audio/voicepacks/trump/fv_donald-trump_1794530329315_h2mo55-07.wav",
+        "bytes": 287642,
+        "assignedMove": null,
+        "durationSeconds": 1.97,
+        "sampleRate": 48000,
+        "channels": 1
+      },
+      {
+        "file": "audio/voicepacks/trump/fv_donald-trump_1794530329315_h2mo55-08.wav",
+        "bytes": 330106,
+        "assignedMove": null,
+        "durationSeconds": 2.26,
+        "sampleRate": 48000,
+        "channels": 1
+      },
+      {
+        "file": "audio/voicepacks/trump/fv_donald-trump_1794530329315_h2mo55-09.wav",
+        "bytes": 398046,
+        "assignedMove": null,
+        "durationSeconds": 2.73,
+        "sampleRate": 48000,
+        "channels": 1
+      },
+      {
+        "file": "audio/voicepacks/trump/fv_donald-trump_1794530329315_h2mo55.mp3",
+        "bytes": 326400,
+        "assignedMove": null
+      }
+    ],
+    "obama": [
+      {
+        "file": "audio/voicepacks/obama/fv_barack-obama_1794527598311_b3viq5-02.wav",
+        "bytes": 225106,
+        "assignedMove": null,
+        "durationSeconds": 1.54,
+        "sampleRate": 48000,
+        "channels": 1
+      },
+      {
+        "file": "audio/voicepacks/obama/fv_barack-obama_1794527598311_b3viq5-04.wav",
+        "bytes": 323930,
+        "assignedMove": null,
+        "durationSeconds": 2.22,
+        "sampleRate": 48000,
+        "channels": 1
+      },
+      {
+        "file": "audio/voicepacks/obama/fv_barack-obama_1794527598311_b3viq5-06.wav",
+        "bytes": 237458,
+        "assignedMove": null,
+        "durationSeconds": 1.62,
+        "sampleRate": 48000,
+        "channels": 1
+      },
+      {
+        "file": "audio/voicepacks/obama/fv_barack-obama_1794527598311_b3viq5-08.wav",
+        "bytes": 286870,
+        "assignedMove": null,
+        "durationSeconds": 1.96,
+        "sampleRate": 48000,
+        "channels": 1
+      },
+      {
+        "file": "audio/voicepacks/obama/fv_barack-obama_1794527598311_b3viq5-10.wav",
+        "bytes": 206578,
+        "assignedMove": null,
+        "durationSeconds": 1.41,
+        "sampleRate": 48000,
+        "channels": 1
+      },
+      {
+        "file": "audio/voicepacks/obama/fv_barack-obama_1794527598311_b3viq5-12.wav",
+        "bytes": 336282,
+        "assignedMove": null,
+        "durationSeconds": 2.3,
+        "sampleRate": 48000,
+        "channels": 1
+      },
+      {
+        "file": "audio/voicepacks/obama/fv_barack-obama_1794527598311_b3viq5-14.wav",
+        "bytes": 299222,
+        "assignedMove": null,
+        "durationSeconds": 2.05,
+        "sampleRate": 48000,
+        "channels": 1
+      },
+      {
+        "file": "audio/voicepacks/obama/fv_barack-obama_1794527598311_b3viq5-16.wav",
+        "bytes": 237458,
+        "assignedMove": null,
+        "durationSeconds": 1.62,
+        "sampleRate": 48000,
+        "channels": 1
+      }
+    ],
+    "putin": [
+      {
+        "file": "audio/voicepacks/putin/PUTENT RUSSIA-02.wav",
+        "bytes": 347484,
+        "assignedMove": null,
+        "durationSeconds": 2.39,
+        "sampleRate": 48000,
+        "channels": 1
+      },
+      {
+        "file": "audio/voicepacks/putin/PUTENT RUSSIA-04.wav",
+        "bytes": 186896,
+        "assignedMove": null,
+        "durationSeconds": 1.28,
+        "sampleRate": 48000,
+        "channels": 1
+      },
+      {
+        "file": "audio/voicepacks/putin/PUTENT RUSSIA-06.wav",
+        "bytes": 291896,
+        "assignedMove": null,
+        "durationSeconds": 2.01,
+        "sampleRate": 48000,
+        "channels": 1
+      },
+      {
+        "file": "audio/voicepacks/putin/PUTENT RUSSIA-08.wav",
+        "bytes": 248660,
+        "assignedMove": null,
+        "durationSeconds": 1.71,
+        "sampleRate": 48000,
+        "channels": 1
+      },
+      {
+        "file": "audio/voicepacks/putin/PUTENT RUSSIA-10.wav",
+        "bytes": 310428,
+        "assignedMove": null,
+        "durationSeconds": 2.13,
+        "sampleRate": 48000,
+        "channels": 1
+      },
+      {
+        "file": "audio/voicepacks/putin/PUTENT RUSSIA-12.wav",
+        "bytes": 390720,
+        "assignedMove": null,
+        "durationSeconds": 2.69,
+        "sampleRate": 48000,
+        "channels": 1
+      },
+      {
+        "file": "audio/voicepacks/putin/PUTENT RUSSIA-16.wav",
+        "bytes": 396896,
+        "assignedMove": null,
+        "durationSeconds": 2.73,
+        "sampleRate": 48000,
+        "channels": 1
+      },
+      {
+        "file": "audio/voicepacks/putin/PUTENT RUSSIA-18.wav",
+        "bytes": 254840,
+        "assignedMove": null,
+        "durationSeconds": 1.75,
+        "sampleRate": 48000,
+        "channels": 1
+      },
+      {
+        "file": "audio/voicepacks/putin/PUTENT RUSSIA-20.wav",
+        "bytes": 304252,
+        "assignedMove": null,
+        "durationSeconds": 2.09,
+        "sampleRate": 48000,
+        "channels": 1
+      },
+      {
+        "file": "audio/voicepacks/putin/PUTENT RUSSIA-22.wav",
+        "bytes": 384544,
+        "assignedMove": null,
+        "durationSeconds": 2.65,
+        "sampleRate": 48000,
+        "channels": 1
+      },
+      {
+        "file": "audio/voicepacks/putin/PUTENT RUSSIA-26.wav",
+        "bytes": 245572,
+        "assignedMove": null,
+        "durationSeconds": 1.69,
+        "sampleRate": 48000,
+        "channels": 1
+      },
+      {
+        "file": "audio/voicepacks/putin/PUTENT RUSSIA-28.wav",
+        "bytes": 353664,
+        "assignedMove": null,
+        "durationSeconds": 2.43,
+        "sampleRate": 48000,
+        "channels": 1
+      },
+      {
+        "file": "audio/voicepacks/putin/PUTENT RUSSIA-30.wav",
+        "bytes": 251752,
+        "assignedMove": null,
+        "durationSeconds": 1.73,
+        "sampleRate": 48000,
+        "channels": 1
+      },
+      {
+        "file": "audio/voicepacks/putin/PUTENT RUSSIA-32.wav",
+        "bytes": 233220,
+        "assignedMove": null,
+        "durationSeconds": 1.6,
+        "sampleRate": 48000,
+        "channels": 1
+      },
+      {
+        "file": "audio/voicepacks/putin/PUTENT RUSSIA-34.wav",
+        "bytes": 171456,
+        "assignedMove": null,
+        "durationSeconds": 1.17,
+        "sampleRate": 48000,
+        "channels": 1
+      },
+      {
+        "file": "audio/voicepacks/putin/PUTENT RUSSIA-36.wav",
+        "bytes": 427780,
+        "assignedMove": null,
+        "durationSeconds": 2.94,
+        "sampleRate": 48000,
+        "channels": 1
+      },
+      {
+        "file": "audio/voicepacks/putin/PUTENT RUSSIA-38.wav",
+        "bytes": 404620,
+        "assignedMove": null,
+        "durationSeconds": 2.78,
+        "sampleRate": 48000,
+        "channels": 1
+      },
+      {
+        "file": "audio/voicepacks/putin/PUTENT RUSSIA-40.wav",
+        "bytes": 219324,
+        "assignedMove": null,
+        "durationSeconds": 1.5,
+        "sampleRate": 48000,
+        "channels": 1
+      },
+      {
+        "file": "audio/voicepacks/putin/PUTENT RUSSIA-42.wav",
+        "bytes": 656312,
+        "assignedMove": null,
+        "durationSeconds": 4.52,
+        "sampleRate": 48000,
+        "channels": 1
+      },
+      {
+        "file": "audio/voicepacks/putin/PUTENT RUSSIA-44.wav",
+        "bytes": 26308,
+        "assignedMove": null,
+        "durationSeconds": 0.17,
+        "sampleRate": 48000,
+        "channels": 1
+      },
+      {
+        "file": "audio/voicepacks/putin/PUTENT RUSSIA-46.wav",
+        "bytes": 316604,
+        "assignedMove": null,
+        "durationSeconds": 2.18,
+        "sampleRate": 48000,
+        "channels": 1
+      },
+      {
+        "file": "audio/voicepacks/putin/PUTENT RUSSIA-48.wav",
+        "bytes": 773664,
+        "assignedMove": null,
+        "durationSeconds": 5.33,
+        "sampleRate": 48000,
+        "channels": 1
+      },
+      {
+        "file": "audio/voicepacks/putin/PUTENT RUSSIA-50.wav",
+        "bytes": 415428,
+        "assignedMove": null,
+        "durationSeconds": 2.86,
+        "sampleRate": 48000,
+        "channels": 1
+      },
+      {
+        "file": "audio/voicepacks/putin/PUTENT RUSSIA-52.wav",
+        "bytes": 273368,
+        "assignedMove": null,
+        "durationSeconds": 1.88,
+        "sampleRate": 48000,
+        "channels": 1
+      },
+      {
+        "file": "audio/voicepacks/putin/PUTENT RUSSIA-53.wav",
+        "bytes": 705724,
+        "assignedMove": null,
+        "durationSeconds": 4.86,
+        "sampleRate": 48000,
+        "channels": 1
+      }
+    ],
+    "afwerki": [
+      {
+        "file": "audio/voicepacks/afwerki/Audio 1.dup1_14-15.wav",
+        "bytes": 267192,
+        "assignedMove": null,
+        "durationSeconds": 1.83,
+        "sampleRate": 48000,
+        "channels": 1
+      },
+      {
+        "file": "audio/voicepacks/afwerki/Audio 1.dup1_14-17.wav",
+        "bytes": 149836,
+        "assignedMove": null,
+        "durationSeconds": 1.02,
+        "sampleRate": 48000,
+        "channels": 1
+      },
+      {
+        "file": "audio/voicepacks/afwerki/ERI.wav",
+        "bytes": 140572,
+        "assignedMove": null,
+        "durationSeconds": 0.96,
+        "sampleRate": 48000,
+        "channels": 1
+      },
+      {
+        "file": "audio/voicepacks/afwerki/ERI4.wav",
+        "bytes": 162192,
+        "assignedMove": null,
+        "durationSeconds": 1.11,
+        "sampleRate": 48000,
+        "channels": 1
+      },
+      {
+        "file": "audio/voicepacks/afwerki/ERI5.wav",
+        "bytes": 288808,
+        "assignedMove": null,
+        "durationSeconds": 1.98,
+        "sampleRate": 48000,
+        "channels": 1
+      },
+      {
+        "file": "audio/voicepacks/afwerki/ERITREAN -02.wav",
+        "bytes": 180326,
+        "assignedMove": null,
+        "durationSeconds": 1.23,
+        "sampleRate": 48000,
+        "channels": 1
+      },
+      {
+        "file": "audio/voicepacks/afwerki/ERITREAN -04.wav",
+        "bytes": 149442,
+        "assignedMove": null,
+        "durationSeconds": 1.01,
+        "sampleRate": 48000,
+        "channels": 1
+      },
+      {
+        "file": "audio/voicepacks/afwerki/ERITREAN -06.wav",
+        "bytes": 223562,
+        "assignedMove": null,
+        "durationSeconds": 1.53,
+        "sampleRate": 48000,
+        "channels": 1
+      },
+      {
+        "file": "audio/voicepacks/afwerki/ERITREAN -08.wav",
+        "bytes": 286870,
+        "assignedMove": null,
+        "durationSeconds": 1.96,
+        "sampleRate": 48000,
+        "channels": 1
+      },
+      {
+        "file": "audio/voicepacks/afwerki/ERITREAN -10.wav",
+        "bytes": 339370,
+        "assignedMove": null,
+        "durationSeconds": 2.33,
+        "sampleRate": 48000,
+        "channels": 1
+      },
+      {
+        "file": "audio/voicepacks/afwerki/ERITREAN SOUND PRESIDENTAIL.wav",
+        "bytes": 189984,
+        "assignedMove": null,
+        "durationSeconds": 1.3,
+        "sampleRate": 48000,
+        "channels": 1
+      }
+    ],
+    "announcer": [
+      {
+        "file": "audio/voicepacks/announcer/Audio 1.dup1_11-04.wav",
+        "bytes": 378368,
+        "assignedMove": null,
+        "durationSeconds": 2.6,
+        "sampleRate": 48000,
+        "channels": 1
+      },
+      {
+        "file": "audio/voicepacks/announcer/Audio 1.dup1_11-06.wav",
+        "bytes": 291896,
+        "assignedMove": null,
+        "durationSeconds": 2.01,
+        "sampleRate": 48000,
+        "channels": 1
+      },
+      {
+        "file": "audio/voicepacks/announcer/Audio 1.dup1_11-10.wav",
+        "bytes": 698776,
+        "assignedMove": null,
+        "durationSeconds": 4.82,
+        "sampleRate": 48000,
+        "channels": 1
+      },
+      {
+        "file": "audio/voicepacks/announcer/Audio 1.dup1_11-12.wav",
+        "bytes": 273368,
+        "assignedMove": null,
+        "durationSeconds": 1.88,
+        "sampleRate": 48000,
+        "channels": 1
+      },
+      {
+        "file": "audio/voicepacks/announcer/Audio 1.dup1_11-14.wav",
+        "bytes": 322780,
+        "assignedMove": null,
+        "durationSeconds": 2.22,
+        "sampleRate": 48000,
+        "channels": 1
+      },
+      {
+        "file": "audio/voicepacks/announcer/Audio 1.dup1_11-16.wav",
+        "bytes": 223956,
+        "assignedMove": null,
+        "durationSeconds": 1.54,
+        "sampleRate": 48000,
+        "channels": 1
+      },
+      {
+        "file": "audio/voicepacks/announcer/Audio 1.dup1_11-22.wav",
+        "bytes": 285720,
+        "assignedMove": null,
+        "durationSeconds": 1.96,
+        "sampleRate": 48000,
+        "channels": 1
+      },
+      {
+        "file": "audio/voicepacks/announcer/Audio 1.dup1_11-24.wav",
+        "bytes": 285720,
+        "assignedMove": null,
+        "durationSeconds": 1.96,
+        "sampleRate": 48000,
+        "channels": 1
+      },
+      {
+        "file": "audio/voicepacks/announcer/Audio 1.dup1_11-26.wav",
+        "bytes": 347484,
+        "assignedMove": null,
+        "durationSeconds": 2.39,
+        "sampleRate": 48000,
+        "channels": 1
+      },
+      {
+        "file": "audio/voicepacks/announcer/Audio 1.dup1_11-28.wav",
+        "bytes": 298072,
+        "assignedMove": null,
+        "durationSeconds": 2.05,
+        "sampleRate": 48000,
+        "channels": 1
+      },
+      {
+        "file": "audio/voicepacks/announcer/Audio 1.dup1_11-30.wav",
+        "bytes": 259472,
+        "assignedMove": null,
+        "durationSeconds": 1.78,
+        "sampleRate": 48000,
+        "channels": 1
+      },
+      {
+        "file": "audio/voicepacks/announcer/Audio 1.dup1_11-32.wav",
+        "bytes": 304252,
+        "assignedMove": null,
+        "durationSeconds": 2.09,
+        "sampleRate": 48000,
+        "channels": 1
+      },
+      {
+        "file": "audio/voicepacks/announcer/Audio 1.dup1_11-35.wav",
+        "bytes": 334360,
+        "assignedMove": null,
+        "durationSeconds": 2.3,
+        "sampleRate": 48000,
+        "channels": 1
+      },
+      {
+        "file": "audio/voicepacks/announcer/hook_03-01.wav",
+        "bytes": 316604,
+        "assignedMove": null,
+        "durationSeconds": 2.18,
+        "sampleRate": 48000,
+        "channels": 1
+      }
+    ]
+  }
+}

@@ -45,9 +45,9 @@ srv.liveStore = liveStore;
 srv.app.use(express.static(PUBLIC_DIR, {
   etag: true,
   setHeaders(res, filePath) {
-    if (filePath.endsWith('sw.js')) res.setHeader('Cache-Control', 'no-cache');
+    if (filePath.endsWith('sw.js') || filePath.endsWith('index.html')) res.setHeader('Cache-Control', 'no-store, must-revalidate');
     else if (/\.(json)$/.test(filePath)) res.setHeader('Cache-Control', 'public, max-age=300');
-    else res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+    else res.setHeader('Cache-Control', 'no-cache, must-revalidate');
   },
 }));
 srv.app.get('/', (_req, res) => res.sendFile(path.join(PUBLIC_DIR, 'index.html')));

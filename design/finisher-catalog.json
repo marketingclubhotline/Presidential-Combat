@@ -1,0 +1,79 @@
+{
+  "version": 1,
+  "status": "design assets and post-match presentation; animations pending",
+  "sharedInputs": {
+    "first": "down down up + punch",
+    "second": "back back forward + kick",
+    "third": "forward forward back + punch"
+  },
+  "finishers": {
+    "trump": [
+      {
+        "name": "YOU'RE FIRED!",
+        "emoji": "🔥",
+        "description": "Signed executive order stamps the opponent into cartoon flames; Trump dons red MAGA cap for victory pose"
+      },
+      {
+        "name": "AMERICAN EAGLE",
+        "emoji": "🦅",
+        "description": "Dollar-bill eagle carries opponent offstage"
+      },
+      {
+        "name": "MIC DROP",
+        "emoji": "🎤",
+        "description": "Wired microphone pull and booming uppercut"
+      }
+    ],
+    "obama": [
+      {
+        "name": "YES WE CAN",
+        "emoji": "🥊",
+        "description": "Rapid counter-combo and signature confident walk"
+      },
+      {
+        "name": "FIRST LADY SURPRISE",
+        "emoji": "💫",
+        "description": "Fictionalized cameo lands a giant slapstick slap"
+      },
+      {
+        "name": "EXECUTIVE SWAG",
+        "emoji": "🕶️",
+        "description": "Sunglasses, dance feint and spinning kick"
+      }
+    ],
+    "putin": [
+      {
+        "name": "RED BUTTON",
+        "emoji": "🔴",
+        "description": "Missile circles arena and bursts into confetti"
+      },
+      {
+        "name": "SIBERIAN VACATION",
+        "emoji": "🧊",
+        "description": "Ice cube slides away with help from cartoon bear"
+      },
+      {
+        "name": "TANK YOU VERY MUCH",
+        "emoji": "🥊",
+        "description": "Tank fires a gigantic boxing glove"
+      }
+    ],
+    "afwerki": [
+      {
+        "name": "CAMEL STAMPEDE",
+        "emoji": "🐪",
+        "description": "Currency-note camel carries opponent into Red Sea"
+      },
+      {
+        "name": "RED SEA TSUNAMI",
+        "emoji": "🌊",
+        "description": "Wave sweeps opponent away; boxing-glove fish appears"
+      },
+      {
+        "name": "INJERA EXPRESS",
+        "emoji": "🫓",
+        "description": "Injera wraps and rolls opponent; Inkabela voice cue on throw"
+      }
+    ]
+  }
+}
