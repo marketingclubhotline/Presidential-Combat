@@ -14,6 +14,11 @@ export async function run(t){
   t.ok(html.includes("atk.key==='tripSweep'"),'sweep has distinct knockdown response');
   t.ok(html.includes('const stagedFall='),'KO uses staged fall motion');
   t.ok(html.includes('moveFrames/60'),'voice timing considers move duration');
+  t.ok(html.includes("Game.phase='finishWindow'"),'finisher interrupts combat before KO');
+  t.ok(html.includes('P1.hp<=15&&P2.hp>15'),'finisher threshold uses final 15 health points');
+  t.ok(html.includes("if(T>=420){pcFinisherClose();endRound(Game.winner,true);}"),'finisher timeout completes normal knockout');
+  t.ok(html.includes("if(f.anim==='ko'||f.state==='ko')return 'idle';"),'KO uses relaxed idle sprite instead of guarding sprite');
+  t.ok(html.includes("Game.phase==='finishWindow' && pcFinisherShown"),'shared daze is confined to pre-KO window');
   t.eq(config.moves.micLasso.superCost,35,'Trump mic super costs 35 meter');
   t.ok(config.motions.some(m=>m.move==='micLasso'&&m.btn==='kick'),'mic super has a kick motion input');
   t.ok(html.includes("p.kind==='mic'"),'microphone has a distinct projectile presentation');

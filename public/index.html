@@ -1962,6 +1962,7 @@ document.getElementById('skipEntrance').onclick = () => {
 };
 
 function startRound(withEntrances=false){
+  pcFinisherClose();
   P1.reset(false); P2.reset(false);
   FX.clear(); Projectiles.clear(); Cam.reset();
   Game.timer=99; Game.timerSub=0; Game.hitstop=0; Game.slowmo=0;
@@ -2023,7 +2024,24 @@ function updateFlow(){
     }
     return;
   }
+  if(Game.phase==='finishWindow'){
+    // The defeated fighter is dazed BEFORE the knockout, never after match end.
+    // Offline prototype: deterministic network matches keep the old KO flow.
+    if(T>=420){pcFinisherClose();endRound(Game.winner,true);}
+    return;
+  }
   if(Game.phase==='fight'){
+    // Intercept the last health bars to present the finisher opportunity.
+    if(!Net.active && !pcTrainingMode && ((P1.hp<=15&&P2.hp>15)||(P2.hp<=15&&P1.hp>15))){
+      Game.winner=P1.hp<=15?'p2':'p1';
+      const loser=Game.winner==='p1'?P2:P1;
+      loser.hp=Math.max(1,loser.hp);loser.move=null;loser.vx=0;loser.vy=0;
+      loser.setState('frozen','hit');
+      const victor=Game.winner==='p1'?P1:P2;
+      victor.move=null;victor.vx=0;victor.setState('idle');
+      Game.phase='finishWindow';Game.phaseT=0;Game.hitstop=0;
+      pcFinisherOpen();return;
+    }
     Game.timerSub++;
     if(Game.timerSub>=60){ Game.timerSub=0; Game.timer--; }
     if(P1.hp<=0 || P2.hp<=0)
@@ -2044,7 +2062,7 @@ function updateFlow(){
         Game.phase='matchEnd'; Game.phaseT=0;
         const champ = P1.rounds>P2.rounds ? P1.name : (P2.rounds>P1.rounds? P2.name : 'DRAW GAME');
         UI.show(P1.rounds===P2.rounds?'DRAW GAME':champ+' WINS','TAP OR PRESS ENTER FOR REMATCH');
-        if(!Net.active && Game.winner!=='draw')pcFinisherOpen();
+        // Finish window already occurred before the knockout.
         Audio5.duck(0.1,2.5);
         if(P1.rounds!==P2.rounds){
           const champion=P1.rounds>P2.rounds?P1:P2;
@@ -2520,7 +2538,7 @@ function pcPose(f){
     return (move.key==='lowKick'||move.key==='tripSweep') ? 'dodge' : 'idle';
   }
   if(f.anim==='win')return 'win';
-  if(f.anim==='ko'||f.state==='ko')return 'dodge';
+  if(f.anim==='ko'||f.state==='ko')return 'idle';
   if(f.anim==='walk'||f.anim==='back')return 'walk';
   if(f.anim==='punch'||f.anim==='uppercut'||f.anim==='fireball')return 'punch';
   if(f.anim==='kick'||f.anim==='crouchKick'||f.anim==='tripSweep'||f.anim==='jumpKick'||f.anim==='spinKick')return 'kick';
@@ -2638,7 +2656,7 @@ function drawFighter(g,f){
     }
     // Shared finisher daze animation: identical logic for every roster fighter.
     // Cosmetic only; does not affect combat hitboxes or network simulation.
-    const finishingLoser=pcFinisherShown && ((Game.winner==='p1'&&f.side==='p2')||(Game.winner==='p2'&&f.side==='p1'));
+    const finishingLoser=Game.phase==='finishWindow' && pcFinisherShown && ((Game.winner==='p1'&&f.side==='p2')||(Game.winner==='p2'&&f.side==='p1'));
     if(finishingLoser){
       const phase=Game.frame*.13+(f.idx*1.1);
       const variant=(Game.round+f.idx)%2;
@@ -2688,7 +2706,7 @@ function drawFighter(g,f){
       g.textAlign='center';g.fillText('✦  ✦',0,-fighterHeight-17+Math.sin(Game.frame*.15)*4);g.restore();
     }
     pcDrawFace(g,f,f.side==='p1'?'trump':'kim',aw*scale,fighterHeight);
-    if(f.state==='block'||f.state==='crouchBlock'||f.state==='blockstun'){
+    if(!finishingLoser && f.state!=='ko' && (f.state==='block'||f.state==='crouchBlock'||f.state==='blockstun')){
       g.strokeStyle='#73d9ff';g.lineWidth=5;g.shadowColor='#4dcfff';g.shadowBlur=16;
       g.beginPath();g.ellipse(35,-100,22,64,-0.2,-Math.PI/2,Math.PI/2);g.stroke();
     }
@@ -2783,7 +2801,7 @@ function render(){
   }
   // Animated arcade spectators: small cheering silhouettes behind both fighters.
   // Stable phases keep the crowd lively without frame-to-frame randomness.
-  if(Game.phase==='fight'||Game.phase==='intro'||Game.phase==='ko'||Game.phase==='matchEnd'){
+  if(Game.phase==='fight'||Game.phase==='finishWindow'||Game.phase==='intro'||Game.phase==='ko'||Game.phase==='matchEnd'){
     g.save();
     for(let i=0;i<10;i++){
       const x=i<5?28+i*36:VW-28-(i-5)*36;
@@ -2988,7 +3006,7 @@ const PC_FINISH={
 let pcFinishSequence=[],pcFinisherShown=false,pcFinisherTimer=null,pcFinishInputTimer=null,pcFinishCountdown=null;
 const pcFinishUI=document.getElementById('finisherUI');
 function pcFinisherOpen(){
-  if(Game.phase!=='matchEnd'||Net.active||Game.winner==='draw')return;
+  if(Game.phase!=='finishWindow'||Net.active||Game.winner==='draw')return;
   pcFinishSequence=[];clearTimeout(pcFinishInputTimer);pcFinisherShown=true;
   UI.hide(); // The match-end overlay must not cover the finisher controls.
   const fighter=Game.winner==='p1'?'TRUMP':'KIM';
@@ -2999,17 +3017,18 @@ function pcFinisherOpen(){
   pcFinishCountdown=setInterval(()=>{
     if(!pcFinisherShown){clearInterval(pcFinishCountdown);return;}
     seconds--;renderHint();
-    if(seconds<=0){pcFinisherClose();UI.show('VICTORY','FINISH WINDOW EXPIRED · ENTER TO REMATCH');}
+    if(seconds<=0){pcFinisherClose();endRound(Game.winner,true);}
   },1000);
   document.getElementById('arenaFinishDim')?.classList.add('show');
   pcFinishUI.classList.add('show');
 }
 function pcFinisherClose(){document.getElementById('arenaFinishDim')?.classList.remove('show');clearInterval(pcFinishCountdown);clearTimeout(pcFinishInputTimer);pcFinishUI.classList.remove('show');pcFinisherShown=false;pcFinishSequence=[];}
 function pcFinisherPlay(index){
-  if(!pcFinisherShown||Game.phase!=='matchEnd'||Net.active)return;
+  if(!pcFinisherShown||Game.phase!=='finishWindow'||Net.active)return;
   const moves=PC_FINISH[Game.winner];if(!moves)return;
   const move=moves[index];if(!move)return;
   pcFinisherClose();
+  endRound(Game.winner,true);
   UI.hide();
   Audio5.play('execute',0.85); Audio5.play('boom',0.7); Audio5.play('crowdRoar',0.2); Audio5.announce('executiveExecution','annFinish');
   const fx=document.getElementById('finisherFX');
@@ -3041,7 +3060,7 @@ function pcFinisherDirection(direction){
 }
 document.getElementById('finishOne').onclick=()=>pcFinisherPlay(0);
 document.getElementById('finishTwo').onclick=()=>pcFinisherPlay(1);
-document.getElementById('finishSkip').onclick=()=>{pcFinisherClose();UI.hide();startMatch();};
+document.getElementById('finishSkip').onclick=()=>{if(Game.phase==='finishWindow'){pcFinisherClose();endRound(Game.winner,true);}else{pcFinisherClose();UI.hide();startMatch();}};
 window.addEventListener('keydown',e=>{
   if(!pcFinisherShown||e.repeat)return;
   const dirs={ArrowUp:'up',ArrowDown:'down',ArrowLeft:'left',ArrowRight:'right',KeyI:'up',KeyK:'down',KeyJ:'left',KeyL:'right'};
