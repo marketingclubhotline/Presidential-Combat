@@ -18,7 +18,7 @@ export async function run(t) {
   t.eq(fighter.moves.kick.damage, 13, 'kick damage came from JSON');
   t.ok(fighter.physics.gravity > 0, 'physics externalized');
   t.ok(Array.isArray(fighter.scaling.damage), 'scaling tables externalized');
-  t.eq(fighter.motions.length, 3, 'motion inputs externalized');
+  t.eq(fighter.motions.length, 4, 'motion inputs externalized, including microphone super');
 
   // --- validation must reject the mistakes a balance-tweaker actually makes ---
   const clone = () => JSON.parse(JSON.stringify(fighter));

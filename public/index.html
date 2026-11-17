@@ -149,6 +149,9 @@
   /* Post-match finishers are presentation only, never part of rollback simulation. */
   #finisherUI{display:none;position:absolute;z-index:12;left:50%;top:48%;transform:translate(-50%,-50%);width:min(540px,92vw);padding:20px;border:2px solid #e4b94e;border-radius:16px;background:rgba(10,8,20,.95);color:white;text-align:center;box-shadow:0 0 40px #d5a63a66;}
   #finisherUI.show{display:block;}
+  #finisherUI.show::before{content:'EXECUTE HIM!';display:block;font-size:clamp(24px,6vw,62px);font-weight:1000;color:#ffcf66;text-shadow:0 3px 18px #ff3a2c;margin-bottom:8px;}
+  #arenaFinishDim{display:none;position:absolute;z-index:10;inset:0;pointer-events:none;background:rgba(0,0,15,.58);}
+  #arenaFinishDim.show{display:block;}
   #finisherUI h2{margin:0 0 9px;color:#ffcf66;letter-spacing:.1em;font-size:clamp(18px,4vw,29px);}
   #finisherUI p{font-size:12px;color:#c8c1d3;}
   #finisherUI .row{margin-top:12px;}
@@ -185,7 +188,7 @@
 .roster-card.active .fighter-photo{background-image:url('art/approved/versus-trump-kim.png')!important;background-size:220% auto!important;background-position:left 25%!important;}
 /* Use Kim's own sprite, not the fixed-direction composite versus artwork. */
 .roster-card.active .fighter-photo.kim{background-image:url('art/sprites/kim-idle.png')!important;background-size:contain!important;background-repeat:no-repeat!important;background-position:center center!important;transform:scaleX(-1);}
-#opponentPreviewImg{transform:scaleX(-1);}
+#opponentPreviewImg{transform:none;}
 #matchupGuide .vs-portrait{display:block!important;}
 #matchupGuide{background:linear-gradient(#07081645,#0708168a),url('art/stages/neutral-world-tournament.png') center/cover no-repeat!important;}
 #matchupGuide .vs-portrait.trump{background-image:url('art/sprites/trump-idle.png');background-size:contain;background-position:center;}
@@ -197,12 +200,12 @@
   background:linear-gradient(0deg,#08050eee 0%,#15102122 70%),url('art/approved/trump-arena.png') center/cover;
   pointer-events:auto;}
 #fighterEntrance[hidden],#fighterEntrance [hidden]{display:none;}
-#fighterEntrance img{position:absolute;bottom:0;left:50%;height:112%;width:92%;object-fit:contain;
+#fighterEntrance img{position:absolute;bottom:0;left:50%;height:76%;width:70%;object-fit:contain;
   object-position:50% 0;filter:drop-shadow(0 0 22px #e5a84366);transform:translateX(-50%);}
 #fighterEntrance[data-side="trump"] img{animation:trumpEntrance 2.4s ease-out both;}
 #fighterEntrance[data-side="kim"] img{animation:kimEntrance 1.5s ease-out both;}
-@keyframes trumpEntrance{from{transform:translateX(-67%) scale(.95);opacity:0} 28%{opacity:1} to{transform:translateX(-50%) scale(1.12)}}
-@keyframes kimEntrance{from{transform:translateX(-34%) scale(.95);opacity:0} 28%{opacity:1} to{transform:translateX(-50%) scale(1.12)}}
+@keyframes trumpEntrance{from{transform:translateX(-67%) scale(.95);opacity:0} 28%{opacity:1} to{transform:translateX(-50%) scale(1)}}
+@keyframes kimEntrance{from{transform:translateX(-34%) scale(.95);opacity:0} 28%{opacity:1} to{transform:translateX(-50%) scale(1)}}
 #entranceName{position:absolute;left:5%;bottom:12%;margin:0;color:#ffe5a5;
   font-size:clamp(26px,7vw,80px);font-weight:1000;font-style:italic;text-shadow:3px 4px #681b21,0 3px 12px #000;}
 #skipEntrance{position:absolute;right:4%;bottom:4%;z-index:1;}
@@ -274,6 +277,7 @@
     <p id="entranceName" aria-live="polite"></p>
     <button class="btn sm" id="skipEntrance" type="button">SKIP INTROS</button>
   </section>
+  <div id="arenaFinishDim" aria-hidden="true"></div>
   <div id="finisherUI" aria-live="polite"><h2>PRESIDENTIAL FINISH!</h2><p id="finisherHint">Choose a finisher, or enter a secret direction combo.</p><div class="row"><button class="btn sm" id="finishOne">FINISH 1 · ↑</button><button class="btn sm" id="finishTwo">FINISH 2 · ←</button><button class="btn sm" id="finishSkip">REMATCH</button></div></div>
   <div id="finisherFX" aria-live="polite"><div><div class="fxemoji" id="fxEmoji">🔥</div><div class="fxwords" id="fxWords">YOU'RE FIRED!</div></div></div>
   <div id="topbar">
@@ -742,13 +746,19 @@ const Audio5 = (()=>{
     src.connect(gain);gain.connect(sfxBus);src.start();
     src.onended=()=>{src.disconnect();gain.disconnect();};
   }
-  function playFighterLine(id,volume=0.55){
+  function playFighterLine(id,volume=0.55,moveFrames=0){
     if(!ready||muted||announcerSource||fighterSource||!fighterLines[id])return;
     const lines=id==='kim'?[buffers.voiceKim].filter(Boolean):fighterLines[id].filter(Boolean);
-    if(!lines.length||ac.currentTime-(voiceLast[id]||0)<4)return;
+    if(!lines.length||ac.currentTime-(voiceLast[id]||0)<1.3)return;
+    // Pick a line that fits the attack's startup + active + recovery window.
+    // Do not speed speech up or interrupt it at contact; impact SFX play separately.
+    const seconds=moveFrames>0?moveFrames/60:0;
+    const fitting=seconds?lines.filter(b=>b.duration<=seconds+0.12):lines;
+    const choices=fitting.length?fitting:lines;
+    const selected=choices[voiceCursor[id]++%choices.length];
     voiceLast[id]=ac.currentTime;
     const src=ac.createBufferSource(),gain=ac.createGain();
-    src.buffer=lines[voiceCursor[id]++%lines.length];
+    src.buffer=selected;
     gain.gain.value=volume;
     src.connect(gain);gain.connect(sfxBus);src.start();
     fighterSource=src;
@@ -1295,7 +1305,9 @@ class Fighter{
   /* ---- 7.3 start a move, honouring cancel rules ---- */
   startMove(key, isCancel){
     const m=MOVES[key]; if(!m) return false;
-    if(m.special && this.meter < 0) return false;
+    if(key==='micLasso' && (this.idx!==0 || Net.active)) return false;
+    if((m.superCost||0)>this.meter) return false;
+    if(m.superCost) this.addMeter(-m.superCost);
     this.move=m; this.moveFrame=0; this.hasHit=false; this.hitTargets=0;
     this.multiTick=0; this.canCancel=false; this.cancelUsed=!!isCancel;
     if(m.invuln) this.invuln=m.invuln[1];
@@ -1308,8 +1320,13 @@ class Fighter{
     if(isCancel){ FX.cancelFlash(this); Audio5.play('counter',0.35,1.4); }
     // Wind-up is a whoosh; impact sounds remain tied to actual contact in takeHit.
     Audio5.play(m.special?'fire':'swish',m.special?0.5:0.32,0.9+Rng.range(0,0.2));
-    if(!Net.active) Audio5.playMasterCombatVoice(m.special?0.32:0.22);
-    if(m.special && this.idx===0 && m.key!=='fireball') Audio5.playFighterLine('trump');
+    // Character dialogue starts on wind-up; contact sounds stay on the hit frame.
+    // Avoid layering generic grunts over the recorded Trump dialogue.
+    if(!Net.active){
+      if(this.idx===0 && (m.special || key==='kick' || key==='roundhouse'))
+        Audio5.playFighterLine('trump',0.55,m.startup+m.active+m.recovery);
+      else Audio5.playMasterCombatVoice(m.special?0.32:0.22);
+    }
     return true;
   }
 
@@ -1352,6 +1369,10 @@ class Fighter{
     this.flash = 6;
     this.vx = dir * atk.pushHit;
     if(atk.launcher){ this.vy = atk.launcher; this.onGround=false; }
+    else if(atk.key==='tripSweep' && this.onGround){
+      // A low sweep trips the opponent into a short, recoverable knockdown.
+      this.vy=-4.2; this.onGround=false; this.stun=Math.max(this.stun,25);
+    }
     else if(!this.onGround) this.vy = Math.min(this.vy, -3);
 
     attacker.combo++; attacker.comboTimer = SCALING.comboDecay;
@@ -1398,7 +1419,7 @@ class Fighter{
       const m=this.move, total=m.startup+m.active+m.recovery;
       if(m.multiHit && this.multiTick>0) this.multiTick--;
       if(this.onGround && !m.driveVel) this.vx *= 0.6;
-      if(m.projectile && this.moveFrame===m.startup) Projectiles.spawn(this);
+      if(m.projectile && this.moveFrame===m.startup) Projectiles.spawn(this,m.key);
 
       /* 7.3 cancel window: a connected normal may be cancelled during
          its ACTIVE or RECOVERY frames into a listed follow-up.        */
@@ -1466,9 +1487,11 @@ class Fighter{
     } else if(held&BTN.BLOCK){
       this.setState(down?'crouchBlock':'block');
     } else if(this.buf.avail('punch') && down){
+      // Crouching punch is a quick low strike, separate from the sweep.
       this.buf.consume('punch'); this.startMove('lowKick');
     } else if(this.buf.avail('kick') && down){
-      this.buf.consume('kick'); this.startMove('lowKick');
+      // DOWN + KICK: dedicated sweeping trip with longer readable recovery.
+      this.buf.consume('kick'); this.startMove('tripSweep');
     } else if(this.buf.avail('punch')){
       const move = MOVES.barrelPunch && this.buf.doubleTapped('punch') ? 'barrelPunch' : 'punch';
       this.buf.consume('punch'); this.startMove(move);
@@ -1748,20 +1771,20 @@ const Juice = {
 const Projectiles = (()=>{
   const MAXP=8;
   const list=new Array(MAXP);
-  for(let i=0;i<MAXP;i++) list[i]={active:false,x:0,y:0,vx:0,owner:0,life:0,anim:0};
+  for(let i=0;i<MAXP;i++) list[i]={active:false,x:0,y:0,vx:0,owner:0,life:0,anim:0,kind:'hat'};
   const DATA={ damage:15, chip:3, hitstun:24, blockstun:12, pushHit:7, pushBlock:4.5,
                height:'mid', weight:'light', sfx:'boom', meter:5, key:'fireballShot',
                cancelInto:[], multiHit:0, selfPush:0 };
   return {
     DATA, list,
-    spawn(f){
+    spawn(f,kind='fireball'){
       for(let i=0;i<MAXP;i++){
         const p=list[i];
         if(!p.active){
-          p.active=true; p.owner=f.idx; p.x=f.x+f.face*54; p.y=f.y-98;
-          p.vx=f.face*8.6; p.life=150; p.anim=0;
+          p.active=true; p.owner=f.idx; p.kind=kind==='micLasso'?'mic':'hat'; p.x=f.x+f.face*54; p.y=f.y-98;
+          p.vx=f.face*(p.kind==='mic'?6.5:8.6); p.life=p.kind==='mic'?65:150; p.anim=0;
           Audio5.play('fire',0.7,1);
-          if(f.idx===0) Audio5.playFighterLine('trump');
+          if(f.idx===0 && kind!=='micLasso') Audio5.playFighterLine('trump');
           else Audio5.playFighterLine('kim',0.65);
           return p;
         }
@@ -1781,7 +1804,14 @@ const Projectiles = (()=>{
         const box={x:p.x-20,y:p.y-20,w:40,h:40};
         for(const hu of foe.hurtboxes()){
           if(aabb(box,hu)){
-            foe.takeHit(DATA, me);
+            const hit=foe.takeHit(p.kind==='mic'?{...DATA,key:'micLassoShot',damage:10,hitstun:32,weight:'heavy',pushHit:0,chip:1}:DATA, me);
+            if(p.kind==='mic' && hit==='hit'){
+              // Capped cinematic cable tug; never teleport through the attacker.
+              const gap=foe.x-me.x;
+              const pull=Math.min(65,Math.max(0,Math.abs(gap)-78));
+              foe.x-=Math.sign(gap)*pull; foe.vx=0;
+              Cam.shake(10); Audio5.play('counter',0.7);
+            }
             p.active=false;
             Audio5.play('boom',0.8);
             break;
@@ -1796,6 +1826,17 @@ const Projectiles = (()=>{
         const r=17+Math.sin(t)*2.5;
         // Cosmetic owner-specific projectile art. Both use the exact same
         // hitbox, damage, chip, stun, push, speed and lifetime.
+        if(p.owner===0 && p.kind==='mic'){
+          const owner=FIGHTERS[p.owner];
+          g.save();
+          g.strokeStyle='#f6e8b8';g.lineWidth=2.5;g.beginPath();
+          g.moveTo(owner.x+owner.face*25,owner.y-110);
+          g.quadraticCurveTo((owner.x+p.x)/2,p.y+28,p.x,p.y);g.stroke();
+          g.translate(p.x,p.y);g.rotate(Math.sin(t)*.25);
+          g.fillStyle='#b9c6d5';g.fillRect(-18,-7,29,14);
+          g.fillStyle='#283241';g.fillRect(10,-10,14,20);
+          g.restore();continue;
+        }
         if(p.owner===0){
           g.save();g.translate(p.x,p.y);g.rotate(t*0.45);
           g.fillStyle='#d72632';g.beginPath();g.ellipse(0,0,23,10,0,0,6.2832);g.fill();
@@ -2027,7 +2068,7 @@ function endRound(winner, byKo){
   Game.winner=winner; Game.phase='ko'; Game.phaseT=0;
   Game.hitstop=18;
   const loser = winner==='p1'?P2:(winner==='p2'?P1:null);
-  if(loser){ loser.setState('ko'); loser.vx=-loser.face*7; loser.vy=-8; loser.onGround=false; }
+  if(loser){ loser.setState('ko'); loser.vx=-loser.face*10; loser.vy=-6; loser.onGround=false; }
   else { P1.setState('ko'); P2.setState('ko'); }
   UI.show(byKo?'K.O.':'TIME UP', byKo&&winner==='draw'?'DOUBLE KO':'');
   Audio5.play('ko',1); Audio5.duck(0.08,2.2);
@@ -2416,7 +2457,7 @@ function buildBackground(){
    Placeholder single poses are intentionally held until in-between animation is authored. */
 // Non-destructive runtime matte cleanup: removes only near-white pixels
 // connected to the transparent/exterior background, preserving interior whites.
-function pcCleanSprite(im){
+function pcCleanSprite(im,character){
   const w=im.naturalWidth,h=im.naturalHeight,n=w*h;
   const c=document.createElement('canvas');c.width=w;c.height=h;
   const cx=c.getContext('2d',{willReadFrequently:true});cx.drawImage(im,0,0);
@@ -2432,6 +2473,13 @@ function pcCleanSprite(im){
     if(i>=w)add(i-w);if(i<n-w)add(i+w);
   }
   for(let i=0;i<n;i++)if(outside[i])d[i*4+3]=0;
+  // Kim's export includes a pale V-shaped interior matte between the legs.
+  // Remove neutral bright pixels in that lower central gap, without touching
+  // the dark suit/shoes or changing the source PNG.
+  if(character==='kim')for(let y=Math.floor(h*.53);y<h;y++)for(let x=Math.floor(w*.24);x<Math.ceil(w*.76);x++){
+    const j=(y*w+x)*4,r=d[j],g=d[j+1],b=d[j+2];
+    if(r>203&&g>203&&b>203&&Math.max(r,g,b)-Math.min(r,g,b)<28)d[j+3]=0;
+  }
   // Despill the last pale fringe only when adjacent to the removed matte.
   for(let i=0;i<n;i++){
     if(outside[i])continue;
@@ -2461,21 +2509,21 @@ for(const [side,name] of [['p1','trump'],['p2','kim']]){
   for(const pose of ['idle','walk','punch','kick','dodge','win']){
     const im=new Image();
     PC_SPRITES[side][pose]=im;
-    im.onload=()=>{try{PC_SPRITES[side][pose]=pcCleanSprite(im);}catch(e){console.warn('sprite matte cleanup skipped',name,pose,e);}};
+    im.onload=()=>{try{PC_SPRITES[side][pose]=pcCleanSprite(im,name);}catch(e){console.warn('sprite matte cleanup skipped',name,pose,e);}};
     im.src='art/sprites/'+name+'-'+pose+'.png';
   }
 }
 function pcPose(f){
   const move = f.move;
-  if(move && ['kick','lowKick','jumpKick','roundhouse','barrelPunch'].includes(move.key) &&
+  if(move && ['kick','lowKick','tripSweep','jumpKick','roundhouse','barrelPunch'].includes(move.key) &&
      (f.moveFrame < move.startup || f.moveFrame >= move.startup+move.active)){
-    return move.key==='lowKick' ? 'dodge' : 'idle';
+    return (move.key==='lowKick'||move.key==='tripSweep') ? 'dodge' : 'idle';
   }
   if(f.anim==='win')return 'win';
   if(f.anim==='ko'||f.state==='ko')return 'dodge';
   if(f.anim==='walk'||f.anim==='back')return 'walk';
   if(f.anim==='punch'||f.anim==='uppercut'||f.anim==='fireball')return 'punch';
-  if(f.anim==='kick'||f.anim==='crouchKick'||f.anim==='jumpKick'||f.anim==='spinKick')return 'kick';
+  if(f.anim==='kick'||f.anim==='crouchKick'||f.anim==='tripSweep'||f.anim==='jumpKick'||f.anim==='spinKick')return 'kick';
   if(f.anim==='block'||f.anim==='blockstun')return 'dodge';
   if(f.anim==='crouch'||f.anim==='crouchBlock'||f.anim==='hit')return 'dodge';
   return 'idle';
@@ -2520,6 +2568,30 @@ const PC_FACE_CONFIG={
   trump:{x:0.50,y:0.19,width:0.30},
   kim:{x:0.50,y:0.19,width:0.30}
 };
+// Five distinct presentation keyframes per cycle, interpolated every render.
+// Visual-only; combat timing, collision boxes and rollback inputs are unchanged.
+const PC_MOTION_KEYS=Object.freeze({
+  idle:[[0,0,0,1],[-1,-2,-.014,1.008],[0,-4,0,1.016],[1,-2,.014,1.008],[0,0,0,1]],
+  walk:[[0,0,-.025,1],[5,-5,.02,1.012],[2,-2,.04,.994],[-4,-5,-.02,1.012],[0,0,-.025,1]],
+  back:[[0,0,.025,1],[-5,-4,-.02,1.012],[-2,-2,-.04,.994],[4,-4,.02,1.012],[0,0,.025,1]],
+  punch:[[0,0,-.06,1],[3,-2,-.10,1.02],[10,-3,.045,1.025],[6,-2,.025,1.01],[0,0,0,1]],
+  kick:[[0,0,-.07,1],[3,-3,-.12,1.015],[9,-5,.08,1.03],[4,-2,.025,1.01],[0,0,0,1]],
+  uppercut:[[0,2,-.09,.99],[3,-3,-.04,1.015],[6,-10,.09,1.04],[3,-5,.04,1.02],[0,0,0,1]],
+  tripSweep:[[0,0,-.05,.96],[4,7,-.11,.90],[9,9,.09,.89],[5,6,.04,.94],[0,0,0,1]],
+  roundhouse:[[0,0,-.09,1],[4,-3,-.14,1.01],[8,-6,.12,1.035],[4,-3,.06,1.015],[0,0,0,1]]
+});
+function pcMotionFrame(f){
+  const move=f.move, key=move?.key==='tripSweep'?'tripSweep':move?.key==='roundhouse'?'roundhouse':move?.key==='uppercut'?'uppercut':
+    move?.key==='spinKick'?'roundhouse':move?.key==='barrelPunch'?'punch':
+    (f.anim==='walk'||f.anim==='back'?f.anim:
+    (f.anim==='punch'||f.anim==='kick'||f.anim==='uppercut'?f.anim:'idle'));
+  if(!move&&!['idle','walk','back'].includes(f.state))return null;
+  const frames=PC_MOTION_KEYS[key]||PC_MOTION_KEYS.idle;
+  const progress=move?Math.min(.999,Math.max(0,f.moveFrame/Math.max(1,move.startup+move.active+move.recovery))):
+    ((Game.frame*(key==='idle'?.038:.095)+(f.idx?2.3:0))%1);
+  const index=progress*(frames.length-1),a=frames[Math.floor(index)],b=frames[Math.min(frames.length-1,Math.ceil(index))],t=index%1;
+  return a.map((v,i)=>v+(b[i]-v)*t);
+}
 function drawFighter(g,f){
   const art=PC_SPRITES[f.side]?.[pcPose(f)];
   if(art && (art instanceof HTMLCanvasElement || art.complete) && (art.naturalWidth||art.width)>0){
@@ -2552,20 +2624,41 @@ function drawFighter(g,f){
       const reverse=f.state==='back'?-1:1;
       const phase=Game.frame*0.31+(f.side==='p2'?1.2:0);
       const step=Math.sin(phase),lift=Math.max(0,Math.sin(phase*2));
-      g.translate(reverse*step*4.5,-lift*4);
-      g.rotate(reverse*step*0.035);
-      g.transform(1,0,reverse*step*0.045,1,0,0);
+      // Keep the torso stable: large shears made Kim's silhouette glitch.
+      g.translate(reverse*step*2.0,-lift*1.2);
+      g.rotate(reverse*step*0.008);
+    }
+    // Multi-keyframe weight shifts: interpolated idle, footwork and attack arcs.
+    const motion=pcMotionFrame(f);
+    if(motion){
+      const [dx,dy,tilt,stretch]=motion;
+      g.translate(dx*f.face,dy);
+      g.rotate(tilt*f.face);
+      g.scale(1,stretch);
+    }
+    // Shared finisher daze animation: identical logic for every roster fighter.
+    // Cosmetic only; does not affect combat hitboxes or network simulation.
+    const finishingLoser=pcFinisherShown && ((Game.winner==='p1'&&f.side==='p2')||(Game.winner==='p2'&&f.side==='p1'));
+    if(finishingLoser){
+      const phase=Game.frame*.13+(f.idx*1.1);
+      const variant=(Game.round+f.idx)%2;
+      g.translate(Math.sin(phase)* (variant?7:4),-Math.abs(Math.sin(phase*.7))*4);
+      g.rotate(Math.sin(phase*(variant?0.65:1))* (variant?.10:.065));
     }
     // Knocked-out fighter visibly tumbles and remains horizontal on the floor.
-    if(f.state==='ko' && f.onGround){
+    if(f.state==='ko' && !finishingLoser){
       // Four shared knockdown silhouettes, chosen deterministically by round
       // and fighter; rotate around the grounded body center, not the feet.
-      const downAngles=[1.42,1.57,1.70,1.49];
+      const downAngles=[1.48,1.53,1.57,1.50];
       const pose=(Game.round*2+f.idx)%downAngles.length;
-      const angle=downAngles[pose]*f.face;
-      g.translate(0,-22);
+      const fallProgress=Math.min(1,Math.max(0,(Game.phaseT-2)/30));
+      const stagedFall=fallProgress<.30?fallProgress*.60:fallProgress<.72?.18+(fallProgress-.30)*1.35:.747+(fallProgress-.72)*(.253/.28);
+      const angle=downAngles[pose]*f.face*Math.min(1,stagedFall);
+      // Rotate around the lower torso and move the fallen silhouette
+      // away from the winner; the feet stay near the ground line.
+      g.translate(-f.face*65*fallProgress,-fighterHeight*.25*fallProgress + (fallProgress>.82?Math.sin((fallProgress-.82)/.18*Math.PI)*-5:0));
       g.rotate(angle);
-      g.translate(0,fighterHeight*0.48);
+      g.translate(0,fighterHeight*.48*fallProgress);
     }
     // Kim source sprites are opposite-facing; compensate only for his artwork.
     if(f.move?.key==='roundhouse' && f.moveFrame>=f.move.startup &&
@@ -2584,12 +2677,16 @@ function drawFighter(g,f){
     if(f.move?.key==='roundhouse' || f.move?.key==='barrelPunch'){
       // Complete the turn at contact, then return to the guard pose.
       const turn = Math.min(1,f.moveFrame/f.move.startup)*Math.PI*2;
-      g.scale(Math.cos(turn)*0.86+0.14,1);
+      g.scale(0.72+0.28*Math.cos(turn),1);
       g.rotate(Math.sin(turn)*(f.move.key==='roundhouse' ? 0.10 : 0.25));
     }
     if(f.flash>0)g.filter='brightness(2.4) saturate(0.4)';
     else if(f.invuln>0&&(Game.frame>>1)%2===0)g.filter='brightness(1.6) hue-rotate(70deg)';
     g.drawImage(art,-aw*scale/2,-fighterHeight,aw*scale,fighterHeight);
+    if(finishingLoser){
+      g.save();g.fillStyle='#ffe88c';g.font='bold 26px sans-serif';
+      g.textAlign='center';g.fillText('✦  ✦',0,-fighterHeight-17+Math.sin(Game.frame*.15)*4);g.restore();
+    }
     pcDrawFace(g,f,f.side==='p1'?'trump':'kim',aw*scale,fighterHeight);
     if(f.state==='block'||f.state==='crouchBlock'||f.state==='blockstun'){
       g.strokeStyle='#73d9ff';g.lineWidth=5;g.shadowColor='#4dcfff';g.shadowBlur=16;
@@ -2897,16 +2994,17 @@ function pcFinisherOpen(){
   const fighter=Game.winner==='p1'?'TRUMP':'KIM';
   const hint=document.getElementById('finisherHint');
   let seconds=7;
-  const renderHint=()=>{hint.textContent=fighter+' WINS · FINISH WINDOW '+seconds+'s · ↑ / ← or tap a finisher';};
+  const renderHint=()=>{hint.textContent='FINISH HIM! · '+fighter+' WINS · '+seconds+'s · ↑ / ← or tap a finisher';};
   renderHint();clearInterval(pcFinishCountdown);
   pcFinishCountdown=setInterval(()=>{
     if(!pcFinisherShown){clearInterval(pcFinishCountdown);return;}
     seconds--;renderHint();
     if(seconds<=0){pcFinisherClose();UI.show('VICTORY','FINISH WINDOW EXPIRED · ENTER TO REMATCH');}
   },1000);
+  document.getElementById('arenaFinishDim')?.classList.add('show');
   pcFinishUI.classList.add('show');
 }
-function pcFinisherClose(){clearInterval(pcFinishCountdown);clearTimeout(pcFinishInputTimer);pcFinishUI.classList.remove('show');pcFinisherShown=false;pcFinishSequence=[];}
+function pcFinisherClose(){document.getElementById('arenaFinishDim')?.classList.remove('show');clearInterval(pcFinishCountdown);clearTimeout(pcFinishInputTimer);pcFinishUI.classList.remove('show');pcFinisherShown=false;pcFinishSequence=[];}
 function pcFinisherPlay(index){
   if(!pcFinisherShown||Game.phase!=='matchEnd'||Net.active)return;
   const moves=PC_FINISH[Game.winner];if(!moves)return;
@@ -3026,6 +3124,19 @@ pcStageLabel.id='pcStageLabel';
 pcStageLabel.style.cssText='position:fixed;bottom:7px;left:12px;z-index:4;color:#f5d58c;background:#080a16bb;padding:3px 8px;border-radius:4px;font:12px sans-serif;pointer-events:none';
 pcStageLabel.textContent='ARENA: Trump — Presidential Arena · G to change';
 document.body.appendChild(pcStageLabel);
+// Reuse the same matte-removal pipeline for menu previews as the arena.
+// Keep the original files intact; cleaned canvases are only cached in memory.
+const pcMenuSprites={};
+for(const name of ['trump','kim'])for(const pose of ['idle','walk']){
+  const key=name+'-'+pose, img=new Image();
+  img.onload=()=>{
+    try{pcMenuSprites[key]=pcCleanSprite(img,name).toDataURL('image/png');
+      if(typeof pcPreviewName!=='undefined')pcRefreshPreviewArt();
+    }catch(e){console.warn('preview cleanup unavailable',key,e);}
+  };
+  img.src='art/sprites/'+key+'.png';
+}
+function pcMenuSprite(name,pose){return pcMenuSprites[name+'-'+pose]||'art/sprites/'+name+'-'+pose+'.png';}
 const pcPreviewImg=document.getElementById('fighterPreviewImg');
 const pcOpponentImg=document.getElementById('opponentPreviewImg');
 const pcOpponentLabel=document.getElementById('opponentPreviewLabel');
@@ -3035,30 +3146,36 @@ function pcOrientVersusPreview(){
   const facing = pcPreviewName === 'kim' ? -1 : 1;
   pcPreviewImg.style.setProperty('--pc-preview-facing', facing);
   // Opponent artwork faces the opposite direction from the selected fighter.
-  pcOpponentImg.style.setProperty('--pc-preview-facing', -facing);
+  const opponent = pcPreviewName === 'kim' ? 'trump' : 'kim';
+  pcOpponentImg.style.setProperty('--pc-preview-facing', opponent === 'kim' ? 1 : -1);
 }
 
 let pcPreviewName='trump';
 pcOrientVersusPreview();
 let pcPreviewTick=0;
+let pcPreviewPose='idle',pcOpponentPose='idle';
+function pcRefreshPreviewArt(){
+  const other=pcPreviewName==='trump'?'kim':'trump';
+  const next=pcMenuSprite(pcPreviewName,pcPreviewPose);
+  const opposite=pcMenuSprite(other,pcOpponentPose);
+  if(pcPreviewImg.src!==new URL(next,document.baseURI).href)pcPreviewImg.src=next;
+  if(pcOpponentImg.src!==new URL(opposite,document.baseURI).href)pcOpponentImg.src=opposite;
+}
 // Actual existing character pose frames, not merely a static image bob.
 const pcPreviewTimer=setInterval(()=>{
   if(!document.getElementById('fighterPreview')){clearInterval(pcPreviewTimer);return;}
   const phase=(pcPreviewTick++%12);
   const pose=(phase===3||phase===9)?'walk':'idle';
-  const next='art/sprites/'+pcPreviewName+'-'+pose+'.png';
-  if(!pcPreviewImg.src.endsWith(next))pcPreviewImg.src=next;
-  const other=pcPreviewName==='trump'?'kim':'trump';
   const otherPose=(phase===5||phase===11)?'walk':'idle';
-  const otherSrc='art/sprites/'+other+'-'+otherPose+'.png';
-  if(!pcOpponentImg.src.endsWith(otherSrc))pcOpponentImg.src=otherSrc;
+  pcPreviewPose=pose;pcOpponentPose=otherPose;
+  pcRefreshPreviewArt();
 },155);
 const pcShowFighterPreview=(name)=>{
   pcPreviewName=name;
   pcOrientVersusPreview();
   const opponent = name === 'kim' ? 'trump' : 'kim';
-  pcPreviewImg.src='art/sprites/'+name+'-idle.png';
-  pcOpponentImg.src='art/sprites/'+opponent+'-idle.png';
+  pcPreviewPose='idle';pcOpponentPose='idle';
+  pcRefreshPreviewArt();
   pcPreviewTick=0;
   pcPreviewImg.alt=(name==='kim'?'Kim Jong Un':'Donald Trump')+' animated fighting stance preview';
   pcOpponentImg.alt=(opponent==='kim'?'Kim Jong Un':'Donald Trump')+' animated fighting stance preview';
@@ -3119,9 +3236,24 @@ async function boot(){
   const bar   = document.getElementById('loadBar');
   const label = document.getElementById('loadLabel');
   const setP = (p,msg)=>{
-    if(p!=null) bar.style.transform = 'scaleX('+p+')';
+    if(p!=null){
+      const progress = Math.max(0,Math.min(1,Number(p)||0));
+      bar.style.transform = 'scaleX('+progress+')';
+      bar.setAttribute('aria-valuenow',String(Math.round(progress*100)));
+    }
     if(msg) label.textContent = String(msg).toUpperCase();
   };
+  // Keep the loader informative during slow mobile network and asset work.
+  const loadingStarted = performance.now();
+  const loadingTicker = setInterval(()=>{
+    if(!document.getElementById('loading').classList.contains('done')){
+      const seconds = Math.floor((performance.now()-loadingStarted)/1000);
+      if(seconds>=5){
+        const base = label.textContent.replace(/ · [0-9]+S$/, '');
+        label.textContent = base+' · '+seconds+'S';
+      }
+    }
+  },1000);
   try{
     const loader = new AssetLoader({ base:'' }).onProgress(setP);
     await loader.loadManifest('data/manifest.json');
@@ -3206,10 +3338,13 @@ async function boot(){
       get configVersion(){ return CONFIG_VERSION; },
     };
     setP(1,'ready');
+    clearInterval(loadingTicker);
+    console.info('[Presidential Combat] startup '+Math.round(performance.now()-loadingStarted)+'ms');
     document.getElementById('loading').classList.add('done');
     document.getElementById('boot').classList.add('ready');
     requestAnimationFrame(frame);
   }catch(err){
+    clearInterval(loadingTicker);
     document.getElementById('loading').innerHTML =
       '<div style="max-width:80vw;text-align:center">' +
       '<h2 style="color:#ff5a7a;letter-spacing:.1em">FAILED TO LOAD</h2>' +

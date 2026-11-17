@@ -24,6 +24,7 @@ const t = {
 const suites = [
   ['database / players', './t_db.js'],
   ['config / data-driven', './t_config.js'],
+  ['arcade combat additions', './t_arcade.js'],
   ['integrity / anti-cheat', './t_integrity.js'],
   ['signaling / matchmaking', './t_signaling.js'],
   ['telemetry / analytics (P15)', './t_telemetry.js'],
