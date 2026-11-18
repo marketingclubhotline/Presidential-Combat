@@ -2605,23 +2605,25 @@ for(const [side,name] of [['p1','trump'],['p2','kim']]){
   }
 }
 function pcPose(f){
-  const move = f.move;
-  if(move && ['kick','lowKick','tripSweep','jumpKick','roundhouse','barrelPunch'].includes(move.key) &&
-     (f.moveFrame < move.startup || f.moveFrame >= move.startup+move.active)){
-    return (move.key==='lowKick'||move.key==='tripSweep') ? 'dodge' : 'idle';
-  }
-  if(f.anim==='win')return 'win';
-  // Use distinct source poses across the KO sequence instead of a rigid idle cutout.
+  // Shared pose selection for every playable fighter. A knockout must never
+  // fall back to the upright guard sprite while the body is lying down.
   if(f.anim==='ko'||f.state==='ko'){
     const t=Math.max(0,Game.phaseT-2);
     return t<8?'dodge':t<19?'kick':t<29?'dodge':'idle';
   }
+  if(f.anim==='win')return 'win';
+  const move=f.move;
+  if(move){
+    const active=f.moveFrame>=move.startup && f.moveFrame<move.startup+move.active;
+    if(move.key==='tripSweep'||move.key==='lowKick')return active?'kick':'dodge';
+    if(move.key==='jumpKick')return active?'kick':'dodge';
+    if(['kick','roundhouse','spinKick'].includes(move.key))return active?'kick':'idle';
+    if(['punch','barrelPunch','uppercut','superUppercut','fireball'].includes(move.key))return active?'punch':'idle';
+  }
   if(f.anim==='walk'||f.anim==='back')return 'walk';
   if(f.anim==='punch'||f.anim==='uppercut'||f.anim==='fireball')return 'punch';
-  if(f.move?.key==='tripSweep')return f.moveFrame<f.move.startup?'dodge':(f.moveFrame<f.move.startup+f.move.active?'kick':'dodge');
   if(f.anim==='kick'||f.anim==='crouchKick'||f.anim==='jumpKick'||f.anim==='spinKick'||f.anim==='roundhouse')return 'kick';
-  if(f.anim==='block'||f.anim==='blockstun')return 'dodge';
-  if(f.anim==='crouch'||f.anim==='crouchBlock'||f.anim==='hit')return 'dodge';
+  if(['block','blockstun','crouch','crouchBlock','hit','jump','fall'].includes(f.anim))return 'dodge';
   return 'idle';
 }
 // Facial animation standard V1: optional per-character transparent PNG overlays.
@@ -2838,7 +2840,7 @@ function drawFighter(g,f){
     g.scale(fighterVisualFacing(f),1);
     if(f.move?.key==='roundhouse' || f.move?.key==='barrelPunch'){
       // Complete the turn at contact, then return to the guard pose.
-      const turn = Math.min(1,f.moveFrame/f.move.startup)*Math.PI*2;
+      const turn = Math.min(1,f.moveFrame/Math.max(1,f.move.startup))*Math.PI*2;
       g.scale(0.72+0.28*Math.cos(turn),1);
       g.rotate(Math.sin(turn)*(f.move.key==='roundhouse' ? 0.10 : 0.25));
     }
