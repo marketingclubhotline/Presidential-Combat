@@ -1226,7 +1226,7 @@ function fighterVisualFacing(f){
   return f.face*(f.side==='p2'?-1:1);
 }
 function fighterIdleMotion(f,frame){
-  if(!f.onGround||f.move||!['idle','walk','back'].includes(f.state))return null;
+  if(!f.onGround||f.move||f.state!=='idle')return null;
   const t=frame*0.105+(f.side==='p2'?1.7:0);
   return {x:Math.sin(t*0.5)*FIGHTER_ANIMATION_STANDARD.idleSway,
     y:Math.sin(t)*FIGHTER_ANIMATION_STANDARD.idleBounce,
@@ -2718,7 +2718,7 @@ function drawFighter(g,f){
       g.translate(Math.sin(t*.6)*3,0);
       g.rotate(Math.sin(t*.7)*.018);
     }
-    // Distinct forward/back footfalls with two alternating weight transfers.
+    // Distinct forward/back footfalls; idle breathing is disabled while walking.
     // Purely visual: no changes to deterministic combat movement or hitboxes.
     if((f.state==='back'||f.state==='walk') && f.onGround){
       const reverse=f.state==='back'?-1:1;
