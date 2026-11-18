@@ -2616,10 +2616,10 @@ function pcPose(f){
     const t=Math.max(0,Game.phaseT-2);
     return t<8?'dodge':t<19?'kick':t<29?'dodge':'idle';
   }
-  if(f.anim==='walk'||f.anim==='back')return (Math.floor(Game.frame/7)%2===0?'walk':'idle');
+  if(f.anim==='walk'||f.anim==='back')return 'walk';
   if(f.anim==='punch'||f.anim==='uppercut'||f.anim==='fireball')return 'punch';
   if(f.move?.key==='tripSweep')return f.moveFrame<f.move.startup?'dodge':(f.moveFrame<f.move.startup+f.move.active?'kick':'dodge');
-  if(f.anim==='kick'||f.anim==='crouchKick'||f.anim==='jumpKick'||f.anim==='spinKick')return 'kick';
+  if(f.anim==='kick'||f.anim==='crouchKick'||f.anim==='jumpKick'||f.anim==='spinKick'||f.anim==='roundhouse')return 'kick';
   if(f.anim==='block'||f.anim==='blockstun')return 'dodge';
   if(f.anim==='crouch'||f.anim==='crouchBlock'||f.anim==='hit')return 'dodge';
   return 'idle';
@@ -2680,7 +2680,7 @@ const PC_MOTION_KEYS=Object.freeze({
 });
 function pcMotionFrame(f){
   const move=f.move, key=move?.key==='jumpKick'?'jumpKick':move?.key==='lowKick'?'lowKick':move?.key==='tripSweep'?'tripSweep':move?.key==='roundhouse'?'roundhouse':move?.key==='uppercut'?'uppercut':
-    move?.key==='spinKick'?'roundhouse':move?.key==='superUppercut'?'uppercut':move?.key==='barrelPunch'?'punch':
+    move?.key==='spinKick'?'roundhouse':move?.key==='superUppercut'?'uppercut':move?.key==='barrelPunch'?'punch':move?.key==='kick'?'kick':
     (f.anim==='walk'||f.anim==='back'?f.anim:
     (f.anim==='punch'||f.anim==='kick'||f.anim==='uppercut'?f.anim:'idle'));
   if(!move&&!['idle','walk','back'].includes(f.state))return null;
