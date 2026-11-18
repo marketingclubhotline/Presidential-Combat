@@ -459,6 +459,39 @@
       "box": null,
       "cancelInto": [],
       "superCost": 35
+    },
+    "superUppercut": {
+      "key": "superUppercut",
+      "anim": "uppercut",
+      "startup": 10,
+      "active": 14,
+      "recovery": 52,
+      "damage": 25,
+      "chip": 3,
+      "hitstun": 54,
+      "blockstun": 14,
+      "pushHit": 16,
+      "pushBlock": 5,
+      "selfPush": 0,
+      "height": "mid",
+      "weight": "heavy",
+      "sfx": "kick",
+      "meter": 0,
+      "special": true,
+      "invuln": [
+        0,
+        6
+      ],
+      "launcher": -21,
+      "box": {
+        "x": 6,
+        "y": -186,
+        "w": 62,
+        "h": 120
+      },
+      "riseVel": -17,
+      "cancelInto": [],
+      "superCost": 50
     }
   },
   "palettes": {

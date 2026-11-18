@@ -84,16 +84,18 @@
   @media(max-height:470px){#matchupGuide .vs-nameplates{bottom:26%}#matchupGuide .vs-portrait{height:63%}#matchupGuide .moves{bottom:5%}}
   #matchupGuide{display:none;position:absolute;z-index:3;left:50%;bottom:17%;transform:translateX(-50%);width:min(720px,94vw);padding:12px 15px;border:1px solid #bda36a;border-radius:12px;background:rgba(7,6,17,.88);text-align:center;pointer-events:none;}
   #matchupGuide.show{display:block;}
+  #matchupGuide.show ~ #touch{opacity:0!important;}
   #matchupGuide .vs{font-weight:900;color:#ffe29c;font-size:clamp(15px,3.5vh,28px);}
   #matchupGuide .moves{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px;text-align:left;font-size:clamp(9px,1.5vh,13px);line-height:1.5;color:#d6d1e6;}
   #matchupGuide .moves b{color:#ffe29c;}
   #matchupGuide .secrets{font-size:clamp(8px,1.3vh,11px);color:#a9a1bb;margin-top:7px;}
   @media(max-height:470px){#matchupGuide{bottom:11%;padding:5px 9px}#matchupGuide .moves{line-height:1.25;margin-top:3px}}
+  #matchupGuide .moves{max-height:26%;overflow:hidden;}
   #touch{position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .25s;}
   #touch.on{opacity:1;}
-  .zone{position:absolute;bottom:2.5vh;pointer-events:auto;display:grid;gap:8px;}
-  #dpad{left:2.5vw;grid-template-columns:repeat(3,var(--k));grid-template-rows:repeat(2,var(--k));--k:clamp(44px,9vh,82px);}
-  #btns{right:2.5vw;grid-template-columns:repeat(2,var(--k));grid-template-rows:repeat(2,var(--k));--k:clamp(50px,10vh,88px);}
+  .zone{position:absolute;bottom:2.5vh;pointer-events:auto;display:grid;gap:clamp(10px,2.2vh,16px);}
+  #dpad{bottom:clamp(75px,19vh,160px);left:2.5vw;grid-template-columns:repeat(3,var(--k));grid-template-rows:repeat(2,var(--k));--k:clamp(42px,8.5vh,78px);}
+  #btns{bottom:clamp(75px,19vh,160px);right:2.5vw;grid-template-columns:repeat(2,var(--k));grid-template-rows:repeat(2,var(--k));--k:clamp(48px,9.2vh,84px);}
   .key{display:flex;align-items:center;justify-content:center;border-radius:14px;
     background:rgba(24,18,38,.55);border:2px solid rgba(140,120,200,.45);
     font-size:clamp(9px,1.7vh,14px);color:#dcd3ff;backdrop-filter:blur(4px);
@@ -147,14 +149,14 @@
   #rosterStatus{color:#e3b95b;font-size:clamp(10px,1.6vh,14px);text-align:center;}
   @media(max-width:600px){.roster{grid-template-columns:repeat(6,minmax(0,1fr));}.roster-card{min-height:58px;padding:3px;}.roster-card .portrait{font-size:22px;}.roster-card .fighter-photo{height:44px;}.roster-card .country{display:none;}}
   /* Post-match finishers are presentation only, never part of rollback simulation. */
-  #finisherUI{display:none;position:absolute;z-index:12;left:50%;top:48%;transform:translate(-50%,-50%);width:min(540px,92vw);padding:20px;border:2px solid #e4b94e;border-radius:16px;background:rgba(10,8,20,.95);color:white;text-align:center;box-shadow:0 0 40px #d5a63a66;}
+  #finisherUI{display:none;position:absolute;z-index:12;left:50%;top:14%;transform:translateX(-50%);width:min(540px,92vw);padding:4px;background:transparent;color:white;text-align:center;pointer-events:none;text-shadow:0 3px 15px #000;}
   #finisherUI.show{display:block;}
-  #finisherUI.show::before{content:'EXECUTE HIM!';display:block;font-size:clamp(24px,6vw,62px);font-weight:1000;color:#ffcf66;text-shadow:0 3px 18px #ff3a2c;margin-bottom:8px;}
+  #finisherUI.show::before{content:'FINISH HIM!';display:block;font-size:clamp(24px,6vw,62px);font-weight:1000;color:#ffcf66;text-shadow:0 3px 18px #ff3a2c;margin-bottom:8px;}
   #arenaFinishDim{display:none;position:absolute;z-index:10;inset:0;pointer-events:none;background:rgba(0,0,15,.58);}
   #arenaFinishDim.show{display:block;}
   #finisherUI h2{margin:0 0 9px;color:#ffcf66;letter-spacing:.1em;font-size:clamp(18px,4vw,29px);}
   #finisherUI p{font-size:12px;color:#c8c1d3;}
-  #finisherUI .row{margin-top:12px;}
+  #finisherUI .row{display:none!important;}
   #finisherFX{display:none;position:absolute;z-index:13;inset:0;pointer-events:none;align-items:center;justify-content:center;background:radial-gradient(ellipse,#ff8a1828,#000b 75%);text-align:center;}
   #finisherFX.show{display:flex;animation:pcFlash 2.6s ease-out forwards;}
   #finisherFX .fxwords{font-weight:1000;font-size:clamp(30px,9vw,110px);color:#ffdf66;text-shadow:0 5px 0 #b32718,0 0 40px #ff5500;transform:rotate(-5deg);}
@@ -278,13 +280,13 @@
     <button class="btn sm" id="skipEntrance" type="button">SKIP INTROS</button>
   </section>
   <div id="arenaFinishDim" aria-hidden="true"></div>
-  <div id="finisherUI" aria-live="polite"><h2>PRESIDENTIAL FINISH!</h2><p id="finisherHint">Choose a finisher, or enter a secret direction combo.</p><div class="row"><button class="btn sm" id="finishOne">FINISH 1 · ↑</button><button class="btn sm" id="finishTwo">FINISH 2 · ←</button><button class="btn sm" id="finishSkip">REMATCH</button></div></div>
+  <div id="finisherUI" aria-live="polite"><h2>FINISH HIM!</h2><p id="finisherHint">10s · ↑ OR ← TO FINISH</p><div class="row" hidden><button class="btn sm" id="finishOne">FINISH 1</button><button class="btn sm" id="finishTwo">FINISH 2</button><button class="btn sm" id="finishSkip">SKIP</button></div></div>
   <div id="finisherFX" aria-live="polite"><div><div class="fxemoji" id="fxEmoji">🔥</div><div class="fxwords" id="fxWords">YOU'RE FIRED!</div></div></div>
   <div id="topbar">
     <button class="tgl" id="tBox">HITBOX</button>
     <button class="tgl" id="tDiag">DIAG</button>
     <button class="tgl" id="tPad">PAD</button>
-    <button class="tgl" id="tCpu">CPU</button><button class="tgl" id="tTraining" title="Practice attacks against a stationary opponent">TRAINING</button>
+    <button class="tgl" id="tCpu">CPU</button><button class="tgl" id="tTraining" title="Practice attacks against a stationary opponent">TRAINING</button><button class="tgl" id="tSolo" title="Practice moves alone in the Presidential Combat gym">SOLO GYM</button>
     <button class="tgl" id="tMute">SOUND</button>
     <button class="tgl" id="tNet">NETPLAY</button>
   </div>
@@ -298,7 +300,8 @@
     <div class="zone" id="btns">
       <div class="key atk" data-k="punch">PUNCH</div>
       <div class="key atk" data-k="kick">KICK</div>
-      <div class="key" data-k="block" style="grid-area:2/1/3/3">BLOCK</div>
+      <div class="key" data-k="block" style="grid-area:2/1">BLOCK</div>
+      <div class="key atk" data-k="sweep" style="grid-area:2/2;border-color:#ffcf70">SWEEP</div>
     </div>
   </div>
   <div id="netui">
@@ -348,6 +351,7 @@
   </div>
   <div id="boot">
     <h1>PRESIDENTIAL COMBAT</h1>
+    <button class="btn" id="startPractice" type="button" style="background:#423015;border:3px solid #ffdf75;color:white;min-height:54px;flex-shrink:0;z-index:5">🥊 PRACTICE LAB · KIM DOES NOT ATTACK</button>
     <div id="rosterStatus">HOVER TO PREVIEW · CLICK A READY FIGHTER TO START</div>
     <div id="fighterPreview" aria-live="polite"><div class="pc-side"><img id="fighterPreviewImg" src="art/sprites/trump-idle.png" alt="Trump fighting stance preview"><div class="preview-label" id="fighterPreviewLabel">DONALD TRUMP · USA</div></div><div class="pc-versus">VS</div><div class="pc-side"><img id="opponentPreviewImg" src="art/sprites/kim-idle.png" alt="Kim Jong Un fighting stance preview"><div class="preview-label" id="opponentPreviewLabel">KIM JONG UN · NORTH KOREA</div></div></div>
     <div class="roster" role="group" aria-label="Character selection">
@@ -364,6 +368,7 @@
        Cancel a connected normal straight into a special. P2: J/L MOVE · I JUMP · K CROUCH · 1 PUNCH · 2 KICK · 3 BLOCK.</p>
     <button class="btn sm" id="menuMusicToggle" type="button" aria-pressed="false">♫ PLAY MENU MUSIC</button>
     <button class="btn" id="start">ENTER THE RING</button>
+    <button class="btn" id="startSolo" type="button" style="border:3px solid #ffdc71;background:#332713;color:#fff;min-height:48px;position:sticky;bottom:8px;z-index:4">🎮 SOLO GYM · PRACTICE ALONE</button>
     <button class="btn sm" id="fairnessOpen" type="button">ABOUT · COMPETITIVE FAIRNESS</button>
   </div>
 </div>
@@ -508,11 +513,11 @@ const OX = 92, OY = 212;
 
 const ANIM = {
   idle:       {cells:[0,1,2,1],   hold:8,  loop:true },
-  walk:       {cells:[3,4,5,4],   hold:6,  loop:true },
-  back:       {cells:[5,4,3,4],   hold:6,  loop:true },
+  walk:       {cells:[3,4,5,4,3,5], hold:5, loop:true },
+  back:       {cells:[5,4,3,4,5,3], hold:5, loop:true },
   crouch:     {cells:[6],         hold:99, loop:true },
-  jump:       {cells:[7],         hold:99, loop:true },
-  fall:       {cells:[8],         hold:99, loop:true },
+  jump:       {cells:[6,6,7,8,7,8], hold:4, loop:false},
+  fall:       {cells:[7,8],       hold:6, loop:false},
   punch:      {cells:[9,10,11],   hold:0,  loop:false},
   kick:       {cells:[12,13,14],  hold:0,  loop:false},
   crouchKick: {cells:[15,16,15],  hold:0,  loop:false},
@@ -990,7 +995,7 @@ const Audio5 = (()=>{
    The sim then consumes the freshest mask at step time.               --- */
 const BTN = { LEFT:1, RIGHT:2, UP:4, DOWN:8, PUNCH:16, KICK:32, BLOCK:64 };
 const BIT_OF = { left:BTN.LEFT, right:BTN.RIGHT, up:BTN.UP, crouch:BTN.DOWN,
-                 punch:BTN.PUNCH, kick:BTN.KICK, block:BTN.BLOCK };
+                 punch:BTN.PUNCH, kick:BTN.KICK, sweep:BTN.DOWN|BTN.KICK, block:BTN.BLOCK };
 
 const KEYMAP = {
   // Player 1: arcade-style arrow joystick, adjacent A/S/D action buttons.
@@ -1160,7 +1165,23 @@ class InputBuffer{
     }
     return false;
   }
+  // Detect two separate DOWN presses, allowing neutral or other directions
+  // between them. Unlike a strict numpad pattern, this works with touch pads.
+  doubleDownMotion(window=32){
+    let taps=0;
+    for(let age=0;age<window;age++){
+      const now=this.hist[(this.head-age+64)&63];
+      const before=this.hist[(this.head-age+63)&63];
+      if((now&BTN.DOWN) && !(before&BTN.DOWN)){
+        if(++taps===2)return true;
+      }
+    }
+    return false;
+  }
   detectSpecial(){
+    // Two separate down taps followed by punch; meter is checked in startMove.
+    if(this.avail('punch') && MOVES.superUppercut && this.doubleDownMotion(32))
+      return {move:'superUppercut',btn:'punch',priority:10};
     let best=null;
     for(const m of MOTIONS){
       if(!this.avail(m.btn)) continue;
@@ -1230,7 +1251,7 @@ class Fighter{
     this.combo=0; this.comboTimer=0; this.comboDamage=0;
     this.gravMul=1;
     this.anim='idle'; this.animFrame=0; this.animTick=0;
-    this.flash=0; this.onGround=true; this.invuln=0;
+    this.flash=0; this.onGround=true; this.invuln=0;this.recentKnockdown=false;
     this.aiTimer=0; this.aiMode=0;
     this.buf.reset();
     if(full) this.rounds=0;
@@ -1246,7 +1267,7 @@ class Fighter{
     o.combo=this.combo; o.comboTimer=this.comboTimer; o.comboDamage=this.comboDamage;
     o.gravMul=this.gravMul; o.anim=this.anim; o.animFrame=this.animFrame;
     o.animTick=this.animTick; o.onGround=this.onGround; o.invuln=this.invuln;
-    o.flash=this.flash; o.rounds=this.rounds; o.aiTimer=this.aiTimer;
+    o.flash=this.flash; o.recentKnockdown=this.recentKnockdown; o.rounds=this.rounds; o.aiTimer=this.aiTimer;
     o.bh=this.buf.head; o.bprev=this.buf.prev;
     if(!o.hist) { o.hist=new Int32Array(64); o.dirs=new Int8Array(64); }
     o.hist.set(this.buf.hist); o.dirs.set(this.buf.dirs);
@@ -1264,7 +1285,7 @@ class Fighter{
     this.combo=o.combo; this.comboTimer=o.comboTimer; this.comboDamage=o.comboDamage;
     this.gravMul=o.gravMul; this.anim=o.anim; this.animFrame=o.animFrame;
     this.animTick=o.animTick; this.onGround=o.onGround; this.invuln=o.invuln;
-    this.flash=o.flash; this.rounds=o.rounds; this.aiTimer=o.aiTimer;
+    this.flash=o.flash; this.recentKnockdown=!!o.recentKnockdown; this.rounds=o.rounds; this.aiTimer=o.aiTimer;
     this.buf.head=o.bh; this.buf.prev=o.bprev;
     this.buf.hist.set(o.hist); this.buf.dirs.set(o.dirs);
     Object.assign(this.buf.pressAge,o.pa);
@@ -1317,16 +1338,16 @@ class Fighter{
     this.setState(st, m.anim);
     if(m.riseVel){ this.vy=m.riseVel; this.onGround=false; }
     if(m.driveVel){ this.vx=this.face*m.driveVel; }
+    if(key==='superUppercut' && !Net.active){
+      // Telegraph the meter-powered strike before contact; sound is immediate.
+      Audio5.play('fire',0.85,0.75); Audio5.play('crowdRoar',0.20);
+      Audio5.playFighterLine(this.idx===0?'trump':'kim',0.72, m.startup+m.active+m.recovery);
+    }
     if(isCancel){ FX.cancelFlash(this); Audio5.play('counter',0.35,1.4); }
     // Wind-up is a whoosh; impact sounds remain tied to actual contact in takeHit.
     Audio5.play(m.special?'fire':'swish',m.special?0.5:0.32,0.9+Rng.range(0,0.2));
-    // Character dialogue starts on wind-up; contact sounds stay on the hit frame.
-    // Avoid layering generic grunts over the recorded Trump dialogue.
-    if(!Net.active){
-      if(this.idx===0 && (m.special || key==='kick' || key==='roundhouse'))
-        Audio5.playFighterLine('trump',0.55,m.startup+m.active+m.recovery);
-      else Audio5.playMasterCombatVoice(m.special?0.32:0.22);
-    }
+    // Voice is deliberately reserved for confirmed contact in takeHit.
+    // Whiffs should never trigger a punchline ahead of the visible reaction.
     return true;
   }
 
@@ -1343,6 +1364,17 @@ class Fighter{
 
     const dir = attacker.face;
     if(blocked){
+      // A fresh block earns a meter bonus and a brief counterattack opening.
+      // Offline only until rollback input parity is tested.
+      const perfect=!Net.active && this.stateFrame<=6;
+      if(perfect){
+        this.stun=3;this.invuln=Math.max(this.invuln,8);
+        this.addMeter(12);attacker.stun=Math.max(attacker.stun,12);
+        attacker.move=null;attacker.canCancel=false;
+        attacker.setState('hitstun','hit');attacker.vx=-attacker.face*5;
+        Audio5.play('counter',0.8);FX.spark(atk,this,true,attacker);
+        return 'block';
+      }
       this.hp = Math.max(0, this.hp - atk.chip);
       this.stun = atk.blockstun;
       this.setState('blockstun', blockedLow?'crouchBlock':'block');
@@ -1360,14 +1392,22 @@ class Fighter{
     /* --- 7.4 progressive scaling --- */
     const n = attacker.combo;
     const dmg = Math.max(SCALING.minDamage, Math.round(atk.damage * scaleAt(SCALING.damage,n)));
-    this.hp = Math.max(0, this.hp - dmg);
+    this.hp = Math.max(0, this.hp - (!Net.active ? Math.max(1, Math.round(dmg * 0.55)) : dmg));
+    // Preserve a final finisher opportunity when a strike would skip past 5 HP.
+    if(!Net.active && !pcTrainingMode && !pcSoloGym && this.hp===0 && attacker.hp>5) this.hp=1;
     this.stun = Math.round(atk.hitstun * scaleAt(SCALING.hitstun,n));
     this.gravMul = scaleAt(SCALING.gravity, n);   // heavier each hit → combo ends
 
     const airborne = !this.onGround || atk.launcher;
     this.setState(airborne?'airstun':'hitstun','hit');
     this.flash = 6;
-    this.vx = dir * atk.pushHit;
+    this.vx = dir * atk.pushHit * (!Net.active ? 1.65 : 1);
+    // Offline heavy strikes create a readable recoil and recovery beat.
+    if(!Net.active && !atk.multiHit){
+      const heavy=atk.weight==='heavy' || atk.launcher || atk.special;
+      this.stun=Math.max(this.stun,heavy?32:18);
+      attacker.vx-=attacker.face*(heavy?2.5:1.2);
+    }
     if(atk.launcher){ this.vy = atk.launcher; this.onGround=false; }
     else if(atk.key==='tripSweep' && this.onGround){
       // A low sweep trips the opponent into a short, recoverable knockdown.
@@ -1386,6 +1426,15 @@ class Fighter{
     attacker.addMeter(atk.meter);
     this.addMeter(atk.meter*0.5);
     if(!atk.multiHit || this.stun>0){ Audio5.play(atk.sfx, 1, 0.92+Rng.range(0,0.16)); Audio5.play('hurt',0.25); }
+    if(atk.key==='superUppercut' && !Net.active){
+      Audio5.play('boom',0.9); Audio5.play('crowdRoar',0.35); Cam.shake(12);
+      this.recentKnockdown=true;
+    }
+    if(!Net.active && !atk.multiHit){
+      const signature=atk.weight==='heavy' || atk.launcher || atk.special;
+      if(signature && atk.key!=='superUppercut') Audio5.playFighterLine(attacker.idx===0?'trump':'kim',0.55);
+      else if(attacker.combo===1) Audio5.playMasterCombatVoice(0.20);
+    }
     FX.spark(atk,this,false,attacker);
     Juice.impact(atk, this, false);
     if(atk.cancelInto && atk.cancelInto.length) attacker.canCancel=true;  // 7.3
@@ -1408,7 +1457,22 @@ class Fighter{
       this.applyPhysics(opp); this.advanceAnim(); return;
     }
     if(this.state==='hitstun' || this.state==='airstun' || this.state==='blockstun'){
+      // Spend meter to escape a combo; the defender must deliberately press block.
+      if(!Net.active && this.stun>0 && this.meter>=35 && this.buf.avail('block')){
+        this.buf.consume('block');this.addMeter(-35);this.stun=0;
+        this.invuln=Math.max(this.invuln,20);this.vx=-this.face*7;
+        opp.vx=this.face*8;opp.move=null;opp.canCancel=false;
+        opp.stun=Math.max(opp.stun,16);opp.setState('hitstun','hit');
+        this.setState('idle');Audio5.play('counter',0.85);
+        this.applyPhysics(opp);this.advanceAnim();return;
+      }
       if(--this.stun<=0 && (this.onGround || this.state==='blockstun')){
+        // A knocked-down defender gets a short wake-up protection window.
+        // No indefinite juggle as the character regains their footing.
+        if(!Net.active && this.state==='hitstun' && this.recentKnockdown){
+          this.invuln=Math.max(this.invuln,12);
+          this.recentKnockdown=false;
+        }
         this.setState(this.onGround?'idle':'jump');
       }
       this.applyPhysics(opp); this.advanceAnim(); return;
@@ -1465,7 +1529,7 @@ class Fighter{
 
     // specials always win over normals
     const sp = this.buf.detectSpecial();
-    if(sp && this.onGround){
+    if(sp && this.onGround && (!MOVES[sp.move].superCost || this.meter>=MOVES[sp.move].superCost)){
       this.buf.consume(sp.btn);
       this.startMove(sp.move,false);
       this.applyPhysics(opp); this.advanceAnim(); return;
@@ -1476,13 +1540,13 @@ class Fighter{
         this.buf.consume(this.buf.avail('kick')?'kick':'punch');
         this.startMove('jumpKick');
       }else{
-        this.vx = clamp(this.vx + dir*PHYS.airDrift*0.35, -6.2, 6.2);
+        this.vx = clamp(this.vx + dir*PHYS.airDrift*0.65, -8.0, 8.0);
         this.setState('jump', this.vy<0?'jump':'fall');
       }
     } else if(this.buf.avail('up') && !down){
       this.buf.consume('up');
       this.vy = PHYS.jumpVel; this.onGround=false;
-      this.vx = dir*4.4;
+      this.vx = dir*7.0;
       this.setState('jump'); Audio5.play('jump',0.4);
     } else if(held&BTN.BLOCK){
       this.setState(down?'crouchBlock':'block');
@@ -1529,7 +1593,11 @@ class Fighter{
         FX.dust(this.x,FLOOR, Math.min(14, Math.abs(this.vy)));
       }
       this.y=FLOOR; this.vy=0; this.onGround=true; this.gravMul=1;
-      if(this.state==='airstun'){ this.stun=Math.max(this.stun,8); this.setState('hitstun','hit'); }
+      if(this.state==='airstun'){
+        this.recentKnockdown=true;
+        this.stun=Math.max(this.stun,18);
+        this.setState('hitstun','hit');
+      }
       else if((this.state==='jump'||this.state==='airAtk') && !this.move) this.setState('idle');
     } else this.onGround=false;
 
@@ -2027,13 +2095,13 @@ function updateFlow(){
   if(Game.phase==='finishWindow'){
     // The defeated fighter is dazed BEFORE the knockout, never after match end.
     // Offline prototype: deterministic network matches keep the old KO flow.
-    if(T>=420){pcFinisherClose();endRound(Game.winner,true);}
+    if(T>=600){pcFinisherClose();endRound(Game.winner,true);}
     return;
   }
   if(Game.phase==='fight'){
     // Intercept the last health bars to present the finisher opportunity.
-    if(!Net.active && !pcTrainingMode && ((P1.hp<=15&&P2.hp>15)||(P2.hp<=15&&P1.hp>15))){
-      Game.winner=P1.hp<=15?'p2':'p1';
+    if(!Net.active && !pcTrainingMode && ((P1.hp<=5&&P2.hp>5)||(P2.hp<=5&&P1.hp>5))){
+      Game.winner=P1.hp<=5?'p2':'p1';
       const loser=Game.winner==='p1'?P2:P1;
       loser.hp=Math.max(1,loser.hp);loser.move=null;loser.vx=0;loser.vy=0;
       loser.setState('frozen','hit');
@@ -2052,6 +2120,11 @@ function updateFlow(){
   }
   if(Game.phase==='ko'){
     Game.slowmo = Math.min(1, Game.slowmo+0.02);
+    // Sync recoil, body impact and dust with the shared 31-frame KO sequence.
+    // Short combat vocal is optional; never delay the impact SFX or announcer.
+    if(T===9){Audio5.play('hurt',0.50);Audio5.playMasterCombatVoice(0.18);}
+    if(T===31){Audio5.play('land',0.95);FX.wallSpark && Cam.shake(4);}
+
     if(T===120){
       const w=Game.winner;
       if(w==='p1'){P1.rounds++; P1.setState('win');}
@@ -2538,7 +2611,11 @@ function pcPose(f){
     return (move.key==='lowKick'||move.key==='tripSweep') ? 'dodge' : 'idle';
   }
   if(f.anim==='win')return 'win';
-  if(f.anim==='ko'||f.state==='ko')return 'idle';
+  // Use distinct source poses across the KO sequence instead of a rigid idle cutout.
+  if(f.anim==='ko'||f.state==='ko'){
+    const t=Math.max(0,Game.phaseT-2);
+    return t<8?'dodge':t<19?'kick':t<29?'dodge':'idle';
+  }
   if(f.anim==='walk'||f.anim==='back')return 'walk';
   if(f.anim==='punch'||f.anim==='uppercut'||f.anim==='fireball')return 'punch';
   if(f.anim==='kick'||f.anim==='crouchKick'||f.anim==='tripSweep'||f.anim==='jumpKick'||f.anim==='spinKick')return 'kick';
@@ -2600,7 +2677,7 @@ const PC_MOTION_KEYS=Object.freeze({
 });
 function pcMotionFrame(f){
   const move=f.move, key=move?.key==='tripSweep'?'tripSweep':move?.key==='roundhouse'?'roundhouse':move?.key==='uppercut'?'uppercut':
-    move?.key==='spinKick'?'roundhouse':move?.key==='barrelPunch'?'punch':
+    move?.key==='spinKick'?'roundhouse':move?.key==='superUppercut'?'uppercut':move?.key==='barrelPunch'?'punch':
     (f.anim==='walk'||f.anim==='back'?f.anim:
     (f.anim==='punch'||f.anim==='kick'||f.anim==='uppercut'?f.anim:'idle'));
   if(!move&&!['idle','walk','back'].includes(f.state))return null;
@@ -2643,8 +2720,13 @@ function drawFighter(g,f){
       const phase=Game.frame*0.31+(f.side==='p2'?1.2:0);
       const step=Math.sin(phase),lift=Math.max(0,Math.sin(phase*2));
       // Keep the torso stable: large shears made Kim's silhouette glitch.
-      g.translate(reverse*step*2.0,-lift*1.2);
-      g.rotate(reverse*step*0.008);
+      // Six gait phases: planted, push-off, passing, landing, planted, recovery.
+      // Separate vertical compression and lateral weight transfer to avoid skating.
+      const gait=(phase%(Math.PI*2)+Math.PI*2)%(Math.PI*2);
+      const compression=Math.max(0,Math.cos(gait*2));
+      g.translate(reverse*step*5.0,-lift*4.4+compression*1.4);
+      g.rotate(reverse*step*0.035);
+      g.scale(1+0.014*compression,1-0.019*compression);
     }
     // Multi-keyframe weight shifts: interpolated idle, footwork and attack arcs.
     const motion=pcMotionFrame(f);
@@ -2653,6 +2735,44 @@ function drawFighter(g,f){
       g.translate(dx*f.face,dy);
       g.rotate(tilt*f.face);
       g.scale(1,stretch);
+    }
+    // Jump silhouette follows ascent/apex/descent instead of a frozen standing pose.
+    if(!f.onGround && !f.move){
+      const rise=f.vy<0;
+      const bend=Math.min(1,Math.abs(f.vy)/Math.max(1,Math.abs(PHYS.jumpVel)));
+      g.translate(f.face*(rise?3:-2),rise?-3:2);
+      g.rotate(f.face*(rise?-0.075:0.055));
+      g.scale(1+(rise?0.045:-0.025)*bend,1-(rise?0.10:0.055)*bend);
+    }
+    // Meter super: visibly coil before the launch, then extend into the rising hit.
+    if(f.move?.key==='superUppercut'){
+      const t=f.moveFrame, wind=Math.min(1,t/10);
+      if(t<10){g.translate(0,12*wind);g.scale(1+0.10*wind,1-0.17*wind);}
+      else if(t<24){const lift=Math.min(1,(t-10)/14);g.translate(f.face*10*lift,-16*lift);g.rotate(f.face*0.13*lift);}
+    }
+    // Readable contact animation: recoil, stagger and grounded recovery.
+    // Purely cosmetic, so network collision positions remain deterministic.
+    if(f.state==='hitstun' || f.state==='airstun'){
+      const t=Math.min(1,f.stateFrame/16);
+      const decay=(1-t)*(1-t);
+      const heavy=f.recentKnockdown || f.state==='airstun';
+      g.translate(-f.face*(heavy?17:9)*decay,heavy?Math.sin(t*Math.PI)*-8:0);
+      g.rotate(-f.face*(heavy?0.18:0.095)*decay);
+      g.scale(1+0.045*decay,1-0.065*decay);
+    }else if(f.state==='blockstun'){
+      const decay=Math.max(0,1-f.stateFrame/11);
+      g.translate(-f.face*5*decay,0);
+      g.rotate(-f.face*0.035*decay);
+    }else if(f.onGround && f.recentKnockdown){
+      // Two diminishing ground rebounds, then a deliberate get-up silhouette.
+      // Visual-only until dedicated sprite frames are available.
+      const t=Math.min(1,f.stateFrame/34);
+      const bounce=t<0.55?Math.abs(Math.sin(t/0.55*Math.PI))*13:
+        Math.abs(Math.sin((t-0.55)/0.45*Math.PI))*6;
+      const prone=Math.max(0,1-t);
+      g.translate(0,17*prone-bounce);
+      g.rotate(-f.face*0.55*prone);
+      g.scale(1+0.18*prone,1-0.38*prone);
     }
     // Shared finisher daze animation: identical logic for every roster fighter.
     // Cosmetic only; does not affect combat hitboxes or network simulation.
@@ -2663,20 +2783,41 @@ function drawFighter(g,f){
       g.translate(Math.sin(phase)* (variant?7:4),-Math.abs(Math.sin(phase*.7))*4);
       g.rotate(Math.sin(phase*(variant?0.65:1))* (variant?.10:.065));
     }
-    // Knocked-out fighter visibly tumbles and remains horizontal on the floor.
+    // Multi-stage KO: recoil -> buckle -> tumble -> grounded hold.
+    // The Neon Fist template uses multiple KO sprite cells; our portrait sprites
+    // lack KO frames, so switch between existing poses while interpolating the
+    // body center, tilt and height. This is visual-only and shared by all fighters.
     if(f.state==='ko' && !finishingLoser){
-      // Four shared knockdown silhouettes, chosen deterministically by round
-      // and fighter; rotate around the grounded body center, not the feet.
-      const downAngles=[1.48,1.53,1.57,1.50];
-      const pose=(Game.round*2+f.idx)%downAngles.length;
-      const fallProgress=Math.min(1,Math.max(0,(Game.phaseT-2)/30));
-      const stagedFall=fallProgress<.30?fallProgress*.60:fallProgress<.72?.18+(fallProgress-.30)*1.35:.747+(fallProgress-.72)*(.253/.28);
-      const angle=downAngles[pose]*f.face*Math.min(1,stagedFall);
-      // Rotate around the lower torso and move the fallen silhouette
-      // away from the winner; the feet stay near the ground line.
-      g.translate(-f.face*65*fallProgress,-fighterHeight*.25*fallProgress + (fallProgress>.82?Math.sin((fallProgress-.82)/.18*Math.PI)*-5:0));
-      g.rotate(angle);
-      g.translate(0,fighterHeight*.48*fallProgress);
+      const t=Math.max(0,Game.phaseT-2);
+      const ease=x=>{const v=Math.max(0,Math.min(1,x));return v*v*(3-2*v);};
+      const recoil=ease(t/8),buckle=ease((t-7)/11),land=ease((t-18)/13);
+      const direction=f.face;
+      // Keep the silhouette grounded as the torso loses height; unlike the
+      // previous single rotation, each phase changes pose and proportions.
+      // Match the stage's configured walls and floor, even on narrow phones.
+      const desiredX=f.x-direction*(12*recoil+23*buckle+39*land);
+      const safeX=Math.max(WALL_L+80,Math.min(WALL_R-80,desiredX));
+      const floorOffset=Math.max(-30,Math.min(75,-7*recoil+36*buckle+28*land));
+      g.translate(safeX-f.x,floorOffset);
+      // The final pose rests nearly horizontal, not upright in a blocking stance.
+      // Preserve a fixed final position so the body doesn't rock indefinitely.
+      g.rotate(direction*(-0.15*recoil+0.64*buckle+1.45*land));
+      g.scale(1+0.07*buckle+0.14*land,1-0.10*buckle-0.19*land);
+      if(t>=29){
+        // Tiny impact settle; no continuous rocking after the body lands.
+        const settle=Math.exp(-(t-29)/5)*Math.sin((t-29)*1.1)*3;
+        g.translate(0,settle);
+      }
+    }
+    // Attack follow-through visibly accelerates at contact and eases into guard.
+    if(f.move && f.move.active>0 && f.moveFrame>=f.move.startup){
+      const u=Math.min(1,(f.moveFrame-f.move.startup)/Math.max(1,f.move.active+f.move.recovery));
+      const accent=Math.sin(Math.PI*u)*Math.exp(-u*.6);
+      if(f.move.key==='punch'||f.move.key==='barrelPunch'){
+        g.translate(f.face*6*accent,-2*accent);g.rotate(f.face*.045*accent);
+      }else if(f.move.key==='kick'||f.move.key==='roundhouse'){
+        g.translate(f.face*4*accent,-5*accent);g.rotate(-f.face*.065*accent);
+      }
     }
     // Kim source sprites are opposite-facing; compensate only for his artwork.
     if(f.move?.key==='roundhouse' && f.moveFrame>=f.move.startup &&
@@ -2701,11 +2842,21 @@ function drawFighter(g,f){
     if(f.flash>0)g.filter='brightness(2.4) saturate(0.4)';
     else if(f.invuln>0&&(Game.frame>>1)%2===0)g.filter='brightness(1.6) hue-rotate(70deg)';
     g.drawImage(art,-aw*scale/2,-fighterHeight,aw*scale,fighterHeight);
+    if(f.side==='p1' && f.move?.key==='superUppercut'){
+      // Trump's microphone is a prop drawn over the existing uppercut sprite.
+      const t=f.moveFrame, wind=Math.min(1,t/10);
+      g.save();g.translate(42+10*wind,-116-46*Math.min(1,Math.max(0,(t-10)/14)));
+      g.rotate(-0.45-Math.min(1,t/24)*2.1);
+      g.strokeStyle='#c5cad5';g.lineWidth=7;g.lineCap='round';
+      g.beginPath();g.moveTo(0,0);g.lineTo(0,-36);g.stroke();
+      g.fillStyle='#373e50';g.beginPath();g.ellipse(0,-40,11,15,0,0,Math.PI*2);g.fill();
+      g.strokeStyle='#e9e5d9';g.lineWidth=2;g.stroke();g.restore();
+    }
     if(finishingLoser){
       g.save();g.fillStyle='#ffe88c';g.font='bold 26px sans-serif';
       g.textAlign='center';g.fillText('✦  ✦',0,-fighterHeight-17+Math.sin(Game.frame*.15)*4);g.restore();
     }
-    pcDrawFace(g,f,f.side==='p1'?'trump':'kim',aw*scale,fighterHeight);
+    if(f.state!=='ko') pcDrawFace(g,f,f.side==='p1'?'trump':'kim',aw*scale,fighterHeight);
     if(!finishingLoser && f.state!=='ko' && (f.state==='block'||f.state==='crouchBlock'||f.state==='blockstun')){
       g.strokeStyle='#73d9ff';g.lineWidth=5;g.shadowColor='#4dcfff';g.shadowBlur=16;
       g.beginPath();g.ellipse(35,-100,22,64,-0.2,-Math.PI/2,Math.PI/2);g.stroke();
@@ -2829,10 +2980,10 @@ function render(){
   }
   // No artificial ground ellipses: approved arena already supplies floor detail.
   const order = P1.y<=P2.y ? [P1,P2] : [P2,P1];
-  for(const f of order) drawFighter(g,f);
+  for(const f of order) if(!pcSoloGym || f===P1) drawFighter(g,f);
   Projectiles.draw(g,Game.frame);
   FX.draw(g);
-  if(DEBUG.boxes){ drawBoxes(g,P1); drawBoxes(g,P2); }
+  if(DEBUG.boxes){ drawBoxes(g,P1); if(!pcSoloGym)drawBoxes(g,P2); }
   g.restore();
 
   // full-screen flash sits outside the camera transform
@@ -2885,9 +3036,14 @@ function stepLocal(){
   if(Game.paused) return;
   const t0=performance.now();
   const a = localMask();
-  const b = pcTrainingMode ? 0 : (Game.cpu ? cpuMask(P2,P1) : LiveInput[1]);
+  if(pcSoloGym){P2.x=WALL_R+600;P2.vx=0;P2.vy=0;}
+  const b = (pcTrainingMode||pcSoloGym) ? 0 : (Game.cpu ? cpuMask(P2,P1) : LiveInput[1]);
   simulate(a,b);
-  if(pcTrainingMode && Game.phase==='fight'){P1.hp=100;P2.hp=100;Game.timer=99;Game.timerSub=0;}
+  if((pcTrainingMode||pcSoloGym) && Game.phase==='fight'){
+    P1.hp=100;P2.hp=100;Game.timer=99;Game.timerSub=0;
+    // Free practice meter makes it possible to rehearse signature supers repeatedly.
+    P1.meter=Math.max(P1.meter,100);
+  }
   DEBUG.stepMs = performance.now()-t0;
 }
 
@@ -2956,7 +3112,7 @@ const tBox=document.getElementById('tBox'), tPad=document.getElementById('tPad')
       tCpu=document.getElementById('tCpu'), tMute=document.getElementById('tMute'),
       tDiag=document.getElementById('tDiag'), tNet=document.getElementById('tNet'),
       tTraining=document.getElementById('tTraining');
-let pcTrainingMode=false;
+let pcTrainingMode=false,pcSoloGym=false,pcPreviousStage=3;
 function syncToggles(){
   tBox.classList.toggle('on',DEBUG.boxes);
   tDiag.classList.toggle('on',DEBUG.diag);
@@ -2964,19 +3120,33 @@ function syncToggles(){
   tPad.classList.toggle('on',touchRoot.classList.contains('on'));
   tCpu.classList.toggle('on',Game.cpu);
   tTraining.classList.toggle('on',pcTrainingMode);
+  document.getElementById('tSolo').classList.toggle('on',pcSoloGym);
   tMute.classList.toggle('on',!Audio5.muted);
   tNet.classList.toggle('on',Net.active);
 }
 tBox.onclick=()=>{DEBUG.boxes=!DEBUG.boxes;syncToggles();};
 tDiag.onclick=()=>{DEBUG.diag=!DEBUG.diag;syncToggles();};
 tPad.onclick=()=>{touchRoot.classList.toggle('on');cachePadRects();syncToggles();};
-tCpu.onclick=()=>{if(pcTrainingMode)pcTrainingMode=false;Game.cpu=!Game.cpu;syncToggles();UI.sync();};
+tCpu.onclick=()=>{if(pcTrainingMode)pcTrainingMode=false;if(pcSoloGym){pcSoloGym=false;pcSelectStage(pcPreviousStage);}Game.cpu=!Game.cpu;syncToggles();UI.sync();};
 tTraining.onclick=()=>{
   if(Net.active){UI.show('TRAINING UNAVAILABLE','DISCONNECT ONLINE MATCH FIRST',1800);return;}
+  if(pcSoloGym){pcSoloGym=false;pcSelectStage(pcPreviousStage);}
   pcTrainingMode=!pcTrainingMode;
   if(pcTrainingMode){Game.cpu=false;P1.hp=100;P2.hp=100;Game.timer=99;Game.timerSub=0;}
   syncToggles();UI.sync();
   UI.show(pcTrainingMode?'TRAINING MODE':'NORMAL MODE',pcTrainingMode?'STATIONARY OPPONENT · NO TIME LIMIT':'PRACTICE DISABLED',1400);
+};
+document.getElementById('tSolo').onclick=()=>{
+  if(Net.active){UI.show('SOLO GYM UNAVAILABLE','DISCONNECT ONLINE MATCH FIRST',1800);return;}
+  pcSoloGym=!pcSoloGym;
+  if(pcSoloGym){
+    pcPreviousStage=pcStageIndex;pcSelectStage(0);pcTrainingMode=false;Game.cpu=false;
+    P1.hp=100;P2.hp=100;Game.timer=99;Game.timerSub=0;
+    // Move the invisible training target out of the collision arena.
+    P2.x=WALL_R+600;P2.vx=0;P2.vy=0;
+  }else{pcSelectStage(pcPreviousStage);}
+  syncToggles();UI.sync();
+  UI.show(pcSoloGym?'PRESIDENTIAL COMBAT GYM':'NORMAL MODE',pcSoloGym?'SOLO PRACTICE · NO OPPONENT · NO TIMER':'SOLO PRACTICE DISABLED',1600);
 };
 tMute.onclick=()=>{Audio5.muted=!Audio5.muted;syncToggles();};
 tNet.onclick=()=>{ document.getElementById('netui').style.display='flex'; };
@@ -3011,8 +3181,8 @@ function pcFinisherOpen(){
   UI.hide(); // The match-end overlay must not cover the finisher controls.
   const fighter=Game.winner==='p1'?'TRUMP':'KIM';
   const hint=document.getElementById('finisherHint');
-  let seconds=7;
-  const renderHint=()=>{hint.textContent='FINISH HIM! · '+fighter+' WINS · '+seconds+'s · ↑ / ← or tap a finisher';};
+  let seconds=10;
+  const renderHint=()=>{hint.textContent=fighter+' WINS · '+seconds+'s · ↑ / ← TO FINISH';};
   renderHint();clearInterval(pcFinishCountdown);
   pcFinishCountdown=setInterval(()=>{
     if(!pcFinisherShown){clearInterval(pcFinishCountdown);return;}
@@ -3236,7 +3406,7 @@ pcMusicButton.addEventListener('click',()=>{
 });
 document.getElementById('boot').addEventListener('pointerdown',e=>{if(e.target.id!=='start'&&e.target.id!=='menuMusicToggle')pcStartMenuMusic();},{once:true});
 document.getElementById('boot').addEventListener('keydown',e=>{if(e.target.id!=='start'&&e.target.id!=='menuMusicToggle')pcStartMenuMusic();},{once:true});
-document.getElementById('start').addEventListener('click',()=>{
+function pcLaunchFromMenu(solo=false){
   Audio5.init(); Audio5.resume();
   legendVoicePreview?.pause();
   PC_MENU_MUSIC.pause();PC_MENU_MUSIC.currentTime=0;
@@ -3244,7 +3414,43 @@ document.getElementById('start').addEventListener('click',()=>{
   if('ontouchstart' in window) touchRoot.classList.add('on');
   cachePadRects();
   syncToggles();
-  startMatch(true);
+  startMatch(!solo);
+  if(solo) document.getElementById('tSolo').click();
+}
+document.getElementById('start').addEventListener('click',()=>pcLaunchFromMenu(false));
+document.getElementById('startSolo').addEventListener('click',()=>pcLaunchFromMenu(true));
+document.getElementById('startPractice').addEventListener('click',()=>{
+  pcLaunchFromMenu(false);
+  // Explicitly enter two-fighter training; never inherit the solo gym state.
+  pcSoloGym=false;
+  pcTrainingMode=true;
+  Game.cpu=false;
+  P1.reset(false);
+  P2.reset(false);
+  // Training begins immediately, without the five-second match intro.
+  // Both fighters must be visible, grounded, and ready for input.
+  P1.x=P1.spawnX; P2.x=P2.spawnX;
+  P1.setState('idle'); P2.setState('idle');
+  P1.hp=100;
+  P2.hp=100;
+  P1.meter=100;
+  Game.timer=99;
+  Game.timerSub=0;
+  Game.hitstop=0;
+  Game.phase='fight'; Game.phaseT=0;
+  closeEntrance();
+  document.getElementById('matchupGuide').classList.remove('show');
+  syncToggles();
+  UI.sync();
+  // Visible training commands remain on screen after the temporary toast.
+  let guide=document.getElementById('pcPracticeGuide');
+  if(!guide){
+    guide=document.createElement('aside'); guide.id='pcPracticeGuide';
+    guide.style.cssText='position:fixed;top:58px;right:8px;z-index:40;max-width:235px;padding:10px;background:rgba(8,10,22,.86);border:1px solid #e9b957;border-radius:8px;color:#fff;font:12px/1.5 sans-serif;pointer-events:none';
+    guide.innerHTML='<b>PRACTICE MOVES</b><div>↑ Jump · ↑ + → Jump forward</div><div>Jump + KICK: Air kick</div><div>DOWN + KICK: Trip sweep</div><div>KICK twice: Roundhouse</div><div>DOWN, release, DOWN, PUNCH: Super Uppercut (50 meter)</div><div>↓ ↘ → + PUNCH: Fireball</div>';
+    document.body.appendChild(guide);
+  }
+  UI.show('PRACTICE LAB','KIM WILL NOT ATTACK · INFINITE HEALTH, TIME & METER',2800);
 });
 
 /* ================= PHASE 11.2 — PRELOADER BOOT SEQUENCE =================
