@@ -2674,10 +2674,12 @@ const PC_MOTION_KEYS=Object.freeze({
   kick:[[0,0,-.07,1],[3,-3,-.12,1.015],[9,-5,.08,1.03],[4,-2,.025,1.01],[0,0,0,1]],
   uppercut:[[0,2,-.09,.99],[3,-3,-.04,1.015],[6,-10,.09,1.04],[3,-5,.04,1.02],[0,0,0,1]],
   tripSweep:[[0,0,-.05,.96],[2,8,-.12,.86],[7,13,-.20,.80],[12,12,.13,.82],[8,10,.09,.87],[4,7,.04,.92],[1,3,-.02,.97],[0,0,0,1]],
-  roundhouse:[[0,0,-.09,1],[2,-2,-.12,1.01],[5,-4,-.15,1.02],[9,-7,.13,1.035],[10,-5,.11,1.03],[6,-3,.07,1.02],[3,-1,.03,1.01],[0,0,0,1]]
+  roundhouse:[[0,0,-.09,1],[2,-2,-.12,1.01],[5,-4,-.15,1.02],[9,-7,.13,1.035],[10,-5,.11,1.03],[6,-3,.07,1.02],[3,-1,.03,1.01],[0,0,0,1]],
+  jumpKick:[[0,2,-.07,.97],[3,-6,-.13,1.03],[8,-11,-.16,1.07],[13,-9,.08,1.06],[10,-5,.12,1.025],[5,-2,.04,1.01],[0,0,0,1]],
+  lowKick:[[0,1,-.04,.97],[2,6,-.10,.91],[7,10,-.15,.86],[11,9,.09,.88],[5,5,.04,.94],[0,0,0,1]]
 });
 function pcMotionFrame(f){
-  const move=f.move, key=move?.key==='tripSweep'?'tripSweep':move?.key==='roundhouse'?'roundhouse':move?.key==='uppercut'?'uppercut':
+  const move=f.move, key=move?.key==='jumpKick'?'jumpKick':move?.key==='lowKick'?'lowKick':move?.key==='tripSweep'?'tripSweep':move?.key==='roundhouse'?'roundhouse':move?.key==='uppercut'?'uppercut':
     move?.key==='spinKick'?'roundhouse':move?.key==='superUppercut'?'uppercut':move?.key==='barrelPunch'?'punch':
     (f.anim==='walk'||f.anim==='back'?f.anim:
     (f.anim==='punch'||f.anim==='kick'||f.anim==='uppercut'?f.anim:'idle'));
