@@ -1180,7 +1180,7 @@ class InputBuffer{
   }
   detectSpecial(){
     // Two separate down taps followed by punch; meter is checked in startMove.
-    if(this.avail('punch') && MOVES.superUppercut && this.doubleDownMotion(32))
+    if(this.avail('punch') && MOVES.superUppercut && this.doubleDownMotion(48))
       return {move:'superUppercut',btn:'punch',priority:10};
     let best=null;
     for(const m of MOTIONS){
@@ -1427,6 +1427,7 @@ class Fighter{
     this.addMeter(atk.meter*0.5);
     if(!atk.multiHit || this.stun>0){ Audio5.play(atk.sfx, 1, 0.92+Rng.range(0,0.16)); Audio5.play('hurt',0.25); }
     if(atk.key==='superUppercut' && !Net.active){
+      Game.slowmo=Math.max(Game.slowmo,0.65);
       Audio5.play('boom',0.9); Audio5.play('crowdRoar',0.35); Cam.shake(12);
       this.recentKnockdown=true;
     }
@@ -3094,6 +3095,8 @@ function frame(now){
   fpsAcc+=dt; fpsN++;
   if(fpsAcc>=500){ DEBUG.fps=1000/(fpsAcc/fpsN); fpsAcc=0; fpsN=0; }
 
+  // Cinematic offline super impact slows briefly, then restores normal speed.
+  if(Game.phase==='fight' && !Net.active && Game.slowmo>0) Game.slowmo=Math.max(0,Game.slowmo-0.008);
   const rate = 1 - Game.slowmo*0.72;
   acc += dt*rate;
   let guard=0;
@@ -3451,8 +3454,8 @@ document.getElementById('startPractice').addEventListener('click',()=>{
   let guide=document.getElementById('pcPracticeGuide');
   if(!guide){
     guide=document.createElement('aside'); guide.id='pcPracticeGuide';
-    guide.style.cssText='position:fixed;top:58px;left:50%;transform:translateX(-50%);z-index:40;max-width:min(320px,44vw);padding:6px 9px;background:rgba(8,10,22,.78);border:1px solid #e9b957;border-radius:8px;color:#fff;font:clamp(9px,1.7vh,12px)/1.35 sans-serif;pointer-events:none';
-    guide.innerHTML='<b>PRACTICE MOVES · BLOCK button guards · DOWN crouches</b><div>↑ Jump · ↑ + → Jump forward</div><div>Jump + KICK: Air kick</div><div>DOWN + KICK: Trip sweep</div><div>KICK twice: Roundhouse</div><div>DOWN, release, DOWN, PUNCH: Super Uppercut (50 meter)</div><div>↓ ↘ → + PUNCH: Fireball</div>';
+    guide.style.cssText='position:fixed;bottom:2px;left:50%;transform:translateX(-50%);z-index:40;width:max-content;max-width:48vw;max-height:12vh;overflow:hidden;padding:2px 5px;background:rgba(8,10,22,.65);border:1px solid #e9b95766;border-radius:4px;color:#fff;font:clamp(7px,1.15vh,9px)/1.1 sans-serif;pointer-events:none';
+    guide.innerHTML='<b>PRACTICE</b> · ↓+K trip · ↓↓+P uppercut (50 meter) · K K roundhouse · ↑+K air kick';
     document.body.appendChild(guide);
   }
   UI.show('PRACTICE LAB','KIM WILL NOT ATTACK · INFINITE HEALTH, TIME & METER',2800);
