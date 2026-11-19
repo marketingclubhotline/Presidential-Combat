@@ -2896,35 +2896,14 @@ function drawFighter(g,f){
     if(f.flash>0)g.filter='brightness(2.4) saturate(0.4)';
     else if(f.invuln>0&&(Game.frame>>1)%2===0)g.filter='brightness(1.6) hue-rotate(70deg)';
     if((f.state==='walk'||f.state==='back') && f.onGround && !f.move){
-      // Shared two-leg pendulum gait. Rotate each leg around its own hip,
-      // rather than translating two rigid vertical halves (the old skate).
-      const hip=Math.floor(ah*.61), legH=ah-hip, half=Math.floor(aw/2);
+      // Keep the entire cleaned walk sprite intact. Splitting it at the hip
+      // produced transparent rectangular cutouts on mobile screens.
+      // Use a modest planted-step bounce until articulated walk frames exist.
       const phase=Game.frame*.24+(f.idx?1.2:0);
-      const forward=f.state==='back'?-1:1;
-      const stride=Math.sin(phase)*forward;
-      const strideAngle=.30; // each foot crosses the neutral line each cycle
-      const top=-fighterHeight+hip*scale;
-      // Preserve the original torso; leg halves swing from the pelvis.
-      g.drawImage(art,0,0,aw,hip,-aw*scale/2,-fighterHeight,aw*scale,hip*scale);
-      const swingLeg=(sx,sw,angle,raise)=>{
-        const pivot=(sx+sw*.5-aw*.5)*scale;
-        g.save();
-        g.translate(pivot,top);
-        g.rotate(angle);
-        g.translate(-pivot,0);
-        g.drawImage(art,sx,hip,sw,legH,(sx-aw/2)*scale,-raise,sw*scale,legH*scale);
-        g.restore();
-      };
-      // Far leg first, near leg last; alternate occlusion at each crossing.
-      const leftAngle=stride*strideAngle,rightAngle=-stride*strideAngle;
-      const leftLift=Math.max(0,stride)*9,rightLift=Math.max(0,-stride)*9;
-      if(stride>=0){
-        swingLeg(half,aw-half,rightAngle,rightLift);
-        swingLeg(0,half,leftAngle,leftLift);
-      }else{
-        swingLeg(0,half,leftAngle,leftLift);
-        swingLeg(half,aw-half,rightAngle,rightLift);
-      }
+      const weight=Math.sin(phase);
+      g.translate(weight*2.5,-Math.abs(Math.sin(phase))*3);
+      g.rotate(weight*(f.state==='back'?-0.018:0.018));
+      g.drawImage(art,-aw*scale/2,-fighterHeight,aw*scale,fighterHeight);
     }else{
       g.drawImage(art,-aw*scale/2,-fighterHeight,aw*scale,fighterHeight);
     }
