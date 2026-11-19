@@ -24,4 +24,12 @@ export async function run(t){
   t.ok(html.includes("p.kind==='mic'"),'microphone has a distinct projectile presentation');
   t.ok(html.includes('Math.min(65,Math.max(0,Math.abs(gap)-78))'),'microphone pull is bounded');
   t.ok(html.includes("this.idx!==0 || Net.active"),'prototype mic super limited to Trump and offline matches');
+  // Guard-pressure tuning must remain offline-only until rollback parity is proven.
+  t.ok(html.includes('this.blockChain=Math.min(4,(this.blockChainTimer>0?this.blockChain:0)+1);'), 'blocked strikes build a capped pressure chain');
+  t.ok(html.includes('this.blockChainTimer=105;'), 'blocked pressure expires after a short neutral interval');
+  t.ok(html.includes('const guardReset=!Net.active && this.blockChain>=4;'), 'four guarded strikes trigger an offline-only spacing reset');
+  t.ok(html.includes('attacker.stun=Math.max(attacker.stun,13);'), 'guard reset gives defender a counterattack window');
+  t.ok(html.includes('this.blockChain=0;this.blockChainTimer=0;'), 'guard reset clears pressure chain');
+  t.ok(html.includes("f.state==='back'||f.state==='walk'"), 'shared gait applies to both forward and backward movement');
+
 }
