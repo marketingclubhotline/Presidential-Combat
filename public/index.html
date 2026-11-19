@@ -1891,10 +1891,10 @@ const Projectiles = (()=>{
         const p=list[i];
         if(!p.active){
           p.active=true; p.owner=f.idx; p.kind=kind==='micLasso'?'mic':'hat'; p.x=f.x+f.face*54; p.y=f.y-98;
-          p.vx=f.face*(p.kind==='mic'?6.5:8.6); p.life=p.kind==='mic'?65:95; p.anim=0; p.returning=false;
+          p.vx=f.face*(p.kind==='mic'?6.5:10.5); p.life=p.kind==='mic'?65:60; p.anim=0; p.returning=false;
           Audio5.play('fire',0.7,1);
           if(f.idx===0 && kind!=='micLasso') Audio5.playFighterLine('trump');
-          else Audio5.playFighterLine('kim',0.65);
+          else if(f.idx!==0) Audio5.playFighterLine('kim',0.65);
           return p;
         }
       }
@@ -1907,7 +1907,7 @@ const Projectiles = (()=>{
         // Trump's hat travels outward, turns, and returns like a boomerang.
         if(p.kind==='hat' && p.owner===0){
           const owner=fighters[p.owner];
-          if(!p.returning && (p.anim>=38 || p.x<WALL_L+25 || p.x>WALL_R-25)){
+          if(!p.returning && (p.anim>=22 || p.x<WALL_L+25 || p.x>WALL_R-25)){
             p.returning=true;p.vx=-p.vx;Audio5.play('swish',0.35);
           }
           if(p.returning && Math.abs(p.x-owner.x)<35){p.active=false;continue;}
@@ -1950,16 +1950,17 @@ const Projectiles = (()=>{
           g.moveTo(owner.x+owner.face*25,owner.y-110);
           g.quadraticCurveTo((owner.x+p.x)/2,p.y+28,p.x,p.y);g.stroke();
           g.translate(p.x,p.y);g.rotate(Math.sin(t)*.25);
-          g.fillStyle='#b9c6d5';g.fillRect(-18,-7,29,14);
-          g.fillStyle='#283241';g.fillRect(10,-10,14,20);
+          g.fillStyle='#b9c6d5';g.fillRect(-22,-8,33,16);
+          g.fillStyle='#283241';g.beginPath();g.ellipse(15,0,14,17,0,0,Math.PI*2);g.fill();
+          g.strokeStyle='#e8eef5';g.lineWidth=2;for(let k=-1;k<=1;k++){g.beginPath();g.moveTo(7,-7+k*7);g.lineTo(23,-7+k*7);g.stroke();}
           g.restore();continue;
         }
         if(p.owner===0){
           g.save();g.translate(p.x,p.y);g.rotate(t*0.45);
-          g.fillStyle='#d72632';g.beginPath();g.ellipse(0,0,23,10,0,0,6.2832);g.fill();
+          g.fillStyle='#d72632';g.beginPath();g.ellipse(0,0,29,13,0,0,6.2832);g.fill();
           g.fillStyle='#f6f0dc';g.fillRect(-12,-7,24,6);
-          g.fillStyle='#d72632';g.fillRect(-9,-19,18,15);
-          g.strokeStyle='#ffe4c7';g.lineWidth=2;g.strokeRect(-9,-19,18,15);
+          g.fillStyle='#d72632';g.fillRect(-12,-24,24,20);
+          g.strokeStyle='#ffe4c7';g.lineWidth=2;g.strokeRect(-12,-24,24,20);g.fillStyle='#fff';g.font='bold 8px sans-serif';g.textAlign='center';g.fillText('MAGA',0,-12);
           g.restore();continue;
         }
         if(p.owner===1){
