@@ -1351,12 +1351,14 @@ class Fighter{
     if(m.superCost) this.addMeter(-m.superCost);
     this.move=m; this.moveFrame=0; this.hasHit=false; this.hitTargets=0;
     this.multiTick=0; this.canCancel=false; this.cancelUsed=!!isCancel;
-    if(m.invuln) this.invuln=m.invuln[1];
+    // Invulnerability is activated at its declared frame, never at move start.
+    // This preserves a counterable charging window for signature moves.
+    if(m.invuln && m.invuln[0]===0) this.invuln=m.invuln[1];
     const st = m.special ? 'special'
              : (!this.onGround ? 'airAtk'
              : (key==='lowKick' ? 'crouchAtk' : 'attack'));
     this.setState(st, m.anim);
-    if(m.riseVel){ this.vy=m.riseVel; this.onGround=false; }
+    if(m.riseVel && !m.chargeCue){ this.vy=m.riseVel; this.onGround=false; }
     if(m.driveVel){ this.vx=this.face*m.driveVel; }
     if(key==='superUppercut' && !Net.active){
       // Telegraph the meter-powered strike before contact; sound is immediate.
@@ -1522,6 +1524,11 @@ class Fighter{
     if(this.move){
       this.moveFrame++;
       const m=this.move, total=m.startup+m.active+m.recovery;
+      if(m.invuln && m.invuln[0]>0 && this.moveFrame===m.invuln[0])
+        this.invuln=m.invuln[1]-m.invuln[0];
+      if(m.riseVel && m.chargeCue && this.moveFrame===m.startup){
+        this.vy=m.riseVel;this.onGround=false;
+      }
       if(m.multiHit && this.multiTick>0) this.multiTick--;
       if(this.onGround && !m.driveVel) this.vx *= 0.6;
       if(m.projectile && this.moveFrame===m.startup) Projectiles.spawn(this,m.key);
@@ -2863,6 +2870,19 @@ function drawFighter(g,f){
         const settle=Math.exp(-(t-29)/5)*Math.sin((t-29)*1.1)*3;
         g.translate(0,settle);
       }
+    }
+    // Shared charge pose for any fighter with a data-defined charge cue.
+    // The glow is cosmetic; hitbox timing and counterplay remain authoritative.
+    if(f.move?.chargeCue && f.moveFrame<f.move.startup){
+      const progress=Math.max(0,Math.min(1,f.moveFrame/Math.max(1,f.move.startup)));
+      g.translate(-f.face*(5+4*progress),4*progress);
+      g.rotate(-f.face*(.035+.04*progress));
+      const pulse=.55+.45*Math.sin(Game.frame*.7);
+      g.save();g.globalAlpha=(.17+.26*progress)*pulse;
+      g.strokeStyle='#ffe39b';g.shadowColor='#fff2b3';g.shadowBlur=22;
+      g.lineWidth=5+6*progress;g.beginPath();
+      g.ellipse(0,-fighterHeight*.49,aw*scale*.43+8, fighterHeight*.48+6,0,0,Math.PI*2);
+      g.stroke();g.restore();
     }
     // Attack follow-through visibly accelerates at contact and eases into guard.
     if(f.move && f.move.active>0 && f.moveFrame>=f.move.startup){
