@@ -2873,22 +2873,35 @@ function drawFighter(g,f){
     if(f.flash>0)g.filter='brightness(2.4) saturate(0.4)';
     else if(f.invuln>0&&(Game.frame>>1)%2===0)g.filter='brightness(1.6) hue-rotate(70deg)';
     if((f.state==='walk'||f.state==='back') && f.onGround && !f.move){
-      const hip=Math.floor(ah*.62), legH=ah-hip, half=Math.floor(aw/2);
-      const phase=Game.frame*.27+(f.idx?1.2:0),stride=Math.sin(phase);
-      const direction=f.state==='back'?-1:1;
-      const travel=stride*direction*13/scale;
-      // Torso is drawn unchanged, legs are independently displaced and layered.
+      // Shared two-leg pendulum gait. Rotate each leg around its own hip,
+      // rather than translating two rigid vertical halves (the old skate).
+      const hip=Math.floor(ah*.61), legH=ah-hip, half=Math.floor(aw/2);
+      const phase=Game.frame*.24+(f.idx?1.2:0);
+      const forward=f.state==='back'?-1:1;
+      const stride=Math.sin(phase)*forward;
+      const strideAngle=.30; // each foot crosses the neutral line each cycle
+      const top=-fighterHeight+hip*scale;
+      // Preserve the original torso; leg halves swing from the pelvis.
       g.drawImage(art,0,0,aw,hip,-aw*scale/2,-fighterHeight,aw*scale,hip*scale);
-      const front=stride>=0;
-      const leg=(sx,sw,shift,lift)=>{
+      const swingLeg=(sx,sw,angle,raise)=>{
+        const pivot=(sx+sw*.5-aw*.5)*scale;
         g.save();
-        g.translate(shift*scale,-lift*scale);
-        g.drawImage(art,sx,hip,sw,legH,(sx-aw/2)*scale,-fighterHeight+hip*scale,sw*scale,legH*scale);
+        g.translate(pivot,top);
+        g.rotate(angle);
+        g.translate(-pivot,0);
+        g.drawImage(art,sx,hip,sw,legH,(sx-aw/2)*scale,-raise,sw*scale,legH*scale);
         g.restore();
       };
-      const lift=Math.max(0,Math.sin(phase))*7;
-      if(front){leg(half,aw-half,-travel,0);leg(0,half,travel,lift);}
-      else {leg(0,half,travel,0);leg(half,aw-half,-travel,Math.max(0,-Math.sin(phase))*7);}
+      // Far leg first, near leg last; alternate occlusion at each crossing.
+      const leftAngle=stride*strideAngle,rightAngle=-stride*strideAngle;
+      const leftLift=Math.max(0,stride)*9,rightLift=Math.max(0,-stride)*9;
+      if(stride>=0){
+        swingLeg(half,aw-half,rightAngle,rightLift);
+        swingLeg(0,half,leftAngle,leftLift);
+      }else{
+        swingLeg(0,half,leftAngle,leftLift);
+        swingLeg(half,aw-half,rightAngle,rightLift);
+      }
     }else{
       g.drawImage(art,-aw*scale/2,-fighterHeight,aw*scale,fighterHeight);
     }

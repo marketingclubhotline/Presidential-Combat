@@ -26,3 +26,9 @@ Code commit: 39ae402
 ## Safety
 - Work only on development branch, preserve production and secrets.
 - Untracked .safety-backups/ preexisted and was not modified.
+
+## Evening continuation — shared walk gait correction
+- User confirmed existing layered walk still looks like a planted split stance sliding; requested true alternating legs forward AND backward across fighters, then distinctive personality overlays (Obama swagger, Bush shoe dodge) only after shared standard gait works.
+- Changed shared walking renderer in public/index.html: previous cropped leg halves only translated horizontally, now they swing with opposite hip rotations, alternating overlap and foot lift; reverse walk flips stride. This is a provisional procedural improvement using current portrait art, not yet anatomically correct independent leg sprites.
+- Inline JS syntax check passed and npm test 303/303 passed. These are code regressions, not proof of realistic-looking walking. Visual phone test pending. Existing branch dev/playable-baseline-20261114; production untouched.
+- Review other requested work in batch: KO falling/landing poses, jumps, shared idle/attack timing, simple back-back-punch mic and back-back-kick hat, Obama swagger, Bush shoe dodge, audio on button-down, mobile spacing, P2 facing and portrait crop. Avoid treating previously specified features as implemented without inspection.
