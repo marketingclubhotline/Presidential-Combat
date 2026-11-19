@@ -1266,6 +1266,7 @@ class Fighter{
     this.canCancel=false; this.cancelUsed=false;
     this.stun=0; this.hp=100; this.meter=0;
     this.combo=0; this.comboTimer=0; this.comboDamage=0;
+    this.blockChain=0; this.blockChainTimer=0;
     this.gravMul=1;
     this.anim='idle'; this.animFrame=0; this.animTick=0;
     this.flash=0; this.onGround=true; this.invuln=0;this.recentKnockdown=false;
@@ -1282,6 +1283,7 @@ class Fighter{
     o.canCancel=this.canCancel; o.cancelUsed=this.cancelUsed;
     o.stun=this.stun; o.hp=this.hp; o.meter=this.meter;
     o.combo=this.combo; o.comboTimer=this.comboTimer; o.comboDamage=this.comboDamage;
+    o.blockChain=this.blockChain; o.blockChainTimer=this.blockChainTimer;
     o.gravMul=this.gravMul; o.anim=this.anim; o.animFrame=this.animFrame;
     o.animTick=this.animTick; o.onGround=this.onGround; o.invuln=this.invuln;
     o.flash=this.flash; o.recentKnockdown=this.recentKnockdown; o.rounds=this.rounds; o.aiTimer=this.aiTimer;
@@ -1300,6 +1302,7 @@ class Fighter{
     this.canCancel=o.canCancel; this.cancelUsed=o.cancelUsed;
     this.stun=o.stun; this.hp=o.hp; this.meter=o.meter;
     this.combo=o.combo; this.comboTimer=o.comboTimer; this.comboDamage=o.comboDamage;
+    this.blockChain=o.blockChain||0; this.blockChainTimer=o.blockChainTimer||0;
     this.gravMul=o.gravMul; this.anim=o.anim; this.animFrame=o.animFrame;
     this.animTick=o.animTick; this.onGround=o.onGround; this.invuln=o.invuln;
     this.flash=o.flash; this.recentKnockdown=!!o.recentKnockdown; this.rounds=o.rounds; this.aiTimer=o.aiTimer;
@@ -1395,7 +1398,22 @@ class Fighter{
       this.hp = Math.max(0, this.hp - atk.chip);
       this.stun = atk.blockstun;
       this.setState('blockstun', blockedLow?'crouchBlock':'block');
-      this.vx = dir * atk.pushBlock;
+      // Repeated guarded pressure creates breathing room instead of endless kick spam.
+      // Offline-only until the tuning is validated in multiplayer rollback.
+      if(!Net.active){
+        this.blockChain=Math.min(4,(this.blockChainTimer>0?this.blockChain:0)+1);
+        this.blockChainTimer=105;
+      }
+      const guardReset=!Net.active && this.blockChain>=4;
+      this.vx = dir * (atk.pushBlock + (!Net.active?this.blockChain*1.4:0) + (guardReset?8:0));
+      if(guardReset){
+        attacker.vx-=attacker.face*9;
+        attacker.stun=Math.max(attacker.stun,13);
+        attacker.move=null;attacker.canCancel=false;
+        attacker.setState('hitstun','hit');
+        this.blockChain=0;this.blockChainTimer=0;
+        Audio5.play('counter',0.65);
+      }
       this.addMeter(atk.chip*1.5);
       attacker.addMeter(atk.meter*0.4);
       Audio5.play('block',0.8,0.95+Rng.range(0,0.15));
@@ -1412,6 +1430,7 @@ class Fighter{
     this.hp = Math.max(0, this.hp - (!Net.active ? Math.max(1, Math.round(dmg * 0.55)) : dmg));
     // Preserve a final finisher opportunity when a strike would skip past 5 HP.
     if(!Net.active && !pcTrainingMode && !pcSoloGym && this.hp===0 && attacker.hp>5) this.hp=1;
+    this.blockChain=0;this.blockChainTimer=0;
     this.stun = Math.round(atk.hitstun * scaleAt(SCALING.hitstun,n));
     this.gravMul = scaleAt(SCALING.gravity, n);   // heavier each hit → combo ends
 
@@ -1443,6 +1462,9 @@ class Fighter{
     attacker.addMeter(atk.meter);
     this.addMeter(atk.meter*0.5);
     if(!atk.multiHit || this.stun>0){ Audio5.play(atk.sfx, 1, 0.92+Rng.range(0,0.16)); Audio5.play('hurt',0.25); }
+    if(!Net.active && !atk.multiHit && (atk.weight==='heavy'||atk.launcher||atk.special)){
+      Game.slowmo=Math.max(Game.slowmo,atk.launcher?0.52:0.34);
+    }
     if(atk.key==='superUppercut' && !Net.active){
       Game.slowmo=Math.max(Game.slowmo,0.65);
       Audio5.play('boom',0.9); Audio5.play('crowdRoar',0.35); Cam.shake(12);
@@ -1462,6 +1484,7 @@ class Fighter{
   /* ---- per-frame update ---- */
   update(mask, opp){
     this.stateFrame++;
+    if(this.blockChainTimer>0 && --this.blockChainTimer===0)this.blockChain=0;
     if(this.invuln>0) this.invuln--;
     if(this.flash>0) this.flash--;
     if(this.comboTimer>0 && --this.comboTimer===0){

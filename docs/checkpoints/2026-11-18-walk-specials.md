@@ -37,3 +37,8 @@ Code commit: 39ae402
 - User reports that repeated punch/kick tapping feels dominant. Wants a deliberate fighting rhythm: powerful kicks/uppercuts briefly pause/slow for readable launch and landing; longer defender recovery; repeated blocked kicks should push players apart to neutral after about four hits; blocking/countering should be rewarding.
 - Code inspection confirms existing Juice.impact hitstop (2 block, 3 normal, 6-8 heavy), superUppercut slowmo, blocked pushBlock, perfect block, hitstun and combo scaling. These mechanisms exist but their feel is unverified and user says effects are insufficient. Avoid duplicating them.
 - Next implementation should tune offline anti-spam: escalating block pushback on repeated blocked strikes, short separation/reset, deliberate recovery on repeated attacks, readable heavy-hit slow motion and launch. Preserve input buffering and deterministic multiplayer rollback; test behavior and balance, not just syntax.
+
+## Practice Lab combat tuning build
+- Implemented offline escalating pushback on consecutive blocked strikes and a fourth-block guard reset that separates fighters and briefly staggers attacker. Chain decays after 105 simulation frames without another block; clears on hit; stored in fighter rollback snapshots. Existing perfect-block mechanic remains.
+- Heavy/special/launcher hits now trigger a short decaying cinematic slowdown offline, alongside existing hitstop and knockback. Multiplayer tuning deliberately unchanged.
+- JS syntax and npm test 303/303 pass. Visual and feel testing in Practice Lab still required; stationary opponent does not block by default, so guard-reset must be tested against blocking CPU/second controller or a dedicated guard drill.
