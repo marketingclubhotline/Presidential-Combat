@@ -2909,8 +2909,9 @@ function drawFighter(g,f){
     }
     g.scale(fighterVisualFacing(f),1);
     if(f.move?.key==='roundhouse' || f.move?.key==='barrelPunch'){
-      // Complete the turn at contact, then return to the guard pose.
-      const turn = Math.min(1,f.moveFrame/Math.max(1,f.move.startup))*Math.PI*2;
+      // Spin across the entire attack rather than completing a turn during startup.
+      const spinProgress=Math.max(0,Math.min(1,(f.moveFrame-f.move.startup)/Math.max(1,f.move.active+f.move.recovery)));
+      const turn = spinProgress*Math.PI*2;
       g.scale(0.72+0.28*Math.cos(turn),1);
       g.rotate(Math.sin(turn)*(f.move.key==='roundhouse' ? 0.10 : 0.25));
     }
