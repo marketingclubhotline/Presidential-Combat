@@ -2923,6 +2923,17 @@ function drawFighter(g,f){
       g.textAlign='center';g.fillText('✦  ✦',0,-fighterHeight-17+Math.sin(Game.frame*.15)*4);g.restore();
     }
     if(f.state!=='ko') pcDrawFace(g,f,f.side==='p1'?'trump':'kim',aw*scale,fighterHeight);
+    // Readable hat handoff: the head is bare while the boomerang is in flight.
+    if(f.side==='p1' && f.state!=='ko'){
+      const flying=Projectiles.list.some(p=>p.active&&p.owner===f.idx&&p.kind==='hat');
+      const winding=f.move?.key==='fireball' || f.move?.key==='hatThrow';
+      if(!flying){
+        g.save();g.fillStyle='#cf202d';g.strokeStyle='#fff2e6';g.lineWidth=2;
+        g.beginPath();g.ellipse(0,-fighterHeight*.91,aw*scale*.19,8,0,Math.PI,Math.PI*2);g.fill();g.stroke();
+        g.fillRect(-aw*scale*.14,-fighterHeight*.91-9,aw*scale*.28,10);
+        g.fillStyle='#fff';g.font='bold 7px sans-serif';g.textAlign='center';g.fillText('MAGA',0,-fighterHeight*.91-2);g.restore();
+      }
+    }
     if(!finishingLoser && f.state!=='ko' && (f.state==='block'||f.state==='crouchBlock'||f.state==='blockstun')){
       g.strokeStyle='#73d9ff';g.lineWidth=5;g.shadowColor='#4dcfff';g.shadowBlur=16;
       g.beginPath();g.ellipse(35,-100,22,64,-0.2,-Math.PI/2,Math.PI/2);g.stroke();
