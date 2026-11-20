@@ -1241,8 +1241,9 @@ const FIGHTER_ANIMATION_STANDARD=Object.freeze({
   faceOpponent:true, sharedReactionStates:['attack','block','hit','victory']
 });
 function fighterVisualFacing(f){
-  // Source sprites for the second fighter were exported facing the opposite way.
-  return f.face*(f.side==='p2'?-1:1);
+  // Both cleaned fighter atlases face screen-right in their canonical pose.
+  // Mirror only by simulation facing; reversing P2 twice made Kim face away.
+  return f.face;
 }
 function fighterIdleMotion(f,frame){
   if(!f.onGround||f.move||f.state!=='idle')return null;
@@ -3093,12 +3094,14 @@ function drawFighter(g,f){
       // previous single rotation, each phase changes pose and proportions.
       // Match the stage's configured walls and floor, even on narrow phones.
       const desiredX=f.x-direction*(12*recoil+23*buckle+39*land);
-      const safeX=Math.max(WALL_L+80,Math.min(WALL_R-80,desiredX));
-      const floorOffset=Math.max(-30,Math.min(75,-7*recoil+36*buckle+28*land));
+      const safeX=Math.max(WALL_L+110,Math.min(WALL_R-110,desiredX));
+      const floorOffset=Math.max(-20,Math.min(28,-7*recoil+19*buckle+14*land));
       g.translate(safeX-f.x,floorOffset);
       // The final pose rests nearly horizontal, not upright in a blocking stance.
       // Preserve a fixed final position so the body doesn't rock indefinitely.
+      g.translate(0,-fighterHeight*.42);
       g.rotate(direction*(-0.15*recoil+0.64*buckle+1.45*land));
+      g.translate(0,fighterHeight*.42);
       g.scale(1+0.07*buckle+0.14*land,1-0.10*buckle-0.19*land);
       if(t>=29){
         // Tiny impact settle; no continuous rocking after the body lands.
