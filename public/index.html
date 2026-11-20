@@ -3036,9 +3036,14 @@ function drawFighter(g,f){
       // Airborne knockback tumbles the torso visibly, while the fighter's
       // physics position and collision boxes remain unchanged.
       const tumble=airborne?Math.min(1,f.stateFrame/22):0;
+      // Four distinct airborne silhouettes: recoil, arch, tumble and brace.
+      // Rendering-only; gameplay physics and hitboxes remain unchanged.
+      const airbornePhase=airborne?Math.min(3,Math.floor(tumble*4)):0;
+      const airborneTilt=airborne?[0.20,0.52,1.04,1.34][airbornePhase]:0;
+      const airborneTuck=airborne?[0.02,0.12,0.23,0.10][airbornePhase]:0;
       g.translate(-f.face*(heavy?17:9)*decay,heavy?Math.sin(t*Math.PI)*-8:0);
-      g.rotate(-f.face*((heavy?0.18:0.095)*decay+0.78*tumble));
-      g.scale(1+0.045*decay,1-0.065*decay);
+      g.rotate(-f.face*((heavy?0.18:0.095)*decay+airborneTilt));
+      g.scale(1+0.045*decay+airborneTuck,1-0.065*decay-airborneTuck);
     }else if(f.state==='blockstun'){
       const decay=Math.max(0,1-f.stateFrame/11);
       g.translate(-f.face*5*decay,0);
@@ -3052,7 +3057,17 @@ function drawFighter(g,f){
       const prone=Math.max(0,1-t);
       // Ground impact -> short bounce -> backwards roll -> guarded rise.
       const roll=t<.55?Math.sin(t/.55*Math.PI)*.22:Math.sin((t-.55)/.45*Math.PI)*.12;
+      // Alternate shared wake-ups: standard guarded rise or quick flip-up.
+      // The flip-up rotates around the body center; it is not a teleport.
+      const flipRecovery=(f.idx%2)===1 && t>.55;
+      const flipProgress=flipRecovery?Math.min(1,(t-.55)/.45):0;
+      const flipAngle=flipRecovery?Math.PI*2*(flipProgress*flipProgress*(3-2*flipProgress)):0;
       g.translate(-f.face*9*Math.sin(t*Math.PI),17*prone-bounce);
+      if(flipRecovery){
+        g.translate(0,-fighterHeight*.45);
+        g.rotate(-f.face*flipAngle);
+        g.translate(0,fighterHeight*.45);
+      }
       g.rotate(-f.face*(0.55*prone+roll));
       g.scale(1+0.18*prone,1-0.38*prone);
     }
