@@ -301,6 +301,7 @@
       <div class="key atk" data-k="punch">PUNCH</div>
       <div class="key atk" data-k="kick">KICK</div>
       <div class="key" data-k="block" style="grid-area:2/1">BLOCK</div>
+      <div class="key atk" data-k="up" style="grid-area:3/1;border-color:#8edbff">JUMP</div>
       <div class="key atk" data-k="sweep" style="grid-area:2/2;border-color:#ffcf70">SWEEP</div>
     </div>
   </div>
@@ -542,7 +543,8 @@ const FRAME_MAPS = {
   kick:     {s:[0],a:[1],r:[2]},
   lowKick:  {s:[0],a:[1],r:[2]},
   jumpKick: {s:[0],a:[0],r:[0]},
-  roundhouse: {s:[0],a:[1],r:[2]},
+  // Reuse Neon Fist's existing four-cell spin instead of a single kick pose.
+  roundhouse: {s:[0],a:[1,2],r:[3],altRate:3},
   barrelPunch:{s:[0],a:[1],r:[2]},
   fireball: {s:[0],a:[1],r:[2]},
   uppercut: {s:[0],a:[1],r:[2]},
@@ -1270,6 +1272,7 @@ class Fighter{
     this.gravMul=1;
     this.anim='idle'; this.animFrame=0; this.animTick=0;
     this.flash=0; this.onGround=true; this.invuln=0;this.recentKnockdown=false;
+    this.flipDir=0;
     this.aiTimer=0; this.aiMode=0;
     this.buf.reset();
     if(full) this.rounds=0;
@@ -1287,6 +1290,7 @@ class Fighter{
     o.gravMul=this.gravMul; o.anim=this.anim; o.animFrame=this.animFrame;
     o.animTick=this.animTick; o.onGround=this.onGround; o.invuln=this.invuln;
     o.flash=this.flash; o.recentKnockdown=this.recentKnockdown; o.rounds=this.rounds; o.aiTimer=this.aiTimer;
+    o.flipDir=this.flipDir;
     o.bh=this.buf.head; o.bprev=this.buf.prev;
     if(!o.hist) { o.hist=new Int32Array(64); o.dirs=new Int8Array(64); }
     o.hist.set(this.buf.hist); o.dirs.set(this.buf.dirs);
@@ -1306,6 +1310,7 @@ class Fighter{
     this.gravMul=o.gravMul; this.anim=o.anim; this.animFrame=o.animFrame;
     this.animTick=o.animTick; this.onGround=o.onGround; this.invuln=o.invuln;
     this.flash=o.flash; this.recentKnockdown=!!o.recentKnockdown; this.rounds=o.rounds; this.aiTimer=o.aiTimer;
+    this.flipDir=o.flipDir||0;
     this.buf.head=o.bh; this.buf.prev=o.bprev;
     this.buf.hist.set(o.hist); this.buf.dirs.set(o.dirs);
     Object.assign(this.buf.pressAge,o.pa);
@@ -1595,6 +1600,7 @@ class Fighter{
       this.buf.consume('up');
       this.vy = PHYS.jumpVel; this.onGround=false;
       this.vx = dir*8.0;
+      this.flipDir = dir ? Math.sign(dir) : 0;
       this.setState('jump'); Audio5.play('jump',0.4);
     } else if(held&BTN.BLOCK){
       this.setState(down?'crouchBlock':'block');
@@ -1641,6 +1647,7 @@ class Fighter{
         FX.dust(this.x,FLOOR, Math.min(14, Math.abs(this.vy)));
       }
       this.y=FLOOR; this.vy=0; this.onGround=true; this.gravMul=1;
+      this.flipDir=0; // End directional aerial rotation at landing.
       if(this.state==='airstun'){
         this.recentKnockdown=true;
         this.stun=Math.max(this.stun,18);
@@ -1661,6 +1668,8 @@ class Fighter{
         this.x = clamp(this.x, WALL_L, WALL_R);
         opp.x  = clamp(opp.x,  WALL_L, WALL_R);
       }
+      // Auto-face after crossing sides, including an airborne cross-up.
+      // Keep locked attack direction while a move is active.
       if(!this.move && !STATES[this.state].busy)
         this.face = opp.x >= this.x ? 1 : -1;
     }
@@ -1868,10 +1877,13 @@ const Juice = {
   /* 8.1 hitstop scaled by attack weight — 2 frames on a jab, 6+ on heavy */
   impact(atk, def, blocked){
     let hs, shake;
-    if(blocked){ hs=2; shake=3; }
-    else if(atk.weight==='heavy'){ hs=atk.special?8:6; shake=11; }
-    else { hs=3; shake=5; }
-    if(atk.multiHit){ hs=2; shake=4; }
+    if(blocked){ hs=3; shake=3; }
+    else if(atk.key==='superUppercut'){ hs=13; shake=14; }
+    else if(atk.special){ hs=10; shake=12; }
+    else if(atk.launcher || atk.weight==='heavy'){ hs=8; shake=11; }
+    else { hs=4; shake=5; }
+    // Repeated hits must not stack long freezes into an unplayable combo.
+    if(atk.multiHit){ hs=Math.min(hs,3); shake=4; }
     Game.hitstop = Math.max(Game.hitstop, hs);
     Cam.shake(shake);
     if(!blocked) Cam.flash(atk.key==='barrelPunch'?0.35:atk.weight==='heavy'?0.30:0.16);
@@ -1897,8 +1909,10 @@ const Projectiles = (()=>{
       for(let i=0;i<MAXP;i++){
         const p=list[i];
         if(!p.active){
-          p.active=true; p.owner=f.idx; p.kind=kind==='micLasso'?'mic':'hat'; p.x=f.x+f.face*54; p.y=f.y-98;
-          p.vx=f.face*(p.kind==='mic'?6.5:10.5); p.life=p.kind==='mic'?65:60; p.anim=0; p.returning=false;
+          p.active=true; p.owner=f.idx; p.kind=kind==='micLasso'?'mic':'hat';
+          // Launch from the raised hand rather than the waist; retain the same hitbox.
+          p.x=f.x+f.face*54; p.y=f.y-(p.owner===0?(p.kind==='mic'?132:165):98);
+          p.vx=f.face*(p.kind==='mic'?9:10.5); p.life=p.kind==='mic'?65:60; p.anim=0; p.returning=false; p.launchX=p.x; p.hooked=false; p.hookFrames=0;
           Audio5.play('fire',0.7,1);
           if(f.idx===0 && kind!=='micLasso') Audio5.playFighterLine('trump');
           else if(f.idx!==0) Audio5.playFighterLine('kim',0.65);
@@ -1910,7 +1924,29 @@ const Projectiles = (()=>{
     update(fighters){
       for(let i=0;i<MAXP;i++){
         const p=list[i]; if(!p.active) continue;
-        p.x+=p.vx; p.anim++;
+        p.anim++;
+        if(p.kind==='mic' && p.hooked){
+          const owner=fighters[p.owner], foe=fighters[1-p.owner];
+          if(!owner || !foe || foe.hp<=0){p.active=false;continue;}
+          const gap=foe.x-owner.x, target=owner.x+Math.sign(gap||owner.face)*76;
+          const step=Math.min(12,Math.abs(foe.x-target));
+          foe.x-=Math.sign(foe.x-target)*step;
+          foe.vx=0; foe.stun=Math.max(foe.stun,8);
+          p.x=foe.x; p.y=foe.y-100;
+          if(++p.hookFrames>=24 || step<1){p.active=false;foe.stun=Math.max(foe.stun,19);}
+          continue;
+        }
+        if(p.kind==='mic' && !p.hooked){
+          const owner=fighters[p.owner];
+          if(!p.returning && (Math.abs(p.x-p.launchX)>=260 || p.x<WALL_L+30 || p.x>WALL_R-30)){
+            p.returning=true;
+          }
+          if(p.returning){
+            p.vx=-owner.face*15;
+            if(Math.abs(p.x-(owner.x+owner.face*35))<19){p.active=false;continue;}
+          }
+        }
+        p.x+=p.vx;
         // Trump's hat travels outward, turns, and returns like a boomerang.
         if(p.kind==='hat' && p.owner===0){
           const owner=fighters[p.owner];
@@ -1924,19 +1960,19 @@ const Projectiles = (()=>{
         }
         if(p.x<WALL_L-40||p.x>WALL_R+40||--p.life<=0){ p.active=false; continue; }
         const foe=fighters[1-p.owner], me=fighters[p.owner];
+        if(p.kind==='mic' && p.returning) continue;
         if(foe.invuln>0) continue;
         const box={x:p.x-20,y:p.y-20,w:40,h:40};
         for(const hu of foe.hurtboxes()){
           if(aabb(box,hu)){
             const hit=foe.takeHit(p.kind==='mic'?{...DATA,key:'micLassoShot',damage:10,hitstun:32,weight:'heavy',pushHit:0,chip:1}:DATA, me);
             if(p.kind==='mic' && hit==='hit'){
-              // Capped cinematic cable tug; never teleport through the attacker.
-              const gap=foe.x-me.x;
-              const pull=Math.min(65,Math.max(0,Math.abs(gap)-78));
-              foe.x-=Math.sign(gap)*pull; foe.vx=0;
+              // Animate the cable reeling the opponent in over multiple frames.
+              p.hooked=true; p.vx=0; p.hookFrames=0;
+              foe.vx=0;
               Cam.shake(10); Audio5.play('counter',0.7);
             }
-            p.active=false;
+            if(!p.hooked) p.active=false;
             Audio5.play('boom',0.8);
             break;
           }
@@ -2657,9 +2693,75 @@ for(const [side,name] of [['p1','trump'],['p2','kim']]){
   for(const pose of ['idle','walk','punch','kick','dodge','win']){
     const im=new Image();
     PC_SPRITES[side][pose]=im;
-    im.onload=()=>{try{PC_SPRITES[side][pose]=pcCleanSprite(im,name);}catch(e){console.warn('sprite matte cleanup skipped',name,pose,e);}};
+    im.onload=()=>{try{const clean=pcCleanSprite(im,name);PC_SPRITES[side][pose]=clean;if(pose==='walk')PC_WALK_FRAMES[side]=pcBuildGaitFrames(clean);}catch(e){console.warn('sprite matte cleanup skipped',name,pose,e);}};
     im.src='art/sprites/'+name+'-'+pose+'.png';
   }
+}
+// Produce three lightweight, articulated stride variants from the cleaned
+// walk illustration. Split the lower silhouette at the hip so left and right
+// legs move independently while the torso remains stable. Original art is kept.
+function pcBuildGaitFrames(base){
+  const w=base.width,h=base.height,hipY=h*.57,center=w*.50;
+  return [-1,0,1].map(step=>{
+    const out=document.createElement('canvas');out.width=w;out.height=h;
+    const ctx=out.getContext('2d');
+    // Back-to-front separate leg planes, then restore the unchanged torso.
+    for(const leg of [-1,1]){
+      ctx.save();
+      const pivotX=center+leg*w*.115;
+      ctx.translate(pivotX,hipY);
+      ctx.rotate(step*leg*.105);
+      ctx.translate(-pivotX,-hipY);
+      ctx.beginPath();
+      const mid=center+(leg<0?-1:1)*w*.015;
+      if(leg<0)ctx.rect(0,hipY,w*.51,h-hipY);
+      else ctx.rect(mid,hipY,w-mid,h-hipY);
+      ctx.clip();ctx.drawImage(base,0,0);ctx.restore();
+    }
+    ctx.drawImage(base,0,0,w,hipY,0,0,w,hipY);
+    return out;
+  });
+}
+// Optional true gait frames: preserve the existing single-pose fallback until
+// the four distinct planted/passing/landing drawings are approved. Frame order
+// follows the original Neon Fist 3,4,5,4 forward / 5,4,3,4 backward cadence.
+const PC_WALK_FRAME_SEQUENCE=Object.freeze({walk:[0,1,2,1],back:[2,1,0,1]});
+const PC_WALK_FRAMES={p1:[],p2:[]};
+for(const [side,name] of [['p1','trump'],['p2','kim']]){
+  for(let frame=0;frame<3;frame++){
+    const image=new Image();
+    image.onload=()=>{try{PC_WALK_FRAMES[side][frame]=pcCleanSprite(image,name);}catch(e){console.warn('gait frame unavailable',name,frame,e);}};
+    image.onerror=()=>{}; // Keep procedural gait if authored frame is absent.
+    image.src='art/sprites/'+name+'-walk-'+(frame+1)+'.png';
+  }
+}
+function pcWalkingArt(f){
+  if(!f.onGround || f.move || (f.state!=='walk'&&f.state!=='back'))return null;
+  const frames=PC_WALK_FRAMES[f.side];
+  if(!frames || ![0,1,2].every(i=>frames[i] instanceof HTMLCanvasElement))return null;
+  const sequence=PC_WALK_FRAME_SEQUENCE[f.state];
+  const step=Math.floor(Game.frame/6+(f.idx?2:0))%sequence.length;
+  return frames[sequence[step]];
+}
+// Separate chamber, extension and recovery artwork for martial-arts kicks.
+// When the three drawings are supplied, render them in actual move phases;
+// never distort one upright pose to impersonate an articulated leg.
+const PC_KICK_FRAMES={p1:[],p2:[]};
+for(const [side,name] of [['p1','trump'],['p2','kim']]){
+  for(const [i,phase] of ['chamber','extend','retract'].entries()){
+    const image=new Image();
+    image.onload=()=>{try{PC_KICK_FRAMES[side][i]=pcCleanSprite(image,name);}catch(e){console.warn('kick frame cleanup skipped',name,phase,e);}};
+    image.onerror=()=>{};
+    image.src='art/sprites/'+name+'-kick-'+phase+'.png';
+  }
+}
+function pcKickArt(f){
+  const move=f.move;
+  if(!move||!['kick','roundhouse','spinKick','jumpKick'].includes(move.key))return null;
+  const frames=PC_KICK_FRAMES[f.side];
+  if(!frames||![0,1,2].every(i=>frames[i] instanceof HTMLCanvasElement))return null;
+  const t=f.moveFrame;
+  return frames[t<move.startup?0:t<move.startup+move.active?1:2];
 }
 function pcPose(f){
   // Shared pose selection for every playable fighter. A knockout must never
@@ -2675,6 +2777,7 @@ function pcPose(f){
     if(move.key==='tripSweep'||move.key==='lowKick')return active?'kick':'dodge';
     if(move.key==='jumpKick')return active?'kick':'dodge';
     if(['kick','roundhouse','spinKick'].includes(move.key))return active?'kick':'idle';
+    if(move.projectile)return active?'punch':'dodge';
     if(['punch','barrelPunch','uppercut','superUppercut','fireball'].includes(move.key))return active?'punch':'idle';
   }
   if(f.anim==='walk'||f.anim==='back')return 'walk';
@@ -2727,8 +2830,11 @@ const PC_FACE_CONFIG={
 // Visual-only; combat timing, collision boxes and rollback inputs are unchanged.
 const PC_MOTION_KEYS=Object.freeze({
   idle:[[0,0,0,1],[-1,-2,-.014,1.008],[0,-4,0,1.016],[1,-2,.014,1.008],[0,0,0,1]],
-  walk:[[0,0,-.025,1],[5,-5,.02,1.012],[2,-2,.04,.994],[-4,-5,-.02,1.012],[0,0,-.025,1]],
-  back:[[0,0,.025,1],[-5,-4,-.02,1.012],[-2,-2,-.04,.994],[4,-4,.02,1.012],[0,0,.025,1]],
+  // Until distinct planted-foot frames are available, do not shift the whole
+  // silhouette sideways during each step: that visibly skates on the floor.
+  // Retain only subtle vertical weight transfer and lean.
+  walk:[[0,0,-.025,1],[0,-3,.02,1.012],[0,-1,.04,.994],[0,-3,-.02,1.012],[0,0,-.025,1]],
+  back:[[0,0,.025,1],[0,-3,-.02,1.012],[0,-1,-.04,.994],[0,-3,.02,1.012],[0,0,.025,1]],
   punch:[[0,0,-.06,1],[3,-2,-.10,1.02],[10,-3,.045,1.025],[6,-2,.025,1.01],[0,0,0,1]],
   kick:[[0,0,-.07,1],[3,-3,-.12,1.015],[9,-5,.08,1.03],[4,-2,.025,1.01],[0,0,0,1]],
   uppercut:[[0,2,-.09,.99],[3,-3,-.04,1.015],[6,-10,.09,1.04],[3,-5,.04,1.02],[0,0,0,1]],
@@ -2737,6 +2843,22 @@ const PC_MOTION_KEYS=Object.freeze({
   jumpKick:[[0,2,-.07,.97],[3,-6,-.13,1.03],[8,-11,-.16,1.07],[13,-9,.08,1.06],[10,-5,.12,1.025],[5,-2,.04,1.01],[0,0,0,1]],
   lowKick:[[0,1,-.04,.97],[2,6,-.10,.91],[7,10,-.15,.86],[11,9,.09,.88],[5,5,.04,.94],[0,0,0,1]]
 });
+// Character-specific projectile windup, release and follow-through.
+// Visual-only; the projectile still spawns on the original startup frame.
+function pcProjectileMotion(f){
+  const m=f.move;
+  if(!m||!m.projectile)return null;
+  const t=f.moveFrame,release=m.startup;
+  const wind=Math.min(1,t/Math.max(1,release));
+  const follow=Math.max(0,Math.min(1,(t-release)/Math.max(1,m.active+3)));
+  const recover=Math.max(0,Math.min(1,(t-release-m.active)/Math.max(1,m.recovery)));
+  if(f.side==='p1'){
+    // Trump: lean back to charge, crouch, then thrust the throwing shoulder.
+    return [f.face*(-9*wind+19*follow*(1-recover)),8*wind-7*follow*(1-recover),f.face*(-.10*wind+.19*follow*(1-recover)),1-.075*wind+.045*follow*(1-recover)];
+  }
+  // Kim: lower center of gravity, then a sharp forward launch and salute-like reset.
+  return [f.face*(-5*wind+12*follow*(1-recover)),13*wind-9*follow*(1-recover),f.face*(-.045*wind+.12*follow*(1-recover)),1-.13*wind+.075*follow*(1-recover)];
+}
 function pcMotionFrame(f){
   const move=f.move, key=move?.key==='jumpKick'?'jumpKick':move?.key==='lowKick'?'lowKick':move?.key==='tripSweep'?'tripSweep':move?.key==='roundhouse'?'roundhouse':move?.key==='uppercut'?'uppercut':
     move?.key==='spinKick'?'roundhouse':move?.key==='superUppercut'?'uppercut':move?.key==='barrelPunch'?'punch':move?.key==='kick'?'kick':
@@ -2749,15 +2871,21 @@ function pcMotionFrame(f){
   const index=progress*(frames.length-1),a=frames[Math.floor(index)],b=frames[Math.min(frames.length-1,Math.ceil(index))],t=index%1;
   return a.map((v,i)=>v+(b[i]-v)*t);
 }
+// Character-specific silhouette sizes, anchored at the floor. These are
+// presentation values only: collision/reach remain governed by combat data.
+const PC_FIGHTER_VISUALS=Object.freeze({
+  'DONALD TRUMP':Object.freeze({height:205}),
+  'KIM JONG UN':Object.freeze({height:190})
+});
 function drawFighter(g,f){
-  const art=PC_SPRITES[f.side]?.[pcPose(f)];
+  const art=pcKickArt(f)||pcWalkingArt(f)||PC_SPRITES[f.side]?.[pcPose(f)];
   if(art && (art instanceof HTMLCanvasElement || art.complete) && (art.naturalWidth||art.width)>0){
     const aw=art.naturalWidth||art.width,ah=art.naturalHeight||art.height;
     // Match each pose to the character's idle silhouette height, not its
     // own export dimensions. Preserve a stable foot baseline across poses.
     const idleArt=PC_SPRITES[f.side]?.idle;
     const idleH=(idleArt?.height||idleArt?.naturalHeight||ah);
-    const fighterHeight=205;
+    const fighterHeight=PC_FIGHTER_VISUALS[f.name]?.height||205;
     const scale=fighterHeight/idleH;
     g.save();g.translate(f.x,f.y);
     // Subtle arcade fighting stance: visual-only idle breathing, weight shift and bounce.
@@ -2783,15 +2911,16 @@ function drawFighter(g,f){
       const step=Math.sin(phase),lift=Math.max(0,Math.sin(phase*2));
       // Keep the torso stable: large shears made Kim's silhouette glitch.
       // Six gait phases: planted, push-off, passing, landing, planted, recovery.
-      // Separate vertical compression and lateral weight transfer to avoid skating.
+      // Do not slide the entire sprite sideways during a step: the actual
+      // fighter position already moves in the combat simulation.
       const gait=(phase%(Math.PI*2)+Math.PI*2)%(Math.PI*2);
       const compression=Math.max(0,Math.cos(gait*2));
-      g.translate(reverse*step*5.0,-lift*4.4+compression*1.4);
+      g.translate(0,-lift*4.4+compression*1.4);
       g.rotate(reverse*step*0.035);
       g.scale(1+0.014*compression,1-0.019*compression);
     }
     // Multi-keyframe weight shifts: interpolated idle, footwork and attack arcs.
-    const motion=pcMotionFrame(f);
+    const motion=pcProjectileMotion(f)||pcMotionFrame(f);
     if(motion){
       const [dx,dy,tilt,stretch]=motion;
       g.translate(dx*f.face,dy);
@@ -2800,6 +2929,12 @@ function drawFighter(g,f){
     }
     // Jump silhouette follows ascent/apex/descent instead of a frozen standing pose.
     if(!f.onGround && !f.move){
+      // Forward/backward directional jumps arc into a full aerial flip.
+      // Rendering only: existing jump physics and projectile avoidance stay intact.
+      if(f.flipDir){
+        const flight=Math.max(0,Math.min(1,(PHYS.jumpVel-f.vy)/(2*PHYS.jumpVel)));
+        g.rotate(f.flipDir*Math.PI*2*flight);
+      }
       const rise=f.vy<0;
       const bend=Math.min(1,Math.abs(f.vy)/Math.max(1,Math.abs(PHYS.jumpVel)));
       g.translate(f.face*(rise?3:-2),rise?-3:2);
@@ -2817,9 +2952,13 @@ function drawFighter(g,f){
     if(f.state==='hitstun' || f.state==='airstun'){
       const t=Math.min(1,f.stateFrame/16);
       const decay=(1-t)*(1-t);
-      const heavy=f.recentKnockdown || f.state==='airstun';
+      const airborne=f.state==='airstun';
+      const heavy=f.recentKnockdown || airborne;
+      // Airborne knockback tumbles the torso visibly, while the fighter's
+      // physics position and collision boxes remain unchanged.
+      const tumble=airborne?Math.min(1,f.stateFrame/22):0;
       g.translate(-f.face*(heavy?17:9)*decay,heavy?Math.sin(t*Math.PI)*-8:0);
-      g.rotate(-f.face*(heavy?0.18:0.095)*decay);
+      g.rotate(-f.face*((heavy?0.18:0.095)*decay+0.78*tumble));
       g.scale(1+0.045*decay,1-0.065*decay);
     }else if(f.state==='blockstun'){
       const decay=Math.max(0,1-f.stateFrame/11);
@@ -2832,8 +2971,10 @@ function drawFighter(g,f){
       const bounce=t<0.55?Math.abs(Math.sin(t/0.55*Math.PI))*13:
         Math.abs(Math.sin((t-0.55)/0.45*Math.PI))*6;
       const prone=Math.max(0,1-t);
-      g.translate(0,17*prone-bounce);
-      g.rotate(-f.face*0.55*prone);
+      // Ground impact -> short bounce -> backwards roll -> guarded rise.
+      const roll=t<.55?Math.sin(t/.55*Math.PI)*.22:Math.sin((t-.55)/.45*Math.PI)*.12;
+      g.translate(-f.face*9*Math.sin(t*Math.PI),17*prone-bounce);
+      g.rotate(-f.face*(0.55*prone+roll));
       g.scale(1+0.18*prone,1-0.38*prone);
     }
     // Shared finisher daze animation: identical logic for every roster fighter.
@@ -2908,26 +3049,60 @@ function drawFighter(g,f){
       g.restore();
     }
     g.scale(fighterVisualFacing(f),1);
-    if(f.move?.key==='roundhouse' || f.move?.key==='barrelPunch'){
-      // Spin across the entire attack rather than completing a turn during startup.
+    if(f.move?.key==='barrelPunch'){
+      // Barrel punch retains its compact twisting motion. Roundhouse must
+      // never fake a 360-degree turn by flattening a single cardboard sprite.
       const spinProgress=Math.max(0,Math.min(1,(f.moveFrame-f.move.startup)/Math.max(1,f.move.active+f.move.recovery)));
-      const turn = spinProgress*Math.PI*2;
-      g.scale(0.72+0.28*Math.cos(turn),1);
-      g.rotate(Math.sin(turn)*(f.move.key==='roundhouse' ? 0.10 : 0.25));
+      const turn=spinProgress*Math.PI*2;
+      g.scale(0.86+0.14*Math.cos(turn),1);
+      g.rotate(Math.sin(turn)*0.16);
     }
     if(f.flash>0)g.filter='brightness(2.4) saturate(0.4)';
     else if(f.invuln>0&&(Game.frame>>1)%2===0)g.filter='brightness(1.6) hue-rotate(70deg)';
-    if((f.state==='walk'||f.state==='back') && f.onGround && !f.move){
-      // Keep the entire cleaned walk sprite intact. Splitting it at the hip
-      // produced transparent rectangular cutouts on mobile screens.
-      // Use a modest planted-step bounce until articulated walk frames exist.
-      const phase=Game.frame*.24+(f.idx?1.2:0);
-      const weight=Math.sin(phase);
-      g.translate(weight*2.5,-Math.abs(Math.sin(phase))*3);
-      g.rotate(weight*(f.state==='back'?-0.018:0.018));
-      g.drawImage(art,-aw*scale/2,-fighterHeight,aw*scale,fighterHeight);
-    }else{
-      g.drawImage(art,-aw*scale/2,-fighterHeight,aw*scale,fighterHeight);
+    // One continuous silhouette. Gait transforms are applied once above;
+    // avoid a second bounce that made the planted foot visibly skate.
+    // True alternating-leg walk sprites are still required for final approval.
+    g.drawImage(art,-aw*scale/2,-fighterHeight,aw*scale,fighterHeight);
+    // Guard response: a translucent shield ripple and two crossed-arm strokes
+    // during blockstun. Presentation-only, with no new stun or damage rules.
+    if((f.state==='blockstun'||f.state==='block'||f.state==='crouchBlock') && f.onGround){
+      const pulse=Math.max(0,1-Math.min(12,f.stateFrame)/12);
+      g.save();g.globalAlpha=0.20+0.48*pulse;
+      g.strokeStyle='#91dfff';g.shadowColor='#b3e8ff';g.shadowBlur=8;
+      g.lineWidth=4;g.beginPath();
+      g.ellipse(aw*scale*.18,-fighterHeight*.57,aw*scale*.27,fighterHeight*.28,0,-1.3,1.4);
+      g.stroke();g.restore();
+    }
+    // Original, deterministic cosmetic impact trails. Only draw during the
+    // active attack window; preserve clear silhouettes and unchanged hitboxes.
+    if(f.move && ['uppercut','superUppercut','roundhouse','spinKick','jumpKick'].includes(f.move.key)){
+      const move=f.move;
+      const activeT=f.moveFrame-move.startup;
+      if(activeT>=0 && activeT<move.active){
+        const u=activeT/Math.max(1,move.active);
+        const upper=move.key==='uppercut'||move.key==='superUppercut';
+        const color=f.side==='p1'?'#ffb85c':'#62c9ff';
+        g.save();
+        g.globalAlpha=(0.78*(1-u)+0.12);
+        g.strokeStyle=color;g.shadowColor=color;g.shadowBlur=12;
+        g.lineWidth=upper?7:6;g.lineCap='round';
+        g.beginPath();
+        if(upper){
+          g.moveTo(aw*scale*.17,-fighterHeight*.57);
+          g.quadraticCurveTo(aw*scale*.43,-fighterHeight*.78,aw*scale*.23,-fighterHeight*(1.04+.10*u));
+        }else{
+          g.ellipse(aw*scale*.17,-fighterHeight*.52,aw*scale*.43,fighterHeight*.20,-.20,-1.9,0.48+u*.6);
+        }
+        g.stroke();
+        for(let i=0;i<5;i++){
+          const t=i*1.37+u*3.5;
+          const x=(upper?aw*scale*.22:aw*scale*.28)+Math.cos(t)*19;
+          const y=-fighterHeight*(upper?.84:.51)+Math.sin(t)*17-u*13;
+          g.fillStyle=i%2?'#ffffff':color;
+          g.fillRect(x,y,2.5,2.5);
+        }
+        g.restore();
+      }
     }
     if(f.side==='p1' && f.move?.key==='superUppercut'){
       // Trump's microphone is a prop drawn over the existing uppercut sprite.
@@ -2948,11 +3123,18 @@ function drawFighter(g,f){
     if(f.side==='p1' && f.state!=='ko'){
       const flying=Projectiles.list.some(p=>p.active&&p.owner===f.idx&&p.kind==='hat');
       const winding=f.move?.key==='fireball' || f.move?.key==='hatThrow';
-      if(!flying){
-        g.save();g.fillStyle='#cf202d';g.strokeStyle='#fff2e6';g.lineWidth=2;
-        g.beginPath();g.ellipse(0,-fighterHeight*.91,aw*scale*.19,8,0,Math.PI,Math.PI*2);g.fill();g.stroke();
-        g.fillRect(-aw*scale*.14,-fighterHeight*.91-9,aw*scale*.28,10);
-        g.fillStyle='#fff';g.font='bold 7px sans-serif';g.textAlign='center';g.fillText('MAGA',0,-fighterHeight*.91-2);g.restore();
+      // The hat belongs to the throw animation, not Trump's permanent idle outfit.
+      // Keep it visible briefly during windup, then remove it in flight.
+      if(winding && !flying && f.moveFrame<Math.max(5,f.move?.startup||5)){
+        // Compact cap sits ABOVE the crown; never draw a horizontal band across the face.
+        g.save();
+        const crownY=-fighterHeight-7, capW=Math.min(36,aw*scale*.29);
+        g.fillStyle='#cf202d';g.strokeStyle='#fff2e6';g.lineWidth=1.6;
+        g.beginPath();g.moveTo(-capW*.52,crownY+4);g.lineTo(-capW*.42,crownY-11);
+        g.quadraticCurveTo(0,crownY-18,capW*.42,crownY-11);
+        g.lineTo(capW*.52,crownY+4);g.closePath();g.fill();g.stroke();
+        g.beginPath();g.ellipse(f.face*capW*.34,crownY+4,capW*.40,3.6,0,0,Math.PI*2);g.fill();
+        g.fillStyle='#fff';g.font='bold 6px sans-serif';g.textAlign='center';g.fillText('MAGA',0,crownY-1);g.restore();
       }
     }
     if(!finishingLoser && f.state!=='ko' && (f.state==='block'||f.state==='crouchBlock'||f.state==='blockstun')){

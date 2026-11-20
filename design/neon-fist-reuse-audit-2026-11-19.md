@@ -13,3 +13,9 @@ Plan:
 4. Ensure movement directions are relative to facing, jump+kick interrupts flip into aerial kick, and recovery/evade works on mobile multi-touch.
 5. Avoid copying art from unrelated commercial fighting games. Validate licenses for any additional assets.
 6. Test and approve visually before production deployment.
+
+## Implementation checkpoint
+- Wired roundhouse to upstream `spinKick` four-cell animation and its active frame cycling, with regression tests.
+- This improves the original atlas fallback; the current Trump/Kim custom sprite path still needs separate articulated artwork and visual approval.
+- Do not assume the original game has multiple fighter-specific style sets: it primarily supplies shared procedural animation cells.
+- 326 automated tests passed after this change; no production deployment.

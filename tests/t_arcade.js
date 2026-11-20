@@ -22,7 +22,7 @@ export async function run(t){
   t.eq(config.moves.micLasso.superCost,35,'Trump mic super costs 35 meter');
   t.ok(config.motions.some(m=>m.move==='micLasso'&&m.btn==='kick'),'mic super has a kick motion input');
   t.ok(html.includes("p.kind==='mic'"),'microphone has a distinct projectile presentation');
-  t.ok(html.includes('Math.min(65,Math.max(0,Math.abs(gap)-78))'),'microphone pull is bounded');
+  t.ok(html.includes('Math.min(12,Math.abs(foe.x-target))') && html.includes('p.hookFrames>=24'),'microphone pull is bounded');
   t.ok(html.includes("this.idx!==0 || Net.active"),'prototype mic super limited to Trump and offline matches');
   // Guard-pressure tuning must remain offline-only until rollback parity is proven.
   t.ok(html.includes('this.blockChain=Math.min(4,(this.blockChainTimer>0?this.blockChain:0)+1);'), 'blocked strikes build a capped pressure chain');
@@ -31,5 +31,24 @@ export async function run(t){
   t.ok(html.includes('attacker.stun=Math.max(attacker.stun,13);'), 'guard reset gives defender a counterattack window');
   t.ok(html.includes('this.blockChain=0;this.blockChainTimer=0;'), 'guard reset clears pressure chain');
   t.ok(html.includes("f.state==='back'||f.state==='walk'"), 'shared gait applies to both forward and backward movement');
+  t.ok(html.includes('function pcWalkingArt(f)') && html.includes('PC_WALK_FRAME_SEQUENCE'), 'forward and backward walk support distinct footfall sprites');
+  t.ok(html.includes('function pcBuildGaitFrames(base)') && html.includes('ctx.rotate(step*leg*.105)'), 'procedural walking frames articulate the two legs independently');
+  t.eq(config.physics.jumpVel,-21.5,'high arcade jump velocity is configured');
+  t.ok(html.includes("atk.key==='superUppercut'){ hs=13") && html.includes('atk.special){ hs=10'), 'super uppercuts and specials have dramatic impact freeze');
+  t.ok(html.includes('if(atk.multiHit){ hs=Math.min(hs,3)'), 'multi-hit attacks cap hitstop to protect combo flow');
+  t.ok(html.includes('const tumble=airborne?Math.min(1,f.stateFrame/22):0'), 'airborne hits show a visual tumble');
+  t.ok(html.includes('const roll=t<.55?Math.sin(t/.55*Math.PI)*.22'), 'knockdown recovery includes a backward roll');
+  t.ok(html.includes('function pcProjectileMotion(f)') && html.includes('pcProjectileMotion(f)||pcMotionFrame(f)'), 'projectile attacks have character-specific windup and follow-through');
+  t.eq(config.moves.roundhouse.anim,'spinKick','roundhouse reuses original four-frame spin animation');
+  t.ok(html.includes('roundhouse: {s:[0],a:[1,2],r:[3],altRate:3}'), 'roundhouse cycles through Neon Fist spin frames');
+  t.ok(html.includes('data-k="up" style="grid-area:3/1'), 'right-side jump button shares existing up input');
+  t.ok(html.includes('this.flipDir = dir ? Math.sign(dir) : 0') && html.includes('g.rotate(f.flipDir*Math.PI*2*flight)'), 'directional jumps render forward or backward aerial rotation');
+  t.ok(html.includes('o.flipDir=this.flipDir;') && html.includes('this.flipDir=o.flipDir||0;'), 'flip direction survives rollback save/load');
+  t.ok(html.includes('this.flipDir=0; // End directional aerial rotation at landing.'), 'flip animation resets on landing');
+  t.ok(html.includes('function pcKickArt(f)') && html.includes("['chamber','extend','retract']"), 'kicks support chamber, extension and recovery art');
+  t.ok(html.includes('function pcKickArt(f)') && html.includes('pcKickArt(f)||pcWalkingArt(f)'), 'kick artwork takes precedence when available');
+  t.ok(html.includes("f.state==='blockstun'||f.state==='block'"), 'blocking shows a dedicated guard ripple');
+  t.ok(!html.includes('g.scale(0.72+0.28*Math.cos(turn),1);'), 'roundhouses do not use the old cardboard squash rotation');
+  t.ok(html.includes("['uppercut','superUppercut','roundhouse','spinKick','jumpKick']"), 'special strike effects are tied to move animation');
 
 }

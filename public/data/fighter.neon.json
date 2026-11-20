@@ -5,7 +5,7 @@
   "version": "1.0.0",
   "physics": {
     "gravity": 0.92,
-    "jumpVel": -18.5,
+    "jumpVel": -21.5,
     "walkSpeed": 4.1,
     "backSpeed": 3.2,
     "airDrift": 0.55,
@@ -358,7 +358,7 @@
     },
     "roundhouse": {
       "key": "roundhouse",
-      "anim": "kick",
+      "anim": "spinKick",
       "startup": 12,
       "active": 6,
       "recovery": 18,
