@@ -3157,6 +3157,22 @@ function drawFighter(g,f){
     // avoid a second bounce that made the planted foot visibly skate.
     // True alternating-leg walk sprites are still required for final approval.
     g.drawImage(art,-aw*scale/2,-fighterHeight,aw*scale,fighterHeight);
+    // Optional subtle caricature: magnify the existing face region by 6%.
+    // Reuse the SAME pose artwork, so facial expressions track every move.
+    // Confined to the upper silhouette; no change to combat geometry.
+    if(f.name==='DONALD TRUMP'||f.name==='KIM JONG UN'){
+      const headX=0, headY=-fighterHeight*.835;
+      const headRX=aw*scale*.145,headRY=fighterHeight*.135;
+      g.save();
+      g.beginPath();g.ellipse(headX,headY,headRX,headRY,0,0,Math.PI*2);g.clip();
+      const headScale=1.06;
+      const turn=(f.move?.key==='superUppercut'?-.035:
+        f.state==='hitstun'||f.state==='airstun'?.028:
+        f.move?.key==='roundhouse'?.022:0)*f.face;
+      g.translate(headX,headY);g.rotate(turn);g.scale(headScale,headScale);g.translate(-headX,-headY);
+      g.drawImage(art,-aw*scale/2,-fighterHeight,aw*scale,fighterHeight);
+      g.restore();
+    }
     // Guard response: a translucent shield ripple and two crossed-arm strokes
     // during blockstun. Presentation-only, with no new stun or damage rules.
     if((f.state==='blockstun'||f.state==='block'||f.state==='crouchBlock') && f.onGround){
