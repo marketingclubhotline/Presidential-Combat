@@ -1,0 +1,3 @@
+# Presidential Combat shared handoff
+
+Use this folder for prompts, small text manifests, and reports shared between ChatGPT, the Mac mini, and Copilot. `inbox/` is incoming requests, `outbox/` is outgoing results, `prompts/` holds reusable Copilot tasks, and `reports/` holds QA summaries. Do not commit secrets, passwords, API keys, personal email attachments, or large binary ZIPs. Store large assets in GitHub Releases or another approved file store, and link to them in a manifest. Keep development changes on a review branch; do not auto-merge or deploy. Assign only one editor per task to avoid conflicting edits.
