@@ -1614,7 +1614,10 @@ class Fighter{
       const move = MOVES.barrelPunch && this.buf.doubleTapped('punch') ? 'barrelPunch' : 'punch';
       this.buf.consume('punch'); this.startMove(move);
     } else if(this.buf.avail('kick')){
-      const move = MOVES.roundhouse && this.buf.doubleTapped('kick') ? 'roundhouse' : 'kick';
+      // Back + Kick is a standing roundhouse; Down + Kick remains a low trip.
+      // Use facing-relative back so this works for either side of the arena.
+      const backHeld=dir!==0 && dir===-this.face;
+      const move = MOVES.roundhouse && (backHeld || this.buf.doubleTapped('kick')) ? 'roundhouse' : 'kick';
       this.buf.consume('kick'); this.startMove(move);
     } else if(down){
       this.setState('crouch');
