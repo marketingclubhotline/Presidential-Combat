@@ -1,0 +1,407 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Shared combat feature contract for all Presidential Combat fighters",
+  "statusLegend": {
+    "existing_needs_visual_qa": "Mechanic or placeholder exists, not approved visually",
+    "planned": "Not implemented; requires code/art/testing"
+  },
+  "categories": {
+    "movement": [
+      {
+        "id": "idle",
+        "status": "existing_needs_visual_qa"
+      },
+      {
+        "id": "walk_forward",
+        "status": "existing_needs_visual_qa"
+      },
+      {
+        "id": "walk_backward",
+        "status": "existing_needs_visual_qa"
+      },
+      {
+        "id": "dash_forward",
+        "status": "planned"
+      },
+      {
+        "id": "dash_backward",
+        "status": "planned"
+      },
+      {
+        "id": "crouch",
+        "status": "existing_needs_visual_qa"
+      },
+      {
+        "id": "jump_vertical",
+        "status": "existing_needs_visual_qa"
+      },
+      {
+        "id": "flip_forward",
+        "status": "existing_needs_visual_qa"
+      },
+      {
+        "id": "flip_backward",
+        "status": "existing_needs_visual_qa"
+      },
+      {
+        "id": "land",
+        "status": "planned"
+      }
+    ],
+    "attacks": [
+      {
+        "id": "jab",
+        "status": "existing_needs_visual_qa"
+      },
+      {
+        "id": "heavy_punch",
+        "status": "planned"
+      },
+      {
+        "id": "front_kick",
+        "status": "existing_needs_visual_qa"
+      },
+      {
+        "id": "roundhouse",
+        "status": "existing_needs_visual_qa"
+      },
+      {
+        "id": "spinning_kick",
+        "status": "existing_needs_visual_qa"
+      },
+      {
+        "id": "crescent_kick",
+        "status": "planned"
+      },
+      {
+        "id": "low_sweep",
+        "status": "existing_needs_visual_qa"
+      },
+      {
+        "id": "jump_kick",
+        "status": "existing_needs_visual_qa"
+      },
+      {
+        "id": "flip_kick",
+        "status": "planned"
+      },
+      {
+        "id": "uppercut",
+        "status": "existing_needs_visual_qa"
+      },
+      {
+        "id": "power_kick",
+        "status": "planned"
+      }
+    ],
+    "defense": [
+      {
+        "id": "stand_block",
+        "status": "existing_needs_visual_qa"
+      },
+      {
+        "id": "crouch_block",
+        "status": "existing_needs_visual_qa"
+      },
+      {
+        "id": "air_block",
+        "status": "planned"
+      },
+      {
+        "id": "guard_impact",
+        "status": "planned"
+      },
+      {
+        "id": "backstep",
+        "status": "planned"
+      },
+      {
+        "id": "dodge",
+        "status": "planned"
+      },
+      {
+        "id": "counterattack",
+        "status": "planned"
+      },
+      {
+        "id": "throw_escape",
+        "status": "planned"
+      }
+    ],
+    "grappling": [
+      {
+        "id": "grab_start",
+        "status": "planned"
+      },
+      {
+        "id": "grab_connect",
+        "status": "planned"
+      },
+      {
+        "id": "throw_forward",
+        "status": "planned"
+      },
+      {
+        "id": "throw_backward",
+        "status": "planned"
+      },
+      {
+        "id": "throw_break",
+        "status": "planned"
+      }
+    ],
+    "reactions": [
+      {
+        "id": "light_hit",
+        "status": "existing_needs_visual_qa"
+      },
+      {
+        "id": "heavy_hit",
+        "status": "existing_needs_visual_qa"
+      },
+      {
+        "id": "head_hit",
+        "status": "planned"
+      },
+      {
+        "id": "body_hit",
+        "status": "planned"
+      },
+      {
+        "id": "kick_knockback",
+        "status": "existing_needs_visual_qa"
+      },
+      {
+        "id": "air_launch",
+        "status": "existing_needs_visual_qa"
+      },
+      {
+        "id": "air_juggle",
+        "status": "planned"
+      },
+      {
+        "id": "ground_impact",
+        "status": "existing_needs_visual_qa"
+      },
+      {
+        "id": "ground_bounce",
+        "status": "existing_needs_visual_qa"
+      },
+      {
+        "id": "ground_roll",
+        "status": "existing_needs_visual_qa"
+      },
+      {
+        "id": "knockout",
+        "status": "existing_needs_visual_qa"
+      }
+    ],
+    "effects": [
+      {
+        "id": "punch_spark",
+        "status": "existing_needs_visual_qa"
+      },
+      {
+        "id": "kick_spark",
+        "status": "existing_needs_visual_qa"
+      },
+      {
+        "id": "uppercut_burst",
+        "status": "existing_needs_visual_qa"
+      },
+      {
+        "id": "kick_streak",
+        "status": "existing_needs_visual_qa"
+      },
+      {
+        "id": "projectile_launch",
+        "status": "existing_needs_visual_qa"
+      },
+      {
+        "id": "projectile_impact",
+        "status": "existing_needs_visual_qa"
+      },
+      {
+        "id": "hitstop",
+        "status": "existing_needs_visual_qa"
+      },
+      {
+        "id": "slow_motion",
+        "status": "existing_needs_visual_qa"
+      },
+      {
+        "id": "camera_shake",
+        "status": "existing_needs_visual_qa"
+      },
+      {
+        "id": "health_feedback",
+        "status": "existing_needs_visual_qa"
+      },
+      {
+        "id": "landing_dust",
+        "status": "planned"
+      }
+    ],
+    "rules": [
+      {
+        "id": "health",
+        "status": "existing_needs_visual_qa"
+      },
+      {
+        "id": "hitbox_hurtbox",
+        "status": "existing_needs_visual_qa"
+      },
+      {
+        "id": "startup_active_recovery",
+        "status": "existing_needs_visual_qa"
+      },
+      {
+        "id": "attack_priority",
+        "status": "existing_needs_visual_qa"
+      },
+      {
+        "id": "combo_cancel",
+        "status": "existing_needs_visual_qa"
+      },
+      {
+        "id": "gravity",
+        "status": "existing_needs_visual_qa"
+      },
+      {
+        "id": "air_recovery",
+        "status": "existing_needs_visual_qa"
+      },
+      {
+        "id": "projectile_counterplay",
+        "status": "existing_needs_visual_qa"
+      },
+      {
+        "id": "meter_cooldown",
+        "status": "existing_needs_visual_qa"
+      },
+      {
+        "id": "stun_limits",
+        "status": "existing_needs_visual_qa"
+      },
+      {
+        "id": "light_heavy_strength",
+        "status": "planned"
+      },
+      {
+        "id": "corner_escape",
+        "status": "planned"
+      },
+      {
+        "id": "crossup_facing",
+        "status": "planned"
+      },
+      {
+        "id": "reach_alignment",
+        "status": "planned"
+      }
+    ],
+    "controls": [
+      {
+        "id": "directional_movement",
+        "status": "existing_needs_visual_qa"
+      },
+      {
+        "id": "up_jump",
+        "status": "existing_needs_visual_qa"
+      },
+      {
+        "id": "right_jump_button",
+        "status": "existing_needs_visual_qa"
+      },
+      {
+        "id": "directional_flip",
+        "status": "existing_needs_visual_qa"
+      },
+      {
+        "id": "punch",
+        "status": "existing_needs_visual_qa"
+      },
+      {
+        "id": "kick",
+        "status": "existing_needs_visual_qa"
+      },
+      {
+        "id": "sweep",
+        "status": "existing_needs_visual_qa"
+      },
+      {
+        "id": "block",
+        "status": "existing_needs_visual_qa"
+      },
+      {
+        "id": "special_input",
+        "status": "existing_needs_visual_qa"
+      },
+      {
+        "id": "multitouch",
+        "status": "existing_needs_visual_qa"
+      }
+    ],
+    "presentation": [
+      {
+        "id": "intro",
+        "status": "existing_needs_visual_qa"
+      },
+      {
+        "id": "round_countdown",
+        "status": "existing_needs_visual_qa"
+      },
+      {
+        "id": "health_timer",
+        "status": "existing_needs_visual_qa"
+      },
+      {
+        "id": "combo_counter",
+        "status": "existing_needs_visual_qa"
+      },
+      {
+        "id": "super_meter",
+        "status": "existing_needs_visual_qa"
+      },
+      {
+        "id": "finish_window",
+        "status": "existing_needs_visual_qa"
+      },
+      {
+        "id": "daze",
+        "status": "existing_needs_visual_qa"
+      },
+      {
+        "id": "finisher",
+        "status": "existing_needs_visual_qa"
+      },
+      {
+        "id": "victory",
+        "status": "existing_needs_visual_qa"
+      },
+      {
+        "id": "rematch",
+        "status": "existing_needs_visual_qa"
+      }
+    ]
+  },
+  "fighterOverridesAllowed": [
+    "visual_scale",
+    "reach",
+    "walk_style",
+    "idle_style",
+    "kick_style",
+    "throw_style",
+    "signature_recovery",
+    "special_moves",
+    "voice",
+    "arena",
+    "effects_palette"
+  ],
+  "rollout": [
+    "shared_core",
+    "two_fighter_visual_qa",
+    "roster_adoption",
+    "signature_supers"
+  ]
+}
