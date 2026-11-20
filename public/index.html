@@ -1470,7 +1470,9 @@ class Fighter{
     this.addMeter(atk.meter*0.5);
     if(!atk.multiHit || this.stun>0){ Audio5.play(atk.sfx, 1, 0.92+Rng.range(0,0.16)); Audio5.play('hurt',0.25); }
     if(!Net.active && !atk.multiHit && (atk.weight==='heavy'||atk.launcher||atk.special)){
-      Game.slowmo=Math.max(Game.slowmo,atk.launcher?0.52:0.34);
+      // Successful uppercut contact gets a stronger cinematic slowdown;
+      // a missed uppercut remains fully punishable at normal speed.
+      Game.slowmo=Math.max(Game.slowmo,atk.key==='uppercut'?0.62:atk.launcher?0.52:0.34);
     }
     if(atk.key==='superUppercut' && !Net.active){
       Game.slowmo=Math.max(Game.slowmo,0.65);
@@ -1611,7 +1613,10 @@ class Fighter{
       // DOWN + KICK: dedicated sweeping trip with longer readable recovery.
       this.buf.consume('kick'); this.startMove('tripSweep');
     } else if(this.buf.avail('punch')){
-      const move = MOVES.barrelPunch && this.buf.doubleTapped('punch') ? 'barrelPunch' : 'punch';
+      // Facing-relative BACK + PUNCH triggers the universal rising uppercut.
+      const backHeld=dir!==0 && dir===-this.face;
+      const move = backHeld && MOVES.uppercut ? 'uppercut' :
+        MOVES.barrelPunch && this.buf.doubleTapped('punch') ? 'barrelPunch' : 'punch';
       this.buf.consume('punch'); this.startMove(move);
     } else if(this.buf.avail('kick')){
       // Back + Kick is a standing roundhouse; Down + Kick remains a low trip.
@@ -1882,6 +1887,7 @@ const Juice = {
     let hs, shake;
     if(blocked){ hs=3; shake=3; }
     else if(atk.key==='superUppercut'){ hs=13; shake=14; }
+    else if(atk.key==='uppercut' && !blocked){ hs=11; shake=13; }
     else if(atk.special){ hs=10; shake=12; }
     else if(atk.launcher || atk.weight==='heavy'){ hs=8; shake=11; }
     else { hs=4; shake=5; }
@@ -2725,25 +2731,25 @@ function pcBuildGaitFrames(base){
     return out;
   });
 }
-// Optional true gait frames: preserve the existing single-pose fallback until
-// the four distinct planted/passing/landing drawings are approved. Frame order
-// follows the original Neon Fist 3,4,5,4 forward / 5,4,3,4 backward cadence.
-const PC_WALK_FRAME_SEQUENCE=Object.freeze({walk:[0,1,2,1],back:[2,1,0,1]});
+// Authored eight-pose gait cycle. Unlike the old three-frame procedural split,
+// every pose must be a real whole-body drawing with alternating planted feet.
+// Missing assets retain the static fallback, never fabricate crossed legs.
+const PC_WALK_FRAME_SEQUENCE=Object.freeze({walk:[0,1,2,3,4,5,6,7],back:[7,6,5,4,3,2,1,0]});
 const PC_WALK_FRAMES={p1:[],p2:[]};
 for(const [side,name] of [['p1','trump'],['p2','kim']]){
-  for(let frame=0;frame<3;frame++){
+  for(let frame=0;frame<8;frame++){
     const image=new Image();
-    image.onload=()=>{try{PC_WALK_FRAMES[side][frame]=pcCleanSprite(image,name);}catch(e){console.warn('gait frame unavailable',name,frame,e);}};
-    image.onerror=()=>{}; // Keep procedural gait if authored frame is absent.
+    image.onload=()=>{try{PC_WALK_FRAMES[side][frame]=pcCleanSprite(image,name);}catch(e){console.warn('walk pose cleanup skipped',name,frame,e);}};
+    image.onerror=()=>{};
     image.src='art/sprites/'+name+'-walk-'+(frame+1)+'.png';
   }
 }
 function pcWalkingArt(f){
   if(!f.onGround || f.move || (f.state!=='walk'&&f.state!=='back'))return null;
   const frames=PC_WALK_FRAMES[f.side];
-  if(!frames || ![0,1,2].every(i=>frames[i] instanceof HTMLCanvasElement))return null;
+  if(!frames || ![0,1,2,3,4,5,6,7].every(i=>frames[i] instanceof HTMLCanvasElement))return null;
   const sequence=PC_WALK_FRAME_SEQUENCE[f.state];
-  const step=Math.floor(Game.frame/6+(f.idx?2:0))%sequence.length;
+  const step=Math.floor(Game.frame/5+(f.idx?4:0))%sequence.length;
   return frames[sequence[step]];
 }
 // Separate chamber, extension and recovery artwork for martial-arts kicks.

@@ -43,9 +43,13 @@ export async function run(t){
   t.ok(config.moves.roundhouse.active>=10&&config.moves.roundhouse.recovery>=24,'heavy roundhouse has visible active and punishable recovery windows');
   t.ok(config.moves.kick.active>=6&&config.moves.kick.recovery>=12,'heavy kick extends and recovers longer');
   t.ok(html.includes('const backHeld=dir!==0 && dir===-this.face;'), 'back plus kick triggers facing-relative roundhouse');
+  t.ok(html.includes("const move = backHeld && MOVES.uppercut ? 'uppercut'"), 'back plus punch triggers facing-relative uppercut');
+  t.ok(html.includes("atk.key==='uppercut'?0.62"), 'confirmed uppercut receives stronger cinematic slowdown');
   t.ok(html.includes("this.startMove('tripSweep');"), 'down plus kick still triggers the low trip');
   t.ok(config.moves.jumpKick.active>=9&&config.moves.jumpKick.recovery>=12,'air kick holds its extension and has a longer recovery');
   t.ok(!html.includes('PC_WALK_FRAMES[side]=pcBuildGaitFrames(clean)'), 'crossing-leg procedural walk is disabled');
+  t.ok(html.includes('for(let frame=0;frame<8;frame++)'), 'eight authored gait poses supported');
+  t.ok(html.includes('![0,1,2,3,4,5,6,7].every'), 'incomplete walk artwork cannot masquerade as a complete cycle');
   t.ok(html.includes('g.translate(0,-fighterHeight*.51);')&&html.includes('const tuck=Math.pow(Math.sin(Math.PI*flight),2);'),'flip pivots about torso and has a tuck phase');
   t.ok(html.includes('roundhouse: {s:[0],a:[1,2],r:[3],altRate:3}'), 'roundhouse cycles through Neon Fist spin frames');
   t.ok(html.includes('data-k="up" style="grid-area:3/1'), 'right-side jump button shares existing up input');
