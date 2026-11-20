@@ -2693,7 +2693,7 @@ for(const [side,name] of [['p1','trump'],['p2','kim']]){
   for(const pose of ['idle','walk','punch','kick','dodge','win']){
     const im=new Image();
     PC_SPRITES[side][pose]=im;
-    im.onload=()=>{try{const clean=pcCleanSprite(im,name);PC_SPRITES[side][pose]=clean;if(pose==='walk')PC_WALK_FRAMES[side]=pcBuildGaitFrames(clean);}catch(e){console.warn('sprite matte cleanup skipped',name,pose,e);}};
+    im.onload=()=>{try{const clean=pcCleanSprite(im,name);PC_SPRITES[side][pose]=clean;/* Keep the original walk silhouette; split-leg rotation crossed the legs. */}catch(e){console.warn('sprite matte cleanup skipped',name,pose,e);}};
     im.src='art/sprites/'+name+'-'+pose+'.png';
   }
 }
@@ -2915,9 +2915,8 @@ function drawFighter(g,f){
       // fighter position already moves in the combat simulation.
       const gait=(phase%(Math.PI*2)+Math.PI*2)%(Math.PI*2);
       const compression=Math.max(0,Math.cos(gait*2));
-      g.translate(0,-lift*4.4+compression*1.4);
-      g.rotate(reverse*step*0.035);
-      g.scale(1+0.014*compression,1-0.019*compression);
+      // Preserve foot contact: no whole-body hop or artificial leg-crossing.
+      g.rotate(reverse*step*0.012);
     }
     // Multi-keyframe weight shifts: interpolated idle, footwork and attack arcs.
     const motion=pcProjectileMotion(f)||pcMotionFrame(f);
@@ -2933,7 +2932,14 @@ function drawFighter(g,f){
       // Rendering only: existing jump physics and projectile avoidance stay intact.
       if(f.flipDir){
         const flight=Math.max(0,Math.min(1,(PHYS.jumpVel-f.vy)/(2*PHYS.jumpVel)));
-        g.rotate(f.flipDir*Math.PI*2*flight);
+        // Rotate about the body center, not the feet, and tuck near inversion.
+        // Authored multi-pose somersault sprites are still needed for final QA.
+        const eased=flight*flight*(3-2*flight);
+        g.translate(0,-fighterHeight*.51);
+        g.rotate(f.flipDir*Math.PI*2*eased);
+        const tuck=Math.pow(Math.sin(Math.PI*flight),2);
+        g.scale(1+0.10*tuck,1-0.20*tuck);
+        g.translate(0,fighterHeight*.51);
       }
       const rise=f.vy<0;
       const bend=Math.min(1,Math.abs(f.vy)/Math.max(1,Math.abs(PHYS.jumpVel)));

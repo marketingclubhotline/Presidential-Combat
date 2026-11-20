@@ -40,9 +40,13 @@ export async function run(t){
   t.ok(html.includes('const roll=t<.55?Math.sin(t/.55*Math.PI)*.22'), 'knockdown recovery includes a backward roll');
   t.ok(html.includes('function pcProjectileMotion(f)') && html.includes('pcProjectileMotion(f)||pcMotionFrame(f)'), 'projectile attacks have character-specific windup and follow-through');
   t.eq(config.moves.roundhouse.anim,'spinKick','roundhouse reuses original four-frame spin animation');
+  t.ok(config.moves.roundhouse.active>=10&&config.moves.roundhouse.recovery>=24,'heavy roundhouse has visible active and punishable recovery windows');
+  t.ok(config.moves.kick.active>=6&&config.moves.kick.recovery>=12,'heavy kick extends and recovers longer');
+  t.ok(!html.includes('PC_WALK_FRAMES[side]=pcBuildGaitFrames(clean)'), 'crossing-leg procedural walk is disabled');
+  t.ok(html.includes('g.translate(0,-fighterHeight*.51);')&&html.includes('const tuck=Math.pow(Math.sin(Math.PI*flight),2);'),'flip pivots about torso and has a tuck phase');
   t.ok(html.includes('roundhouse: {s:[0],a:[1,2],r:[3],altRate:3}'), 'roundhouse cycles through Neon Fist spin frames');
   t.ok(html.includes('data-k="up" style="grid-area:3/1'), 'right-side jump button shares existing up input');
-  t.ok(html.includes('this.flipDir = dir ? Math.sign(dir) : 0') && html.includes('g.rotate(f.flipDir*Math.PI*2*flight)'), 'directional jumps render forward or backward aerial rotation');
+  t.ok(html.includes('this.flipDir = dir ? Math.sign(dir) : 0') && html.includes('g.rotate(f.flipDir*Math.PI*2*eased)'), 'directional jumps render forward or backward aerial rotation');
   t.ok(html.includes('o.flipDir=this.flipDir;') && html.includes('this.flipDir=o.flipDir||0;'), 'flip direction survives rollback save/load');
   t.ok(html.includes('this.flipDir=0; // End directional aerial rotation at landing.'), 'flip animation resets on landing');
   t.ok(html.includes('function pcKickArt(f)') && html.includes("['chamber','extend','retract']"), 'kicks support chamber, extension and recovery art');
