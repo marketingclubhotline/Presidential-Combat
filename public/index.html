@@ -1272,7 +1272,7 @@ class Fighter{
     this.gravMul=1;
     this.anim='idle'; this.animFrame=0; this.animTick=0;
     this.flash=0; this.onGround=true; this.invuln=0;this.recentKnockdown=false;
-    this.flipDir=0;
+    this.flipDir=0; this.aerialKickVariant='vertical';
     this.aiTimer=0; this.aiMode=0;
     this.buf.reset();
     if(full) this.rounds=0;
@@ -1290,7 +1290,7 @@ class Fighter{
     o.gravMul=this.gravMul; o.anim=this.anim; o.animFrame=this.animFrame;
     o.animTick=this.animTick; o.onGround=this.onGround; o.invuln=this.invuln;
     o.flash=this.flash; o.recentKnockdown=this.recentKnockdown; o.rounds=this.rounds; o.aiTimer=this.aiTimer;
-    o.flipDir=this.flipDir;
+    o.flipDir=this.flipDir; o.aerialKickVariant=this.aerialKickVariant;
     o.bh=this.buf.head; o.bprev=this.buf.prev;
     if(!o.hist) { o.hist=new Int32Array(64); o.dirs=new Int8Array(64); }
     o.hist.set(this.buf.hist); o.dirs.set(this.buf.dirs);
@@ -1310,7 +1310,7 @@ class Fighter{
     this.gravMul=o.gravMul; this.anim=o.anim; this.animFrame=o.animFrame;
     this.animTick=o.animTick; this.onGround=o.onGround; this.invuln=o.invuln;
     this.flash=o.flash; this.recentKnockdown=!!o.recentKnockdown; this.rounds=o.rounds; this.aiTimer=o.aiTimer;
-    this.flipDir=o.flipDir||0;
+    this.flipDir=o.flipDir||0; this.aerialKickVariant=o.aerialKickVariant||'vertical';
     this.buf.head=o.bh; this.buf.prev=o.bprev;
     this.buf.hist.set(o.hist); this.buf.dirs.set(o.dirs);
     Object.assign(this.buf.pressAge,o.pa);
@@ -1593,6 +1593,8 @@ class Fighter{
     if(!this.onGround){
       if(this.buf.avail('punch')||this.buf.avail('kick')){
         this.buf.consume(this.buf.avail('kick')?'kick':'punch');
+        // Lock the aerial attack variant when the button is pressed.
+        this.aerialKickVariant=this.flipDir?(this.flipDir*this.face>=0?'forward':'backward'):'vertical';
         this.startMove('jumpKick');
       }else{
         this.vx = clamp(this.vx + dir*PHYS.airDrift*0.65, -8.0, 8.0);
@@ -1603,6 +1605,7 @@ class Fighter{
       this.vy = PHYS.jumpVel; this.onGround=false;
       this.vx = dir*8.0;
       this.flipDir = dir ? Math.sign(dir) : 0;
+      this.aerialKickVariant='vertical';
       this.setState('jump'); Audio5.play('jump',0.4);
     } else if(held&BTN.BLOCK){
       this.setState(down?'crouchBlock':'block');
@@ -2752,6 +2755,47 @@ function pcWalkingArt(f){
   const step=Math.floor(Game.frame/5+(f.idx?4:0))%sequence.length;
   return frames[sequence[step]];
 }
+// Sixteen authored poses per direction. Frames are optional until artwork is installed.
+const PC_FLIP_FRAMES={p1:{forward:[],backward:[]},p2:{forward:[],backward:[]}};
+for(const [side,name] of [['p1','trump'],['p2','kim']]){
+  for(const direction of ['forward','backward']){
+    for(let i=0;i<16;i++){
+      const image=new Image();
+      image.onload=()=>{try{PC_FLIP_FRAMES[side][direction][i]=pcCleanSprite(image,name);}catch(e){console.warn('flip frame cleanup failed',name,direction,i,e);}};
+      image.onerror=()=>{};
+      image.src='art/sprites/'+name+'-flip-'+direction+'-'+(i+1)+'.png';
+    }
+  }
+}
+function pcFlipArt(f){
+  if(f.onGround||f.move||!f.flipDir)return null;
+  const direction=f.flipDir*f.face>=0?'forward':'backward';
+  const frames=PC_FLIP_FRAMES[f.side]?.[direction];
+  if(!frames||frames.length!==16||!frames.every(img=>img instanceof HTMLCanvasElement))return null;
+  const flight=Math.max(0,Math.min(1,(PHYS.jumpVel-f.vy)/(2*PHYS.jumpVel)));
+  return frames[Math.min(15,Math.floor(flight*16))];
+}
+// Aerial kick variants share the jumpKick move's hitboxes and timing.
+const PC_AERIAL_KICK_FRAMES={p1:{vertical:[],forward:[],backward:[]},p2:{vertical:[],forward:[],backward:[]}};
+for(const [side,name] of [['p1','trump'],['p2','kim']]){
+  for(const variant of ['vertical','forward','backward']){
+    for(let i=0;i<8;i++){
+      const image=new Image();
+      image.onload=()=>{try{PC_AERIAL_KICK_FRAMES[side][variant][i]=pcCleanSprite(image,name);}catch(e){console.warn('aerial kick art failed',name,variant,i,e);}};
+      image.onerror=()=>{};
+      image.src='art/sprites/'+name+'-airkick-'+variant+'-'+(i+1)+'.png';
+    }
+  }
+}
+function pcAerialKickArt(f){
+  if(f.move?.key!=='jumpKick'||f.onGround)return null;
+  const variant=f.aerialKickVariant||'vertical';
+  const frames=PC_AERIAL_KICK_FRAMES[f.side]?.[variant];
+  if(!frames||frames.length!==8||!frames.every(img=>img instanceof HTMLCanvasElement))return null;
+  const move=f.move;
+  const total=Math.max(1,move.startup+move.active+move.recovery);
+  return frames[Math.min(7,Math.floor(Math.max(0,f.moveFrame)/total*8))];
+}
 // Separate chamber, extension and recovery artwork for martial-arts kicks.
 // When the three drawings are supplied, render them in actual move phases;
 // never distort one upright pose to impersonate an articulated leg.
@@ -2763,6 +2807,25 @@ for(const [side,name] of [['p1','trump'],['p2','kim']]){
     image.onerror=()=>{};
     image.src='art/sprites/'+name+'-kick-'+phase+'.png';
   }
+}
+// Eight authored roundhouse phases: guard, wind-up, lift, chamber, extend, impact, follow-through, recovery.
+const PC_ROUNDHOUSE_FRAMES={p1:[],p2:[]};
+for(const [side,name] of [['p1','trump'],['p2','kim']]){
+  for(let frame=0;frame<8;frame++){
+    const image=new Image();
+    image.onload=()=>{try{PC_ROUNDHOUSE_FRAMES[side][frame]=pcCleanSprite(image,name);}catch(e){console.warn('roundhouse art cleanup skipped',name,frame,e);}};
+    image.onerror=()=>{};
+    image.src='art/sprites/'+name+'-roundhouse-'+(frame+1)+'.png';
+  }
+}
+function pcRoundhouseArt(f){
+  if(!f.move || f.move.key!=='roundhouse')return null;
+  const frames=PC_ROUNDHOUSE_FRAMES[f.side];
+  if(!frames || !frames.every((img,i)=>i>=8 || img instanceof HTMLCanvasElement) || frames.length!==8)return null;
+  const move=f.move, t=f.moveFrame;
+  const total=Math.max(1,move.startup+move.active+move.recovery);
+  const idx=Math.min(7,Math.floor(Math.max(0,t)/total*8));
+  return frames[idx];
 }
 function pcKickArt(f){
   const move=f.move;
@@ -2887,7 +2950,8 @@ const PC_FIGHTER_VISUALS=Object.freeze({
   'KIM JONG UN':Object.freeze({height:190})
 });
 function drawFighter(g,f){
-  const art=pcKickArt(f)||pcWalkingArt(f)||PC_SPRITES[f.side]?.[pcPose(f)];
+  const flipArt=pcFlipArt(f);
+  const art=pcAerialKickArt(f)||flipArt||pcRoundhouseArt(f)||pcKickArt(f)||pcWalkingArt(f)||PC_SPRITES[f.side]?.[pcPose(f)];
   if(art && (art instanceof HTMLCanvasElement || art.complete) && (art.naturalWidth||art.width)>0){
     const aw=art.naturalWidth||art.width,ah=art.naturalHeight||art.height;
     // Match each pose to the character's idle silhouette height, not its
@@ -2939,7 +3003,7 @@ function drawFighter(g,f){
     if(!f.onGround && !f.move){
       // Forward/backward directional jumps arc into a full aerial flip.
       // Rendering only: existing jump physics and projectile avoidance stay intact.
-      if(f.flipDir){
+      if(f.flipDir && !flipArt){
         const flight=Math.max(0,Math.min(1,(PHYS.jumpVel-f.vy)/(2*PHYS.jumpVel)));
         // Rotate about the body center, not the feet, and tuck near inversion.
         // Authored multi-pose somersault sprites are still needed for final QA.
