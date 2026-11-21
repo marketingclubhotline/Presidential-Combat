@@ -1230,6 +1230,7 @@ const STATES = {
   crouchAtk:  {busy:true,  anim:null,          hurt:'crouch'},
   airAtk:     {busy:true,  anim:null,          hurt:'air'},
   special:    {busy:true,  anim:null,          hurt:'stand'},
+  rollingThrow:{busy:true, anim:'back', hurt:'crouch'},
   block:      {busy:false, anim:'block',       hurt:'stand'},
   crouchBlock:{busy:false, anim:'crouchBlock', hurt:'crouch'},
   hitstun:    {busy:true,  anim:'hit',         hurt:'hit'},
@@ -1515,6 +1516,23 @@ class Fighter{
     if(this.state==='ko' || this.state==='win' || this.state==='frozen'){
       this.applyPhysics(opp); this.advanceAnim(); return;
     }
+    // Shared close-range rolling throw: facing-relative forward + punch + block.
+    // Offline prototype until the paired sprite sequence is authored and rollback-tested.
+    if(this.state==='rollingThrow'){
+      this.vx=0;
+      if(this.stateFrame===9){
+        opp.move=null; opp.canCancel=false;
+        opp.hp=Math.max(0,opp.hp-9);
+        opp.stun=Math.max(opp.stun,34);
+        opp.vx=-this.face*11;
+        opp.vy=-8; opp.onGround=false;
+        opp.recentKnockdown=true;
+        opp.setState('airstun','hit');
+        Audio5.play('land',0.65);
+      }
+      if(this.stateFrame>=27)this.setState('idle');
+      this.applyPhysics(opp); this.advanceAnim(); return;
+    }
     if(this.state==='hitstun' || this.state==='airstun' || this.state==='blockstun'){
       // Spend meter to escape a combo; the defender must deliberately press block.
       if(!Net.active && this.stun>0 && this.meter>=35 && this.buf.avail('block')){
@@ -1590,6 +1608,20 @@ class Fighter{
     const held = this.buf.cur();
     const down = (held&BTN.DOWN)!==0;
     const dir  = ((held&BTN.RIGHT)?1:0) - ((held&BTN.LEFT)?1:0);
+
+    // A simultaneous chord takes priority over a normal punch or guard.
+    // Only close, grounded opponents can be grabbed; failed grabs remain punishable.
+    const forwardBit=this.face>0?BTN.RIGHT:BTN.LEFT;
+    const throwChord=(held&(forwardBit|BTN.PUNCH|BTN.BLOCK))===(forwardBit|BTN.PUNCH|BTN.BLOCK);
+    if(!Net.active && throwChord && this.buf.avail('punch') && this.onGround && opp.onGround &&
+       Math.abs(this.x-opp.x)<94 && !opp.invuln &&
+       !['ko','win','frozen','rollingThrow'].includes(opp.state)){
+      this.buf.consume('punch');
+      this.buf.consume('block');
+      this.vx=0;
+      this.setState('rollingThrow','back');
+      this.applyPhysics(opp); this.advanceAnim(); return;
+    }
 
     // specials always win over normals
     const sp = this.buf.detectSpecial();
