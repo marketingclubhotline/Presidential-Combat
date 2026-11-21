@@ -3831,7 +3831,18 @@ function pcFinisherOpen(){
   pcFinishSequence=[];clearTimeout(pcFinishInputTimer);pcFinisherShown=true;
   UI.hide(); // The match-end overlay must not cover the finisher controls.
   // Use the announcer voice when the corresponding recorded cue is available.
-  Audio5.announce('finishHim',null);
+  if(!Audio5.announce('finishHim',null)){
+    // Until the licensed announcer clip is identified, make FINISH HIM audible
+    // with browser speech rather than silently dropping the essential cue.
+    try{
+      if('speechSynthesis' in window){
+        window.speechSynthesis.cancel();
+        const voice=new SpeechSynthesisUtterance('Finish him!');
+        voice.rate=.82;voice.pitch=.66;voice.volume=1;
+        window.speechSynthesis.speak(voice);
+      }
+    }catch(e){console.warn('finish cue unavailable',e);}
+  }
   const fighter=Game.winner==='p1'?'TRUMP':'KIM';
   const hint=document.getElementById('finisherHint');
   let seconds=PC_FINISH_WINDOW_SECONDS;
