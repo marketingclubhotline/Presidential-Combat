@@ -1,0 +1,101 @@
+{
+  "fighter": "trump",
+  "status": "awaiting_frame_approval",
+  "moves": [
+    {
+      "id": "punch",
+      "display_name": "Presidential Haymaker",
+      "status": "not_integrated",
+      "frames": [],
+      "audio": [],
+      "timing_ms": null
+    },
+    {
+      "id": "uppercut",
+      "display_name": "Executive Uppercut",
+      "status": "not_integrated",
+      "frames": [],
+      "audio": [],
+      "timing_ms": null
+    },
+    {
+      "id": "standing_kick",
+      "display_name": "The Wall Kick",
+      "status": "not_integrated",
+      "frames": [],
+      "audio": [],
+      "timing_ms": null
+    },
+    {
+      "id": "roundhouse",
+      "display_name": "MAGA Roundhouse",
+      "status": "not_integrated",
+      "frames": [],
+      "audio": [],
+      "timing_ms": null
+    },
+    {
+      "id": "jump_kick",
+      "display_name": "Eagle Strike",
+      "status": "not_integrated",
+      "frames": [],
+      "audio": [],
+      "timing_ms": null
+    },
+    {
+      "id": "flip_attack",
+      "display_name": "Executive Flip",
+      "status": "not_integrated",
+      "frames": [],
+      "audio": [],
+      "timing_ms": null
+    },
+    {
+      "id": "projectile",
+      "display_name": "MAGA Hat Toss",
+      "status": "not_integrated",
+      "frames": [],
+      "audio": [],
+      "timing_ms": null
+    },
+    {
+      "id": "defense_counter",
+      "display_name": "Fake News Dodge",
+      "status": "not_integrated",
+      "frames": [],
+      "audio": [],
+      "timing_ms": null
+    },
+    {
+      "id": "special",
+      "display_name": "You\u2019re Fired",
+      "status": "not_integrated",
+      "frames": [],
+      "audio": [],
+      "timing_ms": null
+    },
+    {
+      "id": "finisher",
+      "display_name": "Executive Execution",
+      "status": "not_integrated",
+      "frames": [],
+      "audio": [],
+      "timing_ms": null
+    },
+    {
+      "id": "signature_landing",
+      "display_name": "Tie Adjustment",
+      "status": "not_integrated",
+      "frames": [],
+      "audio": [],
+      "timing_ms": null
+    }
+  ],
+  "requirements": [
+    "character-consistent illustration",
+    "transparent PNG frames",
+    "clear airborne kick extension",
+    "signature landing pose",
+    "frame-by-frame review before game integration"
+  ]
+}

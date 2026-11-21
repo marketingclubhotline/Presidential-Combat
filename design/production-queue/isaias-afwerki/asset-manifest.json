@@ -1,0 +1,101 @@
+{
+  "fighter": "isaias-afwerki",
+  "status": "awaiting_frame_approval",
+  "moves": [
+    {
+      "id": "punch",
+      "display_name": "Asmara Cross",
+      "status": "not_integrated",
+      "frames": [],
+      "audio": [],
+      "timing_ms": null
+    },
+    {
+      "id": "uppercut",
+      "display_name": "Highland Uppercut",
+      "status": "not_integrated",
+      "frames": [],
+      "audio": [],
+      "timing_ms": null
+    },
+    {
+      "id": "standing_kick",
+      "display_name": "Red Sea Push",
+      "status": "not_integrated",
+      "frames": [],
+      "audio": [],
+      "timing_ms": null
+    },
+    {
+      "id": "roundhouse",
+      "display_name": "Massawa Sweep",
+      "status": "not_integrated",
+      "frames": [],
+      "audio": [],
+      "timing_ms": null
+    },
+    {
+      "id": "jump_kick",
+      "display_name": "Camel Leap",
+      "status": "not_integrated",
+      "frames": [],
+      "audio": [],
+      "timing_ms": null
+    },
+    {
+      "id": "flip_attack",
+      "display_name": "Highland Flip",
+      "status": "not_integrated",
+      "frames": [],
+      "audio": [],
+      "timing_ms": null
+    },
+    {
+      "id": "projectile",
+      "display_name": "Injera Disc",
+      "status": "not_integrated",
+      "frames": [],
+      "audio": [],
+      "timing_ms": null
+    },
+    {
+      "id": "defense_counter",
+      "display_name": "Fortress Guard",
+      "status": "not_integrated",
+      "frames": [],
+      "audio": [],
+      "timing_ms": null
+    },
+    {
+      "id": "special",
+      "display_name": "Red Sea Surge",
+      "status": "not_integrated",
+      "frames": [],
+      "audio": [],
+      "timing_ms": null
+    },
+    {
+      "id": "finisher",
+      "display_name": "Asmara Thunder",
+      "status": "not_integrated",
+      "frames": [],
+      "audio": [],
+      "timing_ms": null
+    },
+    {
+      "id": "signature_landing",
+      "display_name": "Presidential Composure",
+      "status": "not_integrated",
+      "frames": [],
+      "audio": [],
+      "timing_ms": null
+    }
+  ],
+  "requirements": [
+    "character-consistent illustration",
+    "transparent PNG frames",
+    "clear airborne kick extension",
+    "signature landing pose",
+    "frame-by-frame review before game integration"
+  ]
+}

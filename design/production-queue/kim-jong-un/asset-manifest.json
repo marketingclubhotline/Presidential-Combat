@@ -1,0 +1,101 @@
+{
+  "fighter": "kim-jong-un",
+  "status": "awaiting_frame_approval",
+  "moves": [
+    {
+      "id": "punch",
+      "display_name": "Supreme Hammer",
+      "status": "not_integrated",
+      "frames": [],
+      "audio": [],
+      "timing_ms": null
+    },
+    {
+      "id": "uppercut",
+      "display_name": "Rocket Uppercut",
+      "status": "not_integrated",
+      "frames": [],
+      "audio": [],
+      "timing_ms": null
+    },
+    {
+      "id": "standing_kick",
+      "display_name": "Parade Kick",
+      "status": "not_integrated",
+      "frames": [],
+      "audio": [],
+      "timing_ms": null
+    },
+    {
+      "id": "roundhouse",
+      "display_name": "Pyongyang Spin",
+      "status": "not_integrated",
+      "frames": [],
+      "audio": [],
+      "timing_ms": null
+    },
+    {
+      "id": "jump_kick",
+      "display_name": "Missile Launch",
+      "status": "not_integrated",
+      "frames": [],
+      "audio": [],
+      "timing_ms": null
+    },
+    {
+      "id": "flip_attack",
+      "display_name": "Supreme Somersault",
+      "status": "not_integrated",
+      "frames": [],
+      "audio": [],
+      "timing_ms": null
+    },
+    {
+      "id": "projectile",
+      "display_name": "Mini Missile",
+      "status": "not_integrated",
+      "frames": [],
+      "audio": [],
+      "timing_ms": null
+    },
+    {
+      "id": "defense_counter",
+      "display_name": "Iron Curtain",
+      "status": "not_integrated",
+      "frames": [],
+      "audio": [],
+      "timing_ms": null
+    },
+    {
+      "id": "special",
+      "display_name": "Tank Parade",
+      "status": "not_integrated",
+      "frames": [],
+      "audio": [],
+      "timing_ms": null
+    },
+    {
+      "id": "finisher",
+      "display_name": "Supreme Detonation",
+      "status": "not_integrated",
+      "frames": [],
+      "audio": [],
+      "timing_ms": null
+    },
+    {
+      "id": "signature_landing",
+      "display_name": "Supreme Salute",
+      "status": "not_integrated",
+      "frames": [],
+      "audio": [],
+      "timing_ms": null
+    }
+  ],
+  "requirements": [
+    "character-consistent illustration",
+    "transparent PNG frames",
+    "clear airborne kick extension",
+    "signature landing pose",
+    "frame-by-frame review before game integration"
+  ]
+}
