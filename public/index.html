@@ -3086,7 +3086,9 @@ const PC_FIGHTER_VISUALS=Object.freeze({
 function drawFighter(g,f){
   const flipArt=pcFlipArt(f);
   const endingArt=pcEndingArt(f);
-  const art=endingArt||pcUppercutArt(f)||pcAerialKickArt(f)||flipArt||pcVerticalJumpArt(f)||pcBlockArt(f)||pcSweepArt(f)||pcRoundhouseArt(f)||pcKickArt(f)||pcWalkingArt(f)||PC_SPRITES[f.side]?.[pcPose(f)];
+  const art=endingArt||pcAerialKickArt(f)||flipArt||pcVerticalJumpArt(f)||pcRoundhouseArt(f)||pcKickArt(f)||pcWalkingArt(f)||PC_SPRITES[f.side]?.[pcPose(f)];
+  // Interim shared combat core: use the detailed original PNGs, not rough
+  // pencil-vector uppercut/block/sweep placeholders. Author final cutouts next.
   if(art && (art instanceof HTMLCanvasElement || art.complete) && (art.naturalWidth||art.width)>0){
     const aw=art.naturalWidth||art.width,ah=art.naturalHeight||art.height;
     // Match each pose to the character's idle silhouette height, not its
@@ -3157,7 +3159,7 @@ function drawFighter(g,f){
     }
     // Trump rising uppercut: pronounced crouch, hip/shoulder pivot and
     // sharply twisting vertical strike. Visual only; no altered hitboxes.
-    if(f.side==='p1' && ['uppercut','superUppercut'].includes(f.move?.key) && !pcUppercutArt(f)){
+    if(['uppercut','superUppercut'].includes(f.move?.key)){
       const m=f.move,frame=f.moveFrame;
       const coil=Math.min(1,frame/Math.max(1,m.startup));
       const strike=Math.max(0,Math.min(1,(frame-m.startup)/Math.max(1,m.active)));
@@ -3216,6 +3218,16 @@ function drawFighter(g,f){
         g.rotate(-f.face*(heavy?0.18:0.095)*decay);
         g.scale(1+0.045*decay,1-0.065*decay);
       }
+    }else if(f.state==='block'||f.state==='crouchBlock'){
+      // Shared four-phase guard movement on the detailed character PNG:
+      // raise guard, brace, subtle held motion, then return to stance.
+      const low=f.state==='crouchBlock';
+      const phase=Math.min(1,f.stateFrame/9);
+      const brace=Math.sin(Math.min(1,phase)*Math.PI*.5);
+      const pulse=Math.sin(Game.frame*.15+(f.side==='p2'?1:0));
+      g.translate(-f.face*(3*brace+pulse*.7),low?13*brace:3*brace);
+      g.rotate(-f.face*(low?.095:.065)*brace);
+      g.scale(1+.045*brace,1-(low?.16:.055)*brace);
     }else if(f.state==='blockstun'){
       const decay=Math.max(0,1-f.stateFrame/11);
       g.translate(-f.face*5*decay,0);
