@@ -2856,8 +2856,20 @@ function pcRoundhouseArt(f){
   const frames=PC_ROUNDHOUSE_FRAMES[f.side];
   if(!frames || !frames.every((img,i)=>i>=8 || img instanceof HTMLCanvasElement) || frames.length!==8)return null;
   const move=f.move, t=f.moveFrame;
-  const total=Math.max(1,move.startup+move.active+move.recovery);
-  const idx=Math.min(7,Math.floor(Math.max(0,t)/total*8));
+  // Slow, readable power-gathering pivot: guard -> coil -> torso turn -> knee chamber.
+  // The fully extended kick is shown ONLY in the active collision window.
+  // Recovery shows follow-through and a deliberate return to planted guard.
+  let idx;
+  if(t<move.startup){
+    const p=t/Math.max(1,move.startup);
+    idx=p<.20?0:p<.48?1:p<.74?2:3;
+  }else if(t<move.startup+move.active){
+    const p=(t-move.startup)/Math.max(1,move.active);
+    idx=p<.48?4:5;
+  }else{
+    const p=(t-move.startup-move.active)/Math.max(1,move.recovery);
+    idx=p<.50?6:7;
+  }
   return frames[idx];
 }
 function pcKickArt(f){

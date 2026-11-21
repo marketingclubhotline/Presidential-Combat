@@ -43,6 +43,9 @@ export async function run(t){
   t.ok(html.includes('function pcProjectileMotion(f)') && html.includes('pcProjectileMotion(f)||pcMotionFrame(f)'), 'projectile attacks have character-specific windup and follow-through');
   t.eq(config.moves.roundhouse.anim,'spinKick','roundhouse reuses original four-frame spin animation');
   t.ok(config.moves.roundhouse.active>=10&&config.moves.roundhouse.recovery>=24,'heavy roundhouse has visible active and punishable recovery windows');
+  t.ok(config.moves.roundhouse.startup>=20,'roundhouse has a deliberately slower power-gathering windup');
+  t.ok(html.includes('idx=p<.20?0:p<.48?1:p<.74?2:3;'),'roundhouse windup cycles four separate pivot and chamber drawings');
+  t.ok(html.includes('idx=p<.48?4:5;'),'roundhouse extended leg appears in active collision window');
   t.ok(config.moves.kick.active>=6&&config.moves.kick.recovery>=12,'heavy kick extends and recovers longer');
   t.ok(html.includes('const backHeld=dir!==0 && dir===-this.face;'), 'back plus kick triggers facing-relative roundhouse');
   t.ok(html.includes("const move = backHeld && MOVES.uppercut ? 'uppercut'"), 'back plus punch triggers facing-relative uppercut');

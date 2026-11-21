@@ -359,8 +359,8 @@
     "roundhouse": {
       "key": "roundhouse",
       "anim": "spinKick",
-      "startup": 16,
-      "active": 11,
+      "startup": 22,
+      "active": 12,
       "recovery": 25,
       "damage": 16,
       "chip": 2,
@@ -384,10 +384,10 @@
       "special": true,
       "chargeCue": {
         "startFrame": 0,
-        "endFrame": 11,
+        "endFrame": 16,
         "aura": "blue-white",
         "sound": "short-swish",
-        "interruptibleUntilFrame": 11
+        "interruptibleUntilFrame": 16
       }
     },
     "barrelPunch": {
