@@ -1,0 +1,37 @@
+[
+  {
+    "name": "Trump animation concepts",
+    "fighter": "Trump",
+    "file": "trump-animation-concepts.png",
+    "role": "reference-contact-sheet",
+    "integrated_as_combat_sprite": false
+  },
+  {
+    "name": "Kim animation concepts",
+    "fighter": "Kim Jong-un",
+    "file": "kim-animation-concepts.png",
+    "role": "reference-contact-sheet",
+    "integrated_as_combat_sprite": false
+  },
+  {
+    "name": "Isaias animation concepts",
+    "fighter": "Isaias Afwerki",
+    "file": "isaias-animation-concepts.png",
+    "role": "reference-contact-sheet",
+    "integrated_as_combat_sprite": false
+  },
+  {
+    "name": "Netanyahu animation concepts",
+    "fighter": "Benjamin Netanyahu",
+    "file": "netanyahu-animation-concepts.png",
+    "role": "reference-contact-sheet",
+    "integrated_as_combat_sprite": false
+  },
+  {
+    "name": "Trump production concepts",
+    "fighter": "Trump",
+    "file": "trump-production-concepts.png",
+    "role": "reference-contact-sheet",
+    "integrated_as_combat_sprite": false
+  }
+]
