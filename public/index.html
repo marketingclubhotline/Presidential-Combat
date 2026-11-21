@@ -280,7 +280,7 @@
     <button class="btn sm" id="skipEntrance" type="button">SKIP INTROS</button>
   </section>
   <div id="arenaFinishDim" aria-hidden="true"></div>
-  <div id="finisherUI" aria-live="polite"><h2>FINISH HIM!</h2><p id="finisherHint">10s · ↑ OR ← TO FINISH</p><div class="row" hidden><button class="btn sm" id="finishOne">FINISH 1</button><button class="btn sm" id="finishTwo">FINISH 2</button><button class="btn sm" id="finishSkip">SKIP</button></div></div>
+  <div id="finisherUI" aria-live="polite"><h2>FINISH HIM!</h2><p id="finisherHint">7s · ↑ OR ← TO FINISH</p><div class="row" hidden><button class="btn sm" id="finishOne">FINISH 1</button><button class="btn sm" id="finishTwo">FINISH 2</button><button class="btn sm" id="finishSkip">SKIP</button></div></div>
   <div id="finisherFX" aria-live="polite"><div><div class="fxemoji" id="fxEmoji">🔥</div><div class="fxwords" id="fxWords">YOU'RE FIRED!</div></div></div>
   <div id="topbar">
     <button class="tgl" id="tBox">HITBOX</button>
@@ -2201,13 +2201,13 @@ function updateFlow(){
   if(Game.phase==='finishWindow'){
     // The defeated fighter is dazed BEFORE the knockout, never after match end.
     // Offline prototype: deterministic network matches keep the old KO flow.
-    if(T>=600){pcFinisherClose();endRound(Game.winner,true);}
+    if(T>=PC_FINISH_WINDOW_SECONDS*60){pcFinisherClose();endRound(Game.winner,true);}
     return;
   }
   if(Game.phase==='fight'){
     // Intercept the last health bars to present the finisher opportunity.
-    if(!Net.active && !pcTrainingMode && ((P1.hp<=5&&P2.hp>5)||(P2.hp<=5&&P1.hp>5))){
-      Game.winner=P1.hp<=5?'p2':'p1';
+    if(!Net.active && !pcTrainingMode && ((P1.hp<=PC_FINISH_HP&&P2.hp>PC_FINISH_HP)||(P2.hp<=PC_FINISH_HP&&P1.hp>PC_FINISH_HP))){
+      Game.winner=P1.hp<=PC_FINISH_HP?'p2':'p1';
       const loser=Game.winner==='p1'?P2:P1;
       loser.hp=Math.max(1,loser.hp);loser.move=null;loser.vx=0;loser.vy=0;
       loser.setState('frozen','hit');
@@ -3557,6 +3557,8 @@ document.getElementById('nCopy').onclick=()=>{
 
 /* Presidential Finishers v0.1: strictly cosmetic post-match interaction.
    No HP, state, random seed, simulation or network packets are changed. */
+const PC_FINISH_HP=15;
+const PC_FINISH_WINDOW_SECONDS=7;
 const PC_FINISH={
   p1:[{name:"YOU'RE FIRED!",emoji:'🔥',hint:'Executive order · MAGA hat victory pose'},
       {name:'AMERICAN EAGLE',emoji:'🦅',hint:'Dollar-bill eagle carries the opponent away'},
@@ -3576,7 +3578,7 @@ function pcFinisherOpen(){
   UI.hide(); // The match-end overlay must not cover the finisher controls.
   const fighter=Game.winner==='p1'?'TRUMP':'KIM';
   const hint=document.getElementById('finisherHint');
-  let seconds=10;
+  let seconds=PC_FINISH_WINDOW_SECONDS;
   const renderHint=()=>{hint.textContent=fighter+' WINS · '+seconds+'s · ↑ / ← TO FINISH';};
   renderHint();clearInterval(pcFinishCountdown);
   pcFinishCountdown=setInterval(()=>{
