@@ -2840,26 +2840,6 @@ for(const [side,name] of [['p1','trump'],['p2','kim']]){
     }
   }
 }
-// Four authored high/low guard poses per fighter, rather than the generic dodge art.
-const PC_BLOCK_FRAMES={p1:{high:[],low:[]},p2:{high:[],low:[]}};
-for(const [side,name] of [['p1','trump'],['p2','kim']]){
-  for(const level of ['high','low']){
-    for(let i=0;i<4;i++){
-      const image=new Image();
-      image.onload=()=>{try{PC_BLOCK_FRAMES[side][level][i]=pcCleanSprite(image,name);}catch(e){console.warn('block pose unavailable',name,level,i,e);}};
-      image.src='art/sprites/'+name+'-block-'+level+'-'+(i+1)+'.svg';
-    }
-  }
-}
-function pcBlockArt(f){
-  const low=['crouchBlock'].includes(f.state) || (f.state==='blockstun'&&f.anim==='crouchBlock');
-  const high=['block','blockstun'].includes(f.state) && !low;
-  if(!low&&!high)return null;
-  const frames=PC_BLOCK_FRAMES[f.side]?.[low?'low':'high'];
-  if(!frames||!frames.every(im=>im instanceof HTMLCanvasElement))return null;
-  const index=Math.min(3,Math.floor(f.stateFrame/5)%4);
-  return frames[index];
-}
 const PC_VERTICAL_JUMP_FRAMES={p1:[],p2:[]};
 for(const [side,name] of [['p1','trump'],['p2','kim']]){
   for(let i=0;i<7;i++){
