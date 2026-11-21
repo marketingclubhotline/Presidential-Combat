@@ -2792,13 +2792,18 @@ const PC_UPPERCUT_FRAMES=[];
 for(let i=0;i<8;i++){
   const image=new Image();
   image.onload=()=>{try{PC_UPPERCUT_FRAMES[i]=pcCleanSprite(image,'trump');}catch(e){console.warn('uppercut art unavailable',i,e);}};
-  image.src='art/sprites/trump-uppercut-'+(i+1)+'.png';
+  image.src='art/sprites/trump-uppercut-'+(i+1)+'.svg';
 }
 function pcUppercutArt(f){
   if(f.side!=='p1'||!f.move||!['uppercut','superUppercut'].includes(f.move.key))return null;
   if(![0,1,2,3,4,5,6,7].every(i=>PC_UPPERCUT_FRAMES[i] instanceof HTMLCanvasElement))return null;
-  const m=f.move,phase=Math.min(1,f.moveFrame/Math.max(1,m.startup+m.active+m.recovery));
-  return PC_UPPERCUT_FRAMES[Math.min(7,Math.floor(phase*8))];
+  const m=f.move,t=f.moveFrame;
+  const startup=Math.max(1,m.startup),active=Math.max(1,m.active),recovery=Math.max(1,m.recovery);
+  // Coil -> launch -> contact apex -> held follow-through -> descend -> plant.
+  const index=t<startup?Math.min(2,Math.floor(t/startup*3)):
+    t<startup+active?Math.min(5,3+Math.floor((t-startup)/active*3)):
+    Math.min(7,6+Math.floor((t-startup-active)/recovery*2));
+  return PC_UPPERCUT_FRAMES[index];
 }
 // Aerial kick variants share the jumpKick move's hitboxes and timing.
 const PC_AERIAL_KICK_FRAMES={p1:{vertical:[],forward:[],backward:[]},p2:{vertical:[],forward:[],backward:[]}};
@@ -3051,7 +3056,7 @@ function drawFighter(g,f){
     }
     // Trump rising uppercut: pronounced crouch, hip/shoulder pivot and
     // sharply twisting vertical strike. Visual only; no altered hitboxes.
-    if(f.side==='p1' && ['uppercut','superUppercut'].includes(f.move?.key)){
+    if(f.side==='p1' && ['uppercut','superUppercut'].includes(f.move?.key) && !pcUppercutArt(f)){
       const m=f.move,frame=f.moveFrame;
       const coil=Math.min(1,frame/Math.max(1,m.startup));
       const strike=Math.max(0,Math.min(1,(frame-m.startup)/Math.max(1,m.active)));
