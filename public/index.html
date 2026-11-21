@@ -2861,13 +2861,24 @@ function pcBlockArt(f){
   return frames[index];
 }
 function pcVerticalJumpArt(f){
-  if(f.onGround||f.move||f.flipDir||!['jump','fall'].includes(f.state))return null;
-  const frames=PC_KICK_FRAMES[f.side];
-  if(!frames||![0,1,2].every(i=>frames[i] instanceof HTMLCanvasElement))return null;
-  // A straight jump has a compressed launch, rising tucked legs and a landing guard.
-  // Never display an airborne extended kick unless the player presses KICK.
+  if(f.move||f.flipDir||!['jump','fall'].includes(f.state))return null;
+  // Neutral vertical jump is a separate action from an aerial kick.
+  // Sequence: knee-bend / push-off / compact airborne guard / apex tuck /
+  // descent guard / landing compression. Never borrow extended kick frames.
+  const guards=PC_BLOCK_FRAMES[f.side];
+  const idle=PC_SPRITES[f.side]?.idle;
+  const low=guards?.low, high=guards?.high;
+  const ready=arr=>arr&&arr.every(im=>im instanceof HTMLCanvasElement);
+  if(!ready(low)||!ready(high))return idle||null;
+  if(f.onGround)return low[0];
   const flight=Math.max(0,Math.min(1,(PHYS.jumpVel-f.vy)/(2*PHYS.jumpVel)));
-  return frames[flight<.22?0:flight<.74?2:0];
+  if(flight<.13)return low[1];
+  if(flight<.30)return high[0];
+  if(flight<.46)return high[1];
+  if(flight<.60)return low[2];
+  if(flight<.78)return high[2];
+  if(flight<.91)return high[3];
+  return low[3];
 }
 function pcFlipArt(f){
   // Prefer individually posed 8-frame flip artwork over rotating an idle cutout.
