@@ -2861,7 +2861,7 @@ function pcVerticalJumpArt(f){
 }
 function pcFlipArt(f){
   // Prefer individually posed 8-frame flip artwork over rotating an idle cutout.
-  // Current SVGs are an interim articulated pass, pending Higgsfield cutout approval.
+  // Use authored articulated SVG poses matching the approved in-game fighters; do not substitute Higgsfield likenesses.
   if(f.onGround||f.move||!f.flipDir)return null;
   const direction=f.flipDir*f.face>=0?'forward':'backward';
   const frames=PC_FLIP_FRAMES[f.side]?.[direction];
