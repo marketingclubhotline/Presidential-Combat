@@ -1925,7 +1925,7 @@ const Projectiles = (()=>{
           p.active=true; p.owner=f.idx; p.kind=kind==='micLasso'?'mic':'hat';
           // Launch from the raised hand rather than the waist; retain the same hitbox.
           p.x=f.x+f.face*54; p.y=f.y-(p.owner===0?(p.kind==='mic'?132:165):98);
-          p.vx=f.face*(p.kind==='mic'?9:10.5); p.life=p.kind==='mic'?65:60; p.anim=0; p.returning=false; p.launchX=p.x; p.hooked=false; p.hookFrames=0;
+          p.vx=f.face*(p.kind==='mic'?13:14); p.life=p.kind==='mic'?65:60; p.anim=0; p.returning=false; p.launchX=p.x; p.hooked=false; p.hookFrames=0;
           Audio5.play('fire',0.7,1);
           if(f.idx===0 && kind!=='micLasso') Audio5.playFighterLine('trump');
           else if(f.idx!==0) Audio5.playFighterLine('kim',0.65);
@@ -2005,19 +2005,35 @@ const Projectiles = (()=>{
           g.strokeStyle='#f6e8b8';g.lineWidth=2.5;g.beginPath();
           g.moveTo(owner.x+owner.face*25,owner.y-110);
           g.quadraticCurveTo((owner.x+p.x)/2,p.y+28,p.x,p.y);g.stroke();
+          // Charged cable, sparkling microphone head and readable reel motion.
+          g.strokeStyle='rgba(255,220,104,.85)';g.lineWidth=6;g.beginPath();
+          g.moveTo(owner.x+owner.face*25,owner.y-110);
+          g.quadraticCurveTo((owner.x+p.x)/2,p.y+28,p.x,p.y);g.stroke();
           g.translate(p.x,p.y);g.rotate(Math.sin(t)*.25);
+          g.shadowColor='#ffdc64';g.shadowBlur=19;
           g.fillStyle='#b9c6d5';g.fillRect(-22,-8,33,16);
           g.fillStyle='#283241';g.beginPath();g.ellipse(15,0,14,17,0,0,Math.PI*2);g.fill();
           g.strokeStyle='#e8eef5';g.lineWidth=2;for(let k=-1;k<=1;k++){g.beginPath();g.moveTo(7,-7+k*7);g.lineTo(23,-7+k*7);g.stroke();}
           g.restore();continue;
         }
         if(p.owner===0){
-          g.save();g.translate(p.x,p.y);g.rotate(t*0.45);
+          g.save();
+          // Bright trailing flare is cosmetic; keep combat hitbox unchanged.
+          const dir=Math.sign(p.vx)||1;
+          const flare=g.createRadialGradient(p.x,p.y,5,p.x,p.y,49);
+          flare.addColorStop(0,'rgba(255,241,150,.65)');flare.addColorStop(1,'rgba(255,96,24,0)');
+          g.fillStyle=flare;g.beginPath();g.arc(p.x,p.y,49,0,Math.PI*2);g.fill();
+          g.strokeStyle='rgba(255,205,60,.8)';g.lineWidth=4;g.beginPath();
+          g.moveTo(p.x-dir*17,p.y+10);g.lineTo(p.x-dir*66,p.y+18+Math.sin(t)*6);g.stroke();
+          g.translate(p.x,p.y);g.rotate(Math.sin(t)*.12);g.shadowColor='#ff8c2a';g.shadowBlur=11;
           g.fillStyle='#d72632';g.beginPath();g.ellipse(0,0,29,13,0,0,6.2832);g.fill();
           g.fillStyle='#f6f0dc';g.fillRect(-12,-7,24,6);
           g.fillStyle='#d72632';g.fillRect(-12,-24,24,20);
           g.strokeStyle='#ffe4c7';g.lineWidth=2;g.strokeRect(-12,-24,24,20);g.fillStyle='#fff';g.font='bold 8px sans-serif';g.textAlign='center';g.fillText('MAGA',0,-12);
-          g.restore();continue;
+          g.restore();
+          g.save();g.font='bold 14px sans-serif';g.textAlign='center';g.lineWidth=3;
+          g.strokeStyle='#1a1010';g.strokeText('MAGA HAT',p.x,p.y-45);
+          g.fillStyle='#fff4ba';g.fillText('MAGA HAT',p.x,p.y-45);g.restore();continue;
         }
         if(p.owner===1){
           g.save();g.translate(p.x,p.y);if(p.vx<0)g.scale(-1,1);
