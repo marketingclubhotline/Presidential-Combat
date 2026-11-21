@@ -2860,25 +2860,22 @@ function pcBlockArt(f){
   const index=Math.min(3,Math.floor(f.stateFrame/5)%4);
   return frames[index];
 }
+const PC_VERTICAL_JUMP_FRAMES={p1:[],p2:[]};
+for(const [side,name] of [['p1','trump'],['p2','kim']]){
+  for(let i=0;i<7;i++){
+    const image=new Image();
+    image.onload=()=>{try{PC_VERTICAL_JUMP_FRAMES[side][i]=pcCleanSprite(image,name);}catch(e){console.warn('vertical jump pose unavailable',name,i,e);}};
+    image.src='art/sprites/'+name+'-vertical-jump-'+(i+1)+'.svg';
+  }
+}
 function pcVerticalJumpArt(f){
   if(f.move||f.flipDir||!['jump','fall'].includes(f.state))return null;
-  // Neutral vertical jump is a separate action from an aerial kick.
-  // Sequence: knee-bend / push-off / compact airborne guard / apex tuck /
-  // descent guard / landing compression. Never borrow extended kick frames.
-  const guards=PC_BLOCK_FRAMES[f.side];
-  const idle=PC_SPRITES[f.side]?.idle;
-  const low=guards?.low, high=guards?.high;
-  const ready=arr=>arr&&arr.every(im=>im instanceof HTMLCanvasElement);
-  if(!ready(low)||!ready(high))return idle||null;
-  if(f.onGround)return low[0];
+  const frames=PC_VERTICAL_JUMP_FRAMES[f.side];
+  if(!frames||!frames.every(img=>img instanceof HTMLCanvasElement))return PC_SPRITES[f.side]?.idle||null;
+  if(f.onGround)return frames[0];
   const flight=Math.max(0,Math.min(1,(PHYS.jumpVel-f.vy)/(2*PHYS.jumpVel)));
-  if(flight<.13)return low[1];
-  if(flight<.30)return high[0];
-  if(flight<.46)return high[1];
-  if(flight<.60)return low[2];
-  if(flight<.78)return high[2];
-  if(flight<.91)return high[3];
-  return low[3];
+  const idx=flight<.13?1:flight<.30?2:flight<.46?3:flight<.60?4:flight<.78?3:flight<.91?5:6;
+  return frames[idx];
 }
 function pcFlipArt(f){
   // Prefer individually posed 8-frame flip artwork over rotating an idle cutout.
