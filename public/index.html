@@ -2756,7 +2756,7 @@ function pcWalkingArt(f){
   const step=Math.floor(Game.frame/5+(f.idx?4:0))%sequence.length;
   return frames[sequence[step]];
 }
-// Eight recovered storyboard poses per direction. Frames load only after transparent PNGs are installed.
+// Eight editable articulated SVG flip poses per direction; regenerate with scripts/build_flip_sprites.py.
 const PC_FLIP_FRAMES={p1:{forward:[],backward:[]},p2:{forward:[],backward:[]}};
 for(const [side,name] of [['p1','trump'],['p2','kim']]){
   for(const direction of ['forward','backward']){
@@ -2764,7 +2764,7 @@ for(const [side,name] of [['p1','trump'],['p2','kim']]){
       const image=new Image();
       image.onload=()=>{try{PC_FLIP_FRAMES[side][direction][i]=pcCleanSprite(image,name);}catch(e){console.warn('flip frame cleanup failed',name,direction,i,e);}};
       image.onerror=()=>{};
-      image.src='art/sprites/'+name+'-flip-'+direction+'-'+(i+1)+'.png';
+      image.src='art/sprites/'+name+'-flip-'+direction+'-'+(i+1)+'.svg';
     }
   }
 }
