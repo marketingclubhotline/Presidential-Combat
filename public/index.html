@@ -3080,8 +3080,8 @@ function pcMotionFrame(f){
 // Character-specific silhouette sizes, anchored at the floor. These are
 // presentation values only: collision/reach remain governed by combat data.
 const PC_FIGHTER_VISUALS=Object.freeze({
-  'DONALD TRUMP':Object.freeze({height:205}),
-  'KIM JONG UN':Object.freeze({height:190})
+  'DONALD TRUMP':Object.freeze({height:215}),
+  'KIM JONG UN':Object.freeze({height:200})
 });
 function drawFighter(g,f){
   const flipArt=pcFlipArt(f);
@@ -3791,7 +3791,9 @@ function pcFinisherPlay(index){
   pcFinisherClose();
   endRound(Game.winner,true);
   UI.hide();
-  Audio5.play('execute',0.85); Audio5.play('boom',0.7); Audio5.play('crowdLaugh',0.24); Audio5.play('crowdRoar',0.12); Audio5.announce('executiveExecution','annFinish');
+  Audio5.play('execute',0.85); Audio5.play('boom',0.7); Audio5.play('crowdRoar',0.12); Audio5.announce('executiveExecution','annFinish');
+  // Let the visual gag land before the sitcom laugh; do not slow simulation or audio voices.
+  setTimeout(()=>Audio5.play('crowdLaugh',0.24),240);
   const fx=document.getElementById('finisherFX');
   document.getElementById('fxEmoji').textContent=move.emoji;
   document.getElementById('fxWords').textContent=move.name;
