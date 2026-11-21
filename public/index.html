@@ -2800,6 +2800,7 @@ for(let i=0;i<8;i++){
   image.src='art/sprites/trump-uppercut-'+(i+1)+'.svg';
 }
 function pcUppercutArt(f){
+  if(f.side==='p1')return null; // Preserve recognizable Trump PNG until matching uppercut artwork is approved.
   if(f.side!=='p1'||!f.move||!['uppercut','superUppercut'].includes(f.move.key))return null;
   if(![0,1,2,3,4,5,6,7].every(i=>PC_UPPERCUT_FRAMES[i] instanceof HTMLCanvasElement))return null;
   const m=f.move,t=f.moveFrame;
@@ -2888,6 +2889,7 @@ for(const [side,name] of [['p1','trump'],['p2','kim']]){
   }
 }
 function pcSweepArt(f){
+  if(f.side==='p1')return null; // Do not replace Trump's detailed sprite with placeholder vector art.
   if(f.move?.key!=='tripSweep'||!f.onGround)return null;
   const frames=PC_SWEEP_FRAMES[f.side];
   if(!frames||frames.length!==8||!frames.every(img=>img instanceof HTMLCanvasElement))return null;
@@ -2917,6 +2919,7 @@ for(const [side,name] of [['p1','trump'],['p2','kim']]){
   }
 }
 function pcBlockArt(f){
+  if(f.side==='p1')return null; // Keep original Trump artwork for both block stances.
   if(!f.onGround||!['block','crouchBlock','blockstun'].includes(f.state))return null;
   const low=f.state==='crouchBlock'||(f.state==='blockstun'&&f.anim==='crouchBlock');
   const frames=PC_BLOCK_FRAMES[f.side]?.[low?'low':'high'];
