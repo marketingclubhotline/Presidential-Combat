@@ -2925,6 +2925,24 @@ function pcBlockArt(f){
   const index=f.state==='blockstun'?(f.stateFrame<5?2:3):(Math.floor(f.stateFrame/13)%3===0?0:Math.floor(f.stateFrame/13)%3===1?1:3);
   return frames[index];
 }
+// Shared knockout and hands-up victory artwork; character overrides can replace these frames.
+const PC_ENDING_FRAMES={p1:{ko:Array(8),victory:Array(8)},p2:{ko:Array(8),victory:Array(8)}};
+for(const [side,name] of [['p1','trump'],['p2','kim']]){
+  for(const kind of ['ko','victory'])for(let i=0;i<8;i++){
+    const img=new Image();
+    img.onload=()=>{try{PC_ENDING_FRAMES[side][kind][i]=pcCleanSprite(img,name);}catch(e){console.warn('ending art',name,kind,i,e);}};
+    img.src='art/sprites/'+name+'-'+kind+'-'+(i+1)+'.svg';
+  }
+}
+function pcEndingArt(f){
+  const kind=f.state==='ko'?'ko':f.state==='win'?'victory':null;
+  if(!kind)return null;
+  const elapsed=kind==='ko'?Game.phaseT:f.stateFrame;
+  const idx=kind==='ko'?Math.min(7,Math.floor(Math.max(0,elapsed)/5)):Math.min(7,Math.floor(Math.max(0,elapsed)/9));
+  const frames=PC_ENDING_FRAMES[f.side]?.[kind];
+  const art=frames?.[idx];
+  return art instanceof HTMLCanvasElement?art:null;
+}
 function pcPose(f){
   // Shared pose selection for every playable fighter. A knockout must never
   // fall back to the upright guard sprite while the body is lying down.
@@ -3041,7 +3059,8 @@ const PC_FIGHTER_VISUALS=Object.freeze({
 });
 function drawFighter(g,f){
   const flipArt=pcFlipArt(f);
-  const art=pcUppercutArt(f)||pcAerialKickArt(f)||flipArt||pcVerticalJumpArt(f)||pcBlockArt(f)||pcSweepArt(f)||pcRoundhouseArt(f)||pcKickArt(f)||pcWalkingArt(f)||PC_SPRITES[f.side]?.[pcPose(f)];
+  const endingArt=pcEndingArt(f);
+  const art=endingArt||pcUppercutArt(f)||pcAerialKickArt(f)||flipArt||pcVerticalJumpArt(f)||pcBlockArt(f)||pcSweepArt(f)||pcRoundhouseArt(f)||pcKickArt(f)||pcWalkingArt(f)||PC_SPRITES[f.side]?.[pcPose(f)];
   if(art && (art instanceof HTMLCanvasElement || art.complete) && (art.naturalWidth||art.width)>0){
     const aw=art.naturalWidth||art.width,ah=art.naturalHeight||art.height;
     // Match each pose to the character's idle silhouette height, not its
@@ -3211,7 +3230,7 @@ function drawFighter(g,f){
     // The Neon Fist template uses multiple KO sprite cells; our portrait sprites
     // lack KO frames, so switch between existing poses while interpolating the
     // body center, tilt and height. This is visual-only and shared by all fighters.
-    if(f.state==='ko' && !finishingLoser){
+    if(f.state==='ko' && !finishingLoser && !endingArt){
       const t=Math.max(0,Game.phaseT-2);
       const ease=x=>{const v=Math.max(0,Math.min(1,x));return v*v*(3-2*v);};
       const recoil=ease(t/8),buckle=ease((t-7)/11),land=ease((t-18)/13);

@@ -11,3 +11,9 @@ Implemented this pass: endRound no longer launches defeated fighter with vx=-fac
 Next: replace shared KO transform with eight distinct articulated fall/ground poses and final prone hold; add shared victory hands-up sequence, then allow per-fighter overrides; verify both fighters and finish-window transition in iPhone Safari. Keep actual GitHub push separate until writable destination verified.
 
 Validation: npm test: 353 passed, 0 failed. Visual verification pending.
+
+## Follow-up implementation
+- Generator: scripts/build_ko_victory_sprites.py; produces 8 KO and 8 victory SVG poses each for Trump and Kim under public/art/sprites/.
+- Loader: PC_ENDING_FRAMES / pcEndingArt in public/index.html. KO advances with phaseT and holds frame 8; winner advances through raised-hands celebration and holds frame 8. Old cardboard KO transform is a fallback only if art fails to load.
+- These are simplified articulated SVG prototypes, not final portrait-matched production illustrations. Safari visual test required.
+- `npm test`: 353 passed, zero failed. No GitHub push until writable remote verified.
