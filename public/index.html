@@ -2820,7 +2820,7 @@ const PC_UPPERCUT_FRAMES=[];
 for(let i=0;i<8;i++){
   const image=new Image();
   image.onload=()=>{try{PC_UPPERCUT_FRAMES[i]=pcCleanSprite(image,'trump');}catch(e){console.warn('uppercut art unavailable',i,e);}};
-  image.src='art/sprites/trump-uppercut-'+(i+1)+'.svg';
+  image.src='art/sprites/trump-uppercut-'+(i+1)+'.png';
 }
 function pcUppercutArt(f){
   // Use actual pose changes for Trump's uppercut instead of rotating a standing PNG.
@@ -3086,7 +3086,7 @@ const PC_FIGHTER_VISUALS=Object.freeze({
 function drawFighter(g,f){
   const flipArt=pcFlipArt(f);
   const endingArt=pcEndingArt(f);
-  const art=endingArt||pcAerialKickArt(f)||flipArt||pcVerticalJumpArt(f)||pcRoundhouseArt(f)||pcKickArt(f)||pcWalkingArt(f)||PC_SPRITES[f.side]?.[pcPose(f)];
+  const art=endingArt||pcUppercutArt(f)||pcAerialKickArt(f)||flipArt||pcVerticalJumpArt(f)||pcRoundhouseArt(f)||pcKickArt(f)||pcWalkingArt(f)||PC_SPRITES[f.side]?.[pcPose(f)];
   // Interim shared combat core: use the detailed original PNGs, not rough
   // pencil-vector uppercut/block/sweep placeholders. Author final cutouts next.
   if(art && (art instanceof HTMLCanvasElement || art.complete) && (art.naturalWidth||art.width)>0){
@@ -3159,7 +3159,7 @@ function drawFighter(g,f){
     }
     // Trump rising uppercut: pronounced crouch, hip/shoulder pivot and
     // sharply twisting vertical strike. Visual only; no altered hitboxes.
-    if(['uppercut','superUppercut'].includes(f.move?.key)){
+    if(['uppercut','superUppercut'].includes(f.move?.key) && !pcUppercutArt(f)){
       const m=f.move,frame=f.moveFrame;
       const coil=Math.min(1,frame/Math.max(1,m.startup));
       const strike=Math.max(0,Math.min(1,(frame-m.startup)/Math.max(1,m.active)));
