@@ -152,10 +152,13 @@
   #finisherUI{display:none;position:absolute;z-index:12;left:50%;top:14%;transform:translateX(-50%);width:min(540px,92vw);padding:4px;background:transparent;color:white;text-align:center;pointer-events:none;text-shadow:0 3px 15px #000;}
   #finisherUI.show{display:block;}
   #finisherUI.show::before{content:'FINISH HIM!';display:block;font-size:clamp(24px,6vw,62px);font-weight:1000;color:#ffcf66;text-shadow:0 3px 18px #ff3a2c;margin-bottom:8px;}
-  #arenaFinishDim{display:none;position:absolute;z-index:10;inset:0;pointer-events:none;background:rgba(0,0,15,.58);}
+  #arenaFinishDim{display:none;position:absolute;z-index:10;inset:0;pointer-events:none;background:radial-gradient(ellipse 22% 65% at 32% 65%,rgba(255,245,215,.04),rgba(0,0,15,.37) 90%),radial-gradient(ellipse 22% 65% at 70% 65%,rgba(255,245,215,.04),rgba(0,0,15,.30) 90%);}
   #arenaFinishDim.show{display:block;}
+  #arenaFinishDim.show::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 14% 52% at 32% 65%,rgba(255,246,208,.23),transparent 100%),radial-gradient(ellipse 14% 52% at 70% 65%,rgba(255,246,208,.23),transparent 100%);mix-blend-mode:screen;}
   #finisherUI h2{margin:0 0 9px;color:#ffcf66;letter-spacing:.1em;font-size:clamp(18px,4vw,29px);}
   #finisherUI p{font-size:12px;color:#c8c1d3;}
+  #finishCountdown{font-size:clamp(68px,18vw,160px);font-weight:1000;color:#f12429;line-height:1;text-shadow:0 5px 0 #520000,0 0 35px #ff1717;animation:pcCountPulse .8s ease-in-out infinite alternate;}
+  @keyframes pcCountPulse{from{transform:scale(1)}to{transform:scale(1.09)}}
   #finisherUI .row{display:none!important;}
   #finisherFX{display:none;position:absolute;z-index:13;inset:0;pointer-events:none;align-items:center;justify-content:center;background:radial-gradient(ellipse,#ff8a1828,#000b 75%);text-align:center;}
   #finisherFX.show{display:flex;animation:pcFlash 2.6s ease-out forwards;}
@@ -280,7 +283,7 @@
     <button class="btn sm" id="skipEntrance" type="button">SKIP INTROS</button>
   </section>
   <div id="arenaFinishDim" aria-hidden="true"></div>
-  <div id="finisherUI" aria-live="polite"><h2>FINISH HIM!</h2><p id="finisherHint">7s · ↑ OR ← TO FINISH</p><div class="row" hidden><button class="btn sm" id="finishOne">FINISH 1</button><button class="btn sm" id="finishTwo">FINISH 2</button><button class="btn sm" id="finishSkip">SKIP</button></div></div>
+  <div id="finisherUI" aria-live="polite"><h2>FINISH HIM!</h2><div id="finishCountdown" aria-label="Finisher countdown">10</div><p id="finisherHint">10s · ↑ OR ← TO FINISH</p><div class="row" hidden><button class="btn sm" id="finishOne">FINISH 1</button><button class="btn sm" id="finishTwo">FINISH 2</button><button class="btn sm" id="finishSkip">SKIP</button></div></div>
   <div id="finisherFX" aria-live="polite"><div><div class="fxemoji" id="fxEmoji">🔥</div><div class="fxwords" id="fxWords">YOU'RE FIRED!</div></div></div>
   <div id="topbar">
     <button class="tgl" id="tBox">HITBOX</button>
@@ -3809,7 +3812,7 @@ document.getElementById('nCopy').onclick=()=>{
 /* Presidential Finishers v0.1: strictly cosmetic post-match interaction.
    No HP, state, random seed, simulation or network packets are changed. */
 const PC_FINISH_HP=15;
-const PC_FINISH_WINDOW_SECONDS=7;
+const PC_FINISH_WINDOW_SECONDS=10;
 const PC_FINISH={
   p1:[{name:"YOU'RE FIRED!",emoji:'🔥',hint:'Executive order · MAGA hat victory pose'},
       {name:'AMERICAN EAGLE',emoji:'🦅',hint:'Dollar-bill eagle carries the opponent away'},
@@ -3827,10 +3830,12 @@ function pcFinisherOpen(){
   if(Game.phase!=='finishWindow'||Net.active||Game.winner==='draw')return;
   pcFinishSequence=[];clearTimeout(pcFinishInputTimer);pcFinisherShown=true;
   UI.hide(); // The match-end overlay must not cover the finisher controls.
+  // Use the announcer voice when the corresponding recorded cue is available.
+  Audio5.announce('finishHim',null);
   const fighter=Game.winner==='p1'?'TRUMP':'KIM';
   const hint=document.getElementById('finisherHint');
   let seconds=PC_FINISH_WINDOW_SECONDS;
-  const renderHint=()=>{hint.textContent=fighter+' WINS · '+seconds+'s · ↑ / ← TO FINISH';};
+  const renderHint=()=>{hint.textContent=fighter+' WINS · ↑ / ← TO FINISH';document.getElementById('finishCountdown').textContent=String(Math.max(0,seconds));};
   renderHint();clearInterval(pcFinishCountdown);
   pcFinishCountdown=setInterval(()=>{
     if(!pcFinisherShown){clearInterval(pcFinishCountdown);return;}

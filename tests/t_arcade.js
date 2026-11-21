@@ -16,7 +16,7 @@ export async function run(t){
   t.ok(html.includes('moveFrames/60'),'voice timing considers move duration');
   t.ok(html.includes("Game.phase='finishWindow'"),'finisher interrupts combat before KO');
   t.ok(html.includes('P1.hp<=PC_FINISH_HP&&P2.hp>PC_FINISH_HP') && html.includes('const PC_FINISH_HP=15;'),'finisher threshold uses final 15 health points');
-  t.ok(html.includes("if(T>=PC_FINISH_WINDOW_SECONDS*60){pcFinisherClose();endRound(Game.winner,true);}") && html.includes("const PC_FINISH_WINDOW_SECONDS=7;"),'finisher timeout completes normal knockout');
+  t.ok(html.includes("if(T>=PC_FINISH_WINDOW_SECONDS*60){pcFinisherClose();endRound(Game.winner,true);}") && html.includes("const PC_FINISH_WINDOW_SECONDS=10;"),'finisher timeout completes normal knockout');
   t.ok(html.includes("if(f.anim==='ko'||f.state==='ko'){") && html.includes("return t<8?'dodge':t<19?'kick':t<29?'dodge':'idle';"),'KO uses multiple poses before settling into relaxed idle');
   t.ok(html.includes("Game.phase==='finishWindow' && pcFinisherShown"),'shared daze is confined to pre-KO window');
   t.eq(config.moves.micLasso.superCost,35,'Trump mic super costs 35 meter');
