@@ -1241,9 +1241,10 @@ const FIGHTER_ANIMATION_STANDARD=Object.freeze({
   faceOpponent:true, sharedReactionStates:['attack','block','hit','victory']
 });
 function fighterVisualFacing(f){
-  // Both cleaned fighter atlases face screen-right in their canonical pose.
-  // Mirror only by simulation facing; reversing P2 twice made Kim face away.
-  return f.face;
+  // The source atlases have different canonical orientations.
+  // Trump is right-facing; Kim is left-facing in the authored idle art.
+  // Correct per-atlas orientation, then mirror with opponent-relative facing.
+  return f.face * (f.name==='KIM JONG UN' ? -1 : 1);
 }
 function fighterIdleMotion(f,frame){
   if(!f.onGround||f.move||f.state!=='idle')return null;
@@ -2768,6 +2769,15 @@ for(const [side,name] of [['p1','trump'],['p2','kim']]){
     }
   }
 }
+function pcVerticalJumpArt(f){
+  if(f.onGround||f.move||f.flipDir||!['jump','fall'].includes(f.state))return null;
+  const frames=PC_KICK_FRAMES[f.side];
+  if(!frames||![0,1,2].every(i=>frames[i] instanceof HTMLCanvasElement))return null;
+  // A straight jump has a compressed launch, rising tucked legs and a landing guard.
+  // Never display an airborne extended kick unless the player presses KICK.
+  const flight=Math.max(0,Math.min(1,(PHYS.jumpVel-f.vy)/(2*PHYS.jumpVel)));
+  return frames[flight<.22?0:flight<.74?2:0];
+}
 function pcFlipArt(f){
   if(f.onGround||f.move||!f.flipDir)return null;
   const direction=f.flipDir*f.face>=0?'forward':'backward';
@@ -2970,7 +2980,7 @@ const PC_FIGHTER_VISUALS=Object.freeze({
 });
 function drawFighter(g,f){
   const flipArt=pcFlipArt(f);
-  const art=pcUppercutArt(f)||pcAerialKickArt(f)||flipArt||pcRoundhouseArt(f)||pcKickArt(f)||pcWalkingArt(f)||PC_SPRITES[f.side]?.[pcPose(f)];
+  const art=pcUppercutArt(f)||pcAerialKickArt(f)||flipArt||pcVerticalJumpArt(f)||pcRoundhouseArt(f)||pcKickArt(f)||pcWalkingArt(f)||PC_SPRITES[f.side]?.[pcPose(f)];
   if(art && (art instanceof HTMLCanvasElement || art.complete) && (art.naturalWidth||art.width)>0){
     const aw=art.naturalWidth||art.width,ah=art.naturalHeight||art.height;
     // Match each pose to the character's idle silhouette height, not its
