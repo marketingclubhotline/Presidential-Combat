@@ -2942,7 +2942,7 @@ for(const [side,name] of [['p1','trump'],['p2','kim']]){
   }
 }
 function pcBlockArt(f){
-  if(f.side==='p1')return null; // Keep original Trump artwork for both block stances.
+  // Both fighters use the authored high/low guard and recoil sequences.
   if(!f.onGround||!['block','crouchBlock','blockstun'].includes(f.state))return null;
   const low=f.state==='crouchBlock'||(f.state==='blockstun'&&f.anim==='crouchBlock');
   const frames=PC_BLOCK_FRAMES[f.side]?.[low?'low':'high'];

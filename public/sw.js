@@ -9,7 +9,7 @@
  *     being pinned forever by an immutable cache.
  *   - never cache /ws or /health — signaling must always hit the network.
  */
-const VERSION = 'presidential-combat-audio-v6';
+const VERSION = 'presidential-combat-animation-v7';
 const SHELL = `${VERSION}-shell`;
 const DATA = `${VERSION}-data`;
 
@@ -71,14 +71,13 @@ self.addEventListener('fetch', (e) => {
     return;
   }
 
-  // app shell: cache-first
-  e.respondWith(
-    caches.match(e.request).then(hit => hit || fetch(e.request).then(res => {
-      const copy = res.clone();
-      caches.open(SHELL).then(c => c.put(e.request, copy));
-      return res;
-    }))
-  );
+  // Animation and audio assets: network-first to prevent old sprites persisting
+  // on an iPhone after a build. Keep offline fallback for installed players.
+  e.respondWith(fetch(e.request, {cache:'no-store'}).then(res => {
+    if(res.ok){const copy=res.clone();caches.open(SHELL).then(c=>c.put(e.request,copy));}
+    return res;
+  }).catch(()=>caches.match(e.request)));
+
 });
 
 // let the page trigger an immediate update
