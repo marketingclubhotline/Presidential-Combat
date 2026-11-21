@@ -2756,11 +2756,11 @@ function pcWalkingArt(f){
   const step=Math.floor(Game.frame/5+(f.idx?4:0))%sequence.length;
   return frames[sequence[step]];
 }
-// Sixteen authored poses per direction. Frames are optional until artwork is installed.
+// Eight recovered storyboard poses per direction. Frames load only after transparent PNGs are installed.
 const PC_FLIP_FRAMES={p1:{forward:[],backward:[]},p2:{forward:[],backward:[]}};
 for(const [side,name] of [['p1','trump'],['p2','kim']]){
   for(const direction of ['forward','backward']){
-    for(let i=0;i<16;i++){
+    for(let i=0;i<8;i++){
       const image=new Image();
       image.onload=()=>{try{PC_FLIP_FRAMES[side][direction][i]=pcCleanSprite(image,name);}catch(e){console.warn('flip frame cleanup failed',name,direction,i,e);}};
       image.onerror=()=>{};
@@ -2772,9 +2772,9 @@ function pcFlipArt(f){
   if(f.onGround||f.move||!f.flipDir)return null;
   const direction=f.flipDir*f.face>=0?'forward':'backward';
   const frames=PC_FLIP_FRAMES[f.side]?.[direction];
-  if(!frames||frames.length!==16||!frames.every(img=>img instanceof HTMLCanvasElement))return null;
+  if(!frames||frames.length!==8||!frames.every(img=>img instanceof HTMLCanvasElement))return null;
   const flight=Math.max(0,Math.min(1,(PHYS.jumpVel-f.vy)/(2*PHYS.jumpVel)));
-  return frames[Math.min(15,Math.floor(flight*16))];
+  return frames[Math.min(7,Math.floor(flight*8))];
 }
 // Optional eight-frame Trump rising uppercut art: crouch, coil, torso pivot,
 // rising fist, peak extension, unwind, descent, guard. Never fake missing art.
