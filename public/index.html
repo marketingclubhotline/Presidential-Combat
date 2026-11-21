@@ -3148,7 +3148,19 @@ const PC_FIGHTER_VISUALS=Object.freeze({
   'DONALD TRUMP':Object.freeze({height:215}),
   'KIM JONG UN':Object.freeze({height:200})
 });
-function drawFighter(g,f){
+function drawFighter(g,f,afterimage=false){
+  // Arcade ghost frames: translucent echoes behind fast strikes and aerial
+  // movement. Purely visual, with no changes to combat physics or hitboxes.
+  if(!afterimage && (f.move && ['kick','roundhouse','uppercut','barrelPunch'].includes(f.move.key) || f.flipDir)){
+    const dir=f.face||1;
+    for(let echo=2;echo>=1;echo--){
+      g.save();
+      g.globalAlpha=echo===2?0.13:0.25;
+      g.translate(-dir*echo*13,echo*3);
+      drawFighter(g,f,true);
+      g.restore();
+    }
+  }
   const flipArt=pcFlipArt(f);
   const endingArt=pcEndingArt(f);
   const art=endingArt||pcBlockArt(f)||pcUppercutArt(f)||pcAerialKickArt(f)||flipArt||pcVerticalJumpArt(f)||pcRoundhouseArt(f)||pcKickArt(f)||pcWalkingArt(f)||PC_SPRITES[f.side]?.[pcPose(f)];
