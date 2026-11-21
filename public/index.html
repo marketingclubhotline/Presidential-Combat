@@ -4149,8 +4149,10 @@ document.getElementById('start').addEventListener('click',()=>pcLaunchFromMenu(f
 document.getElementById('startSolo').addEventListener('click',()=>pcLaunchFromMenu(true));
 document.getElementById('startPractice').addEventListener('click',()=>{
   pcLaunchFromMenu(false);
-  // Explicitly enter two-fighter training; never inherit the solo gym state.
+  // Practice now uses the character's actual animated arena, not the gym.
+  // Keep stationary training behavior so players can inspect the move set.
   pcSoloGym=false;
+  pcSelectStage(3);
   pcTrainingMode=true;
   Game.cpu=false;
   P1.reset(false);
