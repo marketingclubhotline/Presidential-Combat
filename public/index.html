@@ -3537,6 +3537,43 @@ function render(){
     g.translate(VW*.77,FLOOR*.28);g.rotate(Math.sin(t*.008)*.32);
     g.fillStyle='#ffe6ad';g.beginPath();g.moveTo(0,0);g.lineTo(-95,FLOOR*.57);g.lineTo(95,FLOOR*.57);g.closePath();g.fill();g.restore();
   }
+  if(PC_STAGES[pcStageIndex].id==='isaias'){
+    // Red Sea shimmer: short translucent ripples drift behind the combat plane.
+    g.save();
+    const t=Game.frame;
+    g.strokeStyle='#a6e5e9';g.lineWidth=1.3;
+    for(let i=0;i<9;i++){
+      const x=(i*137+t*(.14+i%3*.05))%VW;
+      const y=FLOOR*(.58+(i%4)*.045);
+      const width=14+(i%3)*8;
+      g.globalAlpha=.09+.06*(.5+.5*Math.sin(t*.035+i));
+      g.beginPath();g.moveTo(x-width,y);
+      g.quadraticCurveTo(x,y-3,x+width,y);g.stroke();
+    }
+    // Distant pennant sways in the sea breeze, without covering fighters.
+    const poleX=VW*.89,poleY=FLOOR*.46;
+    g.globalAlpha=.42;g.strokeStyle='#c7d4d4';g.lineWidth=2;
+    g.beginPath();g.moveTo(poleX,poleY+47);g.lineTo(poleX,poleY-21);g.stroke();
+    const flutter=Math.sin(t*.052)*5;
+    g.fillStyle='#c42c37';g.beginPath();g.moveTo(poleX,poleY-20);
+    g.lineTo(poleX+23+flutter,poleY-14);g.lineTo(poleX,poleY-8);g.closePath();g.fill();
+    g.restore();
+  }
+  if(PC_STAGES[pcStageIndex].id==='kim'){
+    // Distant marching silhouettes, well behind the active combat zone.
+    g.save();g.globalAlpha=.19;g.strokeStyle='#171e31';g.lineWidth=3;g.lineCap='round';
+    for(let i=0;i<6;i++){
+      const x=VW*.11+i*20,y=FLOOR*.59;
+      const stride=Math.sin(Game.frame*.085+i*1.5)*3;
+      g.beginPath();g.moveTo(x,y-15);g.lineTo(x,y-4);
+      g.moveTo(x,y-4);g.lineTo(x-4+stride,y+6);
+      g.moveTo(x,y-4);g.lineTo(x+4-stride,y+6);
+      g.moveTo(x,y-12);g.lineTo(x-5-stride,y-5);
+      g.moveTo(x,y-12);g.lineTo(x+5+stride,y-5);g.stroke();
+      g.fillStyle='#171e31';g.beginPath();g.arc(x,y-19,3.3,0,Math.PI*2);g.fill();
+    }
+    g.restore();
+  }
   // Animated arcade spectators: small cheering silhouettes behind both fighters.
   // Stable phases keep the crowd lively without frame-to-frame randomness.
   if(Game.phase==='fight'||Game.phase==='finishWindow'||Game.phase==='intro'||Game.phase==='ko'||Game.phase==='matchEnd'){
