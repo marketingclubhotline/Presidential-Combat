@@ -811,6 +811,9 @@ const Audio5 = (()=>{
     for(const [name,file] of Object.entries(recordedCues)){
       if(!(name in openingAudio)) decodeCue(name,downloadAudio('audio/recorded-announcer/'+file+'.wav'));
     }
+    // Recorded sitcom laugh replaces synthetic placeholder when licensed clip is installed.
+    // Optional file: game remains playable without a network fetch or asset.
+    decodeCue('crowdLaugh',downloadAudio('audio/crowd/sitcom-laugh-short.mp3'));
     // Optional recorded assets: retain synthesized sounds when a file is missing.
     for(const [name,url] of Object.entries({
       annRound1:'audio/ann-round-one.wav',annRound2:'audio/ann-round-two.wav',
