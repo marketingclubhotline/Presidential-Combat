@@ -2840,43 +2840,13 @@ for(const [side,name] of [['p1','trump'],['p2','kim']]){
     }
   }
 }
-const PC_VERTICAL_JUMP_FRAMES={p1:[],p2:[]};
-for(const [side,name] of [['p1','trump'],['p2','kim']]){
-  for(let i=0;i<7;i++){
-    const image=new Image();
-    image.onload=()=>{try{PC_VERTICAL_JUMP_FRAMES[side][i]=pcCleanSprite(image,name);}catch(e){console.warn('vertical jump pose unavailable',name,i,e);}};
-    image.src='art/sprites/'+name+'-vertical-jump-'+(i+1)+'.svg';
-  }
-}
-function pcVerticalJumpArt(f){
-  return null; // Prototype SVGs are not approved character artwork.
-  if(f.move||f.flipDir||!['jump','fall'].includes(f.state))return null;
-  const frames=PC_VERTICAL_JUMP_FRAMES[f.side];
-  if(!frames||!frames.every(img=>img instanceof HTMLCanvasElement))return PC_SPRITES[f.side]?.idle||null;
-  if(f.onGround)return frames[0];
-  const flight=Math.max(0,Math.min(1,(PHYS.jumpVel-f.vy)/(2*PHYS.jumpVel)));
-  const idx=flight<.13?1:flight<.30?2:flight<.46?3:flight<.60?4:flight<.78?3:flight<.91?5:6;
-  return frames[idx];
-}
-function pcFlipArt(f){
-  return null; // Do not render stick-figure prototype frames.
-  // Prefer individually posed 8-frame flip artwork over rotating an idle cutout.
-  // Use authored articulated SVG poses matching the approved in-game fighters; do not substitute Higgsfield likenesses.
-  if(f.onGround||f.move||!f.flipDir)return null;
-  const direction=f.flipDir*f.face>=0?'forward':'backward';
-  const frames=PC_FLIP_FRAMES[f.side]?.[direction];
-  if(!frames||frames.length!==8||!frames.every(img=>img instanceof HTMLCanvasElement))return null;
-  const flight=Math.max(0,Math.min(1,(PHYS.jumpVel-f.vy)/(2*PHYS.jumpVel)));
-  return frames[Math.min(7,Math.floor(flight*8))];
-}
+// Placeholder vector jump art intentionally excluded from the playable build.
+function pcVerticalJumpArt(f){ return null; }
+function pcFlipArt(f){ return null; }
 // Optional eight-frame Trump rising uppercut art: crouch, coil, torso pivot,
 // rising fist, peak extension, unwind, descent, guard. Never fake missing art.
+// Realistic uppercut PNG frames have not yet been authored; no SVG substitutes.
 const PC_UPPERCUT_FRAMES=[];
-for(let i=0;i<8;i++){
-  const image=new Image();
-  image.onload=()=>{try{PC_UPPERCUT_FRAMES[i]=pcCleanSprite(image,'trump');}catch(e){console.warn('uppercut art unavailable',i,e);}};
-  image.src='art/sprites/trump-uppercut-'+(i+1)+'.png';
-}
 function pcUppercutArt(f){
   // Use actual pose changes for Trump's uppercut instead of rotating a standing PNG.
   if(f.side!=='p1'||!f.move||!['uppercut','superUppercut'].includes(f.move.key))return null;
@@ -2987,45 +2957,11 @@ function pcKickArt(f){
   return frames[t<move.startup?0:t<move.startup+move.active?1:2];
 }
 // High and crouching guard: separate articulated frames for brace, hold and impact recoil.
-const PC_BLOCK_FRAMES={p1:{high:[],low:[]},p2:{high:[],low:[]}};
-for(const [side,name] of [['p1','trump'],['p2','kim']]){
-  for(const stance of ['high','low'])for(let i=0;i<4;i++){
-    const image=new Image();
-    image.onload=()=>{try{PC_BLOCK_FRAMES[side][stance][i]=pcCleanSprite(image,name);}catch(e){console.warn('block art failed',name,stance,i,e);}};
-    image.onerror=()=>{};
-    image.src='art/sprites/'+name+'-block-'+stance+'-'+(i+1)+'.svg';
-  }
-}
-function pcBlockArt(f){
-  return null; // Preserve photographic fighter sprites until matching block artwork exists.
-  // Both fighters use the authored high/low guard and recoil sequences.
-  if(!f.onGround||!['block','crouchBlock','blockstun'].includes(f.state))return null;
-  const low=f.state==='crouchBlock'||(f.state==='blockstun'&&f.anim==='crouchBlock');
-  const frames=PC_BLOCK_FRAMES[f.side]?.[low?'low':'high'];
-  if(!frames||frames.length!==4||!frames.every(img=>img instanceof HTMLCanvasElement))return null;
-  // The impact drawing is reserved for actual blockstun; guarding breathes between poses.
-  const index=f.state==='blockstun'?(f.stateFrame<5?2:3):(Math.floor(f.stateFrame/13)%3===0?0:Math.floor(f.stateFrame/13)%3===1?1:3);
-  return frames[index];
-}
+// Placeholder vector block art intentionally excluded from playable build.
+function pcBlockArt(f){ return null; }
 // Shared knockout and hands-up victory artwork; character overrides can replace these frames.
-const PC_ENDING_FRAMES={p1:{ko:Array(8),victory:Array(8)},p2:{ko:Array(8),victory:Array(8)}};
-for(const [side,name] of [['p1','trump'],['p2','kim']]){
-  for(const kind of ['ko','victory'])for(let i=0;i<8;i++){
-    const img=new Image();
-    img.onload=()=>{try{PC_ENDING_FRAMES[side][kind][i]=pcCleanSprite(img,name);}catch(e){console.warn('ending art',name,kind,i,e);}};
-    img.src='art/sprites/'+name+'-'+kind+'-'+(i+1)+'.svg';
-  }
-}
-function pcEndingArt(f){
-  return null; // Reject placeholder SVG knockout and victory poses.
-  const kind=f.state==='ko'?'ko':f.state==='win'?'victory':null;
-  if(!kind)return null;
-  const elapsed=kind==='ko'?Game.phaseT:f.stateFrame;
-  const idx=kind==='ko'?Math.min(7,Math.floor(Math.max(0,elapsed)/5)):Math.min(7,Math.floor(Math.max(0,elapsed)/9));
-  const frames=PC_ENDING_FRAMES[f.side]?.[kind];
-  const art=frames?.[idx];
-  return art instanceof HTMLCanvasElement?art:null;
-}
+// Placeholder vector ending art intentionally excluded from playable build.
+function pcEndingArt(f){ return null; }
 function pcPose(f){
   // Shared pose selection for every playable fighter. A knockout must never
   // fall back to the upright guard sprite while the body is lying down.
