@@ -2849,6 +2849,7 @@ for(const [side,name] of [['p1','trump'],['p2','kim']]){
   }
 }
 function pcVerticalJumpArt(f){
+  return null; // Prototype SVGs are not approved character artwork.
   if(f.move||f.flipDir||!['jump','fall'].includes(f.state))return null;
   const frames=PC_VERTICAL_JUMP_FRAMES[f.side];
   if(!frames||!frames.every(img=>img instanceof HTMLCanvasElement))return PC_SPRITES[f.side]?.idle||null;
@@ -2858,6 +2859,7 @@ function pcVerticalJumpArt(f){
   return frames[idx];
 }
 function pcFlipArt(f){
+  return null; // Do not render stick-figure prototype frames.
   // Prefer individually posed 8-frame flip artwork over rotating an idle cutout.
   // Use authored articulated SVG poses matching the approved in-game fighters; do not substitute Higgsfield likenesses.
   if(f.onGround||f.move||!f.flipDir)return null;
@@ -2995,6 +2997,7 @@ for(const [side,name] of [['p1','trump'],['p2','kim']]){
   }
 }
 function pcBlockArt(f){
+  return null; // Preserve photographic fighter sprites until matching block artwork exists.
   // Both fighters use the authored high/low guard and recoil sequences.
   if(!f.onGround||!['block','crouchBlock','blockstun'].includes(f.state))return null;
   const low=f.state==='crouchBlock'||(f.state==='blockstun'&&f.anim==='crouchBlock');
@@ -3014,6 +3017,7 @@ for(const [side,name] of [['p1','trump'],['p2','kim']]){
   }
 }
 function pcEndingArt(f){
+  return null; // Reject placeholder SVG knockout and victory poses.
   const kind=f.state==='ko'?'ko':f.state==='win'?'victory':null;
   if(!kind)return null;
   const elapsed=kind==='ko'?Game.phaseT:f.stateFrame;
