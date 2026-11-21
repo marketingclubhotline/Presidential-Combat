@@ -2805,8 +2805,8 @@ function pcVerticalJumpArt(f){
   return frames[flight<.22?0:flight<.74?2:0];
 }
 function pcFlipArt(f){
-  // Trump SVG flip poses are unapproved faceless placeholders. Never show them.
-  if(f.side==='p1')return null;
+  // Prefer individually posed 8-frame flip artwork over rotating an idle cutout.
+  // Current SVGs are an interim articulated pass, pending Higgsfield cutout approval.
   if(f.onGround||f.move||!f.flipDir)return null;
   const direction=f.flipDir*f.face>=0?'forward':'backward';
   const frames=PC_FLIP_FRAMES[f.side]?.[direction];
@@ -2823,7 +2823,7 @@ for(let i=0;i<8;i++){
   image.src='art/sprites/trump-uppercut-'+(i+1)+'.svg';
 }
 function pcUppercutArt(f){
-  if(f.side==='p1')return null; // Preserve recognizable Trump PNG until matching uppercut artwork is approved.
+  // Use actual pose changes for Trump's uppercut instead of rotating a standing PNG.
   if(f.side!=='p1'||!f.move||!['uppercut','superUppercut'].includes(f.move.key))return null;
   if(![0,1,2,3,4,5,6,7].every(i=>PC_UPPERCUT_FRAMES[i] instanceof HTMLCanvasElement))return null;
   const m=f.move,t=f.moveFrame;
