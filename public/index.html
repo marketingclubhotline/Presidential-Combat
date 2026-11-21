@@ -2872,6 +2872,26 @@ function pcRoundhouseArt(f){
   }
   return frames[idx];
 }
+// Eight dedicated low-trip poses, distinct from the standing head kick.
+const PC_SWEEP_FRAMES={p1:[],p2:[]};
+for(const [side,name] of [['p1','trump'],['p2','kim']]){
+  for(let i=0;i<8;i++){
+    const img=new Image();
+    img.onload=()=>{try{PC_SWEEP_FRAMES[side][i]=pcCleanSprite(img,name);}catch(e){console.warn('sweep art cleanup failed',name,i,e);}};
+    img.src='art/sprites/'+name+'-sweep-'+(i+1)+'.svg';
+  }
+}
+function pcSweepArt(f){
+  if(f.move?.key!=='tripSweep'||!f.onGround)return null;
+  const frames=PC_SWEEP_FRAMES[f.side];
+  if(!frames||frames.length!==8||!frames.every(img=>img instanceof HTMLCanvasElement))return null;
+  const m=f.move,t=f.moveFrame;
+  let idx;
+  if(t<m.startup){const p=t/Math.max(1,m.startup);idx=p<.35?0:p<.7?1:2;}
+  else if(t<m.startup+m.active){idx=(t-m.startup)<m.active*.45?3:4;}
+  else {const p=(t-m.startup-m.active)/Math.max(1,m.recovery);idx=p<.30?5:p<.70?6:7;}
+  return frames[idx];
+}
 function pcKickArt(f){
   const move=f.move;
   if(!move||!['kick','roundhouse','spinKick','jumpKick'].includes(move.key))return null;
@@ -3015,7 +3035,7 @@ const PC_FIGHTER_VISUALS=Object.freeze({
 });
 function drawFighter(g,f){
   const flipArt=pcFlipArt(f);
-  const art=pcUppercutArt(f)||pcAerialKickArt(f)||flipArt||pcVerticalJumpArt(f)||pcBlockArt(f)||pcRoundhouseArt(f)||pcKickArt(f)||pcWalkingArt(f)||PC_SPRITES[f.side]?.[pcPose(f)];
+  const art=pcUppercutArt(f)||pcAerialKickArt(f)||flipArt||pcVerticalJumpArt(f)||pcBlockArt(f)||pcSweepArt(f)||pcRoundhouseArt(f)||pcKickArt(f)||pcWalkingArt(f)||PC_SPRITES[f.side]?.[pcPose(f)];
   if(art && (art instanceof HTMLCanvasElement || art.complete) && (art.naturalWidth||art.width)>0){
     const aw=art.naturalWidth||art.width,ah=art.naturalHeight||art.height;
     // Match each pose to the character's idle silhouette height, not its
