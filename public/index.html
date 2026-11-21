@@ -3557,6 +3557,14 @@ function render(){
       g.stroke();
       g.fillStyle=i%3===0?'#b78a67':'#78533f';
       g.beginPath();g.arc(x,y-12+lift,3.5,0,Math.PI*2);g.fill();
+      // Trump-stage spectators lift and replace red campaign hats on a staggered loop.
+      if(PC_STAGES[pcStageIndex].id==='trump' && (i===0||i===3||i===6||i===9)){
+        const phase=(Game.frame*.022+i*.21)%(Math.PI*2);
+        const hatLift=Math.max(0,Math.sin(phase))*13;
+        g.fillStyle='#b82331';g.fillRect(x-6,y-19+lift-hatLift,12,4);
+        g.fillRect(x-4,y-23+lift-hatLift,8,5);
+        g.fillStyle='#f7e8d3';g.fillRect(x-2,y-21+lift-hatLift,4,1.5);
+      }
       if(i===1||i===8){
         g.strokeStyle='#d8c8b2';g.lineWidth=1.5;
         g.beginPath();g.moveTo(x+8,y-15+lift*2);g.lineTo(x+8,y-36+lift*2);g.stroke();
