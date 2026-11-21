@@ -2776,6 +2776,20 @@ function pcFlipArt(f){
   const flight=Math.max(0,Math.min(1,(PHYS.jumpVel-f.vy)/(2*PHYS.jumpVel)));
   return frames[Math.min(15,Math.floor(flight*16))];
 }
+// Optional eight-frame Trump rising uppercut art: crouch, coil, torso pivot,
+// rising fist, peak extension, unwind, descent, guard. Never fake missing art.
+const PC_UPPERCUT_FRAMES=[];
+for(let i=0;i<8;i++){
+  const image=new Image();
+  image.onload=()=>{try{PC_UPPERCUT_FRAMES[i]=pcCleanSprite(image,'trump');}catch(e){console.warn('uppercut art unavailable',i,e);}};
+  image.src='art/sprites/trump-uppercut-'+(i+1)+'.png';
+}
+function pcUppercutArt(f){
+  if(f.side!=='p1'||!f.move||!['uppercut','superUppercut'].includes(f.move.key))return null;
+  if(![0,1,2,3,4,5,6,7].every(i=>PC_UPPERCUT_FRAMES[i] instanceof HTMLCanvasElement))return null;
+  const m=f.move,phase=Math.min(1,f.moveFrame/Math.max(1,m.startup+m.active+m.recovery));
+  return PC_UPPERCUT_FRAMES[Math.min(7,Math.floor(phase*8))];
+}
 // Aerial kick variants share the jumpKick move's hitboxes and timing.
 const PC_AERIAL_KICK_FRAMES={p1:{vertical:[],forward:[],backward:[]},p2:{vertical:[],forward:[],backward:[]}};
 for(const [side,name] of [['p1','trump'],['p2','kim']]){
@@ -2795,7 +2809,11 @@ function pcAerialKickArt(f){
   if(!frames||frames.length!==8||!frames.every(img=>img instanceof HTMLCanvasElement))return null;
   const move=f.move;
   const total=Math.max(1,move.startup+move.active+move.recovery);
-  return frames[Math.min(7,Math.floor(Math.max(0,f.moveFrame)/total*8))];
+  // Deliberately linger on the visible extended-leg contact drawings.
+  // Rendering only: move frames, active collision frames and physics unchanged.
+  const progress=Math.max(0,Math.min(1,f.moveFrame/total));
+  const held=progress<.22?progress/.22*.38:progress<.72?.38+(progress-.22)/.50*.24:.62+(progress-.72)/.28*.38;
+  return frames[Math.min(7,Math.floor(held*8))];
 }
 // Separate chamber, extension and recovery artwork for martial-arts kicks.
 // When the three drawings are supplied, render them in actual move phases;
@@ -2952,7 +2970,7 @@ const PC_FIGHTER_VISUALS=Object.freeze({
 });
 function drawFighter(g,f){
   const flipArt=pcFlipArt(f);
-  const art=pcAerialKickArt(f)||flipArt||pcRoundhouseArt(f)||pcKickArt(f)||pcWalkingArt(f)||PC_SPRITES[f.side]?.[pcPose(f)];
+  const art=pcUppercutArt(f)||pcAerialKickArt(f)||flipArt||pcRoundhouseArt(f)||pcKickArt(f)||pcWalkingArt(f)||PC_SPRITES[f.side]?.[pcPose(f)];
   if(art && (art instanceof HTMLCanvasElement || art.complete) && (art.naturalWidth||art.width)>0){
     const aw=art.naturalWidth||art.width,ah=art.naturalHeight||art.height;
     // Match each pose to the character's idle silhouette height, not its
@@ -3021,11 +3039,29 @@ function drawFighter(g,f){
       g.rotate(f.face*(rise?-0.075:0.055));
       g.scale(1+(rise?0.045:-0.025)*bend,1-(rise?0.10:0.055)*bend);
     }
-    // Meter super: visibly coil before the launch, then extend into the rising hit.
-    if(f.move?.key==='superUppercut'){
-      const t=f.moveFrame, wind=Math.min(1,t/10);
-      if(t<10){g.translate(0,12*wind);g.scale(1+0.10*wind,1-0.17*wind);}
-      else if(t<24){const lift=Math.min(1,(t-10)/14);g.translate(f.face*10*lift,-16*lift);g.rotate(f.face*0.13*lift);}
+    // Trump rising uppercut: pronounced crouch, hip/shoulder pivot and
+    // sharply twisting vertical strike. Visual only; no altered hitboxes.
+    if(f.side==='p1' && ['uppercut','superUppercut'].includes(f.move?.key)){
+      const m=f.move,frame=f.moveFrame;
+      const coil=Math.min(1,frame/Math.max(1,m.startup));
+      const strike=Math.max(0,Math.min(1,(frame-m.startup)/Math.max(1,m.active)));
+      const recover=Math.max(0,Math.min(1,(frame-m.startup-m.active)/Math.max(1,m.recovery)));
+      const twist=strike*(1-recover);
+      if(frame<m.startup){
+        g.translate(-f.face*8*coil,18*coil);
+        g.rotate(-f.face*.22*coil);g.scale(1+.10*coil,1-.16*coil);
+      }else{
+        g.translate(f.face*(8+12*strike),-11-22*strike+12*recover);
+        g.translate(0,-fighterHeight*.48);
+        g.rotate(f.face*(-.22+.83*twist));
+        g.scale(1-.07*twist,1+.12*twist);
+        g.translate(0,fighterHeight*.48);
+      }
+    }
+    if(f.move?.key==='superUppercut' && f.side!=='p1'){
+      const t=f.moveFrame,wind=Math.min(1,t/10);
+      if(t<10){g.translate(0,12*wind);g.scale(1+.10*wind,1-.17*wind);}
+      else if(t<24){const lift=Math.min(1,(t-10)/14);g.translate(f.face*10*lift,-16*lift);g.rotate(f.face*.13*lift);}
     }
     // Eight presentation keyframes for airborne hit reaction and ground impact.
     // Shared by both active fighters; collision and rollback state are untouched.
