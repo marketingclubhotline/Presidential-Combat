@@ -94,7 +94,7 @@
   #touch{position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .25s;}
   #touch.on{opacity:1;}
   .zone{position:absolute;bottom:2.5vh;pointer-events:auto;display:grid;gap:clamp(10px,2.2vh,16px);}
-  #dpad{bottom:clamp(75px,19vh,160px);left:2.5vw;grid-template-columns:repeat(3,var(--k));grid-template-rows:repeat(2,var(--k));--k:clamp(42px,8.5vh,78px);}
+  #dpad{bottom:clamp(87px,22vh,178px);left:2.5vw;grid-template-columns:repeat(3,var(--k));grid-template-rows:repeat(2,var(--k));--k:clamp(42px,8.5vh,78px);}
   #btns{bottom:clamp(75px,19vh,160px);right:2.5vw;grid-template-columns:repeat(2,var(--k));grid-template-rows:repeat(2,var(--k));--k:clamp(48px,9.2vh,84px);}
   .key{display:flex;align-items:center;justify-content:center;border-radius:14px;
     background:rgba(24,18,38,.55);border:2px solid rgba(140,120,200,.45);
@@ -298,11 +298,10 @@
       <div class="key" data-k="right" style="grid-area:1/3/3/4">▶</div>
     </div>
     <div class="zone" id="btns">
-      <div class="key atk" data-k="punch">PUNCH</div>
-      <div class="key atk" data-k="kick">KICK</div>
-      <div class="key" data-k="block" style="grid-area:2/1">BLOCK</div>
-      <div class="key atk" data-k="up" style="grid-area:3/1;border-color:#8edbff">JUMP</div>
-      <div class="key atk" data-k="sweep" style="grid-area:2/2;border-color:#ffcf70">SWEEP</div>
+      <div class="key atk" data-k="kick" style="grid-area:1/1">KICK</div>
+      <div class="key atk" data-k="punch" style="grid-area:1/2">PUNCH</div>
+      <div class="key" data-k="up" style="grid-area:2/1;border-color:#8edbff">JUMP</div>
+      <div class="key" data-k="block" style="grid-area:2/2;border-color:#b8a5ff">BLOCK</div>
     </div>
   </div>
   <div id="netui">

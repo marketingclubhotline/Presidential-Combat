@@ -54,7 +54,10 @@ export async function run(t){
   t.ok(html.includes('![0,1,2,3,4,5,6,7].every'), 'incomplete walk artwork cannot masquerade as a complete cycle');
   t.ok(html.includes('g.translate(0,-fighterHeight*.51);')&&html.includes('const tuck=Math.pow(Math.sin(Math.PI*flight),2);'),'flip pivots about torso and has a tuck phase');
   t.ok(html.includes('roundhouse: {s:[0],a:[1,2],r:[3],altRate:3}'), 'roundhouse cycles through Neon Fist spin frames');
-  t.ok(html.includes('data-k="up" style="grid-area:3/1'), 'right-side jump button shares existing up input');
+  t.ok(html.includes('data-k="up" style="grid-area:2/1'), 'large right-side jump button shares existing up input');
+  t.ok(html.includes('data-k="block" style="grid-area:2/2'), 'block replaces sweep at lower right');
+  t.ok(!html.includes('data-k="sweep" style="grid-area:2/2'), 'redundant sweep button removed from touch UI');
+  t.ok(html.includes('data-k="kick" style="grid-area:1/1') && html.includes('data-k="punch" style="grid-area:1/2'), 'kick and punch swapped across top row');
   t.ok(html.includes('this.flipDir = dir ? Math.sign(dir) : 0') && html.includes('g.rotate(f.flipDir*Math.PI*2*eased)'), 'directional jumps render forward or backward aerial rotation');
   t.ok(html.includes('o.flipDir=this.flipDir;') && html.includes('this.flipDir=o.flipDir||0;'), 'flip direction survives rollback save/load');
   t.ok(html.includes('this.flipDir=0; // End directional aerial rotation at landing.'), 'flip animation resets on landing');
