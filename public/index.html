@@ -2477,6 +2477,16 @@ function simulate(maskA, maskB){
   P1.update(live?maskA:0, P2);
   P2.update(live?maskB:0, P1);
   if(live){ resolveCombat(P1,P2); resolveCombat(P2,P1); }
+  // Reconcile both fighters after movement and pushbox resolution. Previously
+  // P1 could update its facing before P2 crossed over on the same frame,
+  // leaving Kim visibly looking away until the following simulation tick.
+  // Preserve attack-facing while a move is active; update neutral/guard/footwork.
+  if(live && !pcSoloGym && Math.abs(P1.x-P2.x)>0.5){
+    for(const [fighter,opponent] of [[P1,P2],[P2,P1]]){
+      if(!fighter.move && !STATES[fighter.state].busy)
+        fighter.face=opponent.x>fighter.x?1:-1;
+    }
+  }
   Projectiles.update(FIGHTERS);
 }
 
