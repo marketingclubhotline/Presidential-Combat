@@ -871,6 +871,8 @@ const Audio5 = (()=>{
     // Synthesized crowd swells are temporary placeholders, no external licenses.
     buffers.crowdCheer=mix(noise(1.2,1.4,0.016),tone(1.2,370,260,1.7,'saw',0.13));
     buffers.crowdRoar=mix(noise(2.0,1.1,0.023),tone(2.0,290,210,1.5,'saw',0.19));
+    // Rhythmic audience-chuckle placeholder, mixed low beneath character lines.
+    buffers.crowdLaugh=mix(noise(1.4,3.4,0.012),tone(1.4,330,245,3.0,'saw',0.10));
     buffers.finishCall=mix(tone(0.8,250,95,1.6,'saw',0.55),noise(0.7,1.9,0.12));
     buffers.music  = makeMusic();
     // Load the current arena theme without blocking gameplay.
@@ -3501,6 +3503,37 @@ function render(){
     }
     g.restore();
   }
+  // Stage-specific ambient acting. Visual-only: does not affect collision or netcode.
+  if(PC_STAGES[pcStageIndex].id==='trump'){
+    g.save();
+    const t=Game.frame;
+    // Fountain spray in the White House garden: translucent so stage art remains visible.
+    for(let i=0;i<12;i++){
+      const phase=(t*1.5+i*13)%76;
+      const spread=Math.sin(i*2.1)*19;
+      const x=VW*.51+spread*(phase/76);
+      const y=FLOOR*.74-28*Math.sin(Math.PI*phase/76);
+      g.globalAlpha=.18*(1-phase/76);
+      g.fillStyle='#c9efff';g.beginPath();g.arc(x,y,1.8+i%2,0,Math.PI*2);g.fill();
+    }
+    // Two subtle Secret Service silhouettes alternate touching their earpieces.
+    for(const [i,x] of [VW*.17,VW*.84].entries()){
+      const y=FLOOR*.81,handUp=Math.sin(t*.035+i*2.6)>-.2;
+      g.globalAlpha=.58;g.strokeStyle='#192437';g.lineWidth=7;g.lineCap='round';
+      g.beginPath();g.moveTo(x,y-24);g.lineTo(x,y);g.stroke();
+      g.fillStyle='#172333';g.beginPath();g.arc(x,y-33,7,0,Math.PI*2);g.fill();
+      g.lineWidth=3;g.beginPath();g.moveTo(x,y-19);
+      g.lineTo(x+(i?7:-7),handUp?y-35:y-7);g.stroke();
+    }
+    g.restore();
+  }
+  if(PC_STAGES[pcStageIndex].id==='kim'){
+    g.save();g.globalAlpha=.12;
+    const t=Game.frame;
+    // A slow searchlight sweep adds movement without obscuring Pyongyang artwork.
+    g.translate(VW*.77,FLOOR*.28);g.rotate(Math.sin(t*.008)*.32);
+    g.fillStyle='#ffe6ad';g.beginPath();g.moveTo(0,0);g.lineTo(-95,FLOOR*.57);g.lineTo(95,FLOOR*.57);g.closePath();g.fill();g.restore();
+  }
   // Animated arcade spectators: small cheering silhouettes behind both fighters.
   // Stable phases keep the crowd lively without frame-to-frame randomness.
   if(Game.phase==='fight'||Game.phase==='finishWindow'||Game.phase==='intro'||Game.phase==='ko'||Game.phase==='matchEnd'){
@@ -3755,7 +3788,7 @@ function pcFinisherPlay(index){
   pcFinisherClose();
   endRound(Game.winner,true);
   UI.hide();
-  Audio5.play('execute',0.85); Audio5.play('boom',0.7); Audio5.play('crowdRoar',0.2); Audio5.announce('executiveExecution','annFinish');
+  Audio5.play('execute',0.85); Audio5.play('boom',0.7); Audio5.play('crowdLaugh',0.24); Audio5.play('crowdRoar',0.12); Audio5.announce('executiveExecution','annFinish');
   const fx=document.getElementById('finisherFX');
   document.getElementById('fxEmoji').textContent=move.emoji;
   document.getElementById('fxWords').textContent=move.name;
