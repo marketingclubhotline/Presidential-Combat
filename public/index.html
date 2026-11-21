@@ -2265,7 +2265,13 @@ function endRound(winner, byKo){
   Game.winner=winner; Game.phase='ko'; Game.phaseT=0;
   Game.hitstop=18;
   const loser = winner==='p1'?P2:(winner==='p2'?P1:null);
-  if(loser){ loser.setState('ko'); loser.vx=-loser.face*10; loser.vy=-6; loser.onGround=false; }
+  if(loser){
+    // KO is a grounded defeat, not another launcher: keep the fallen fighter
+    // inside the arena while the shared visual fall animation plays.
+    loser.setState('ko'); loser.vx=0; loser.vy=0;
+    loser.y=FLOOR; loser.onGround=true;
+    loser.x=clamp(loser.x,WALL_L+110,WALL_R-110);
+  }
   else { P1.setState('ko'); P2.setState('ko'); }
   UI.show(byKo?'K.O.':'TIME UP', byKo&&winner==='draw'?'DOUBLE KO':'');
   Audio5.play('ko',1); Audio5.duck(0.08,2.2);
