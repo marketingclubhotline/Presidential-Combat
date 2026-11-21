@@ -2784,6 +2784,8 @@ function pcVerticalJumpArt(f){
   return frames[flight<.22?0:flight<.74?2:0];
 }
 function pcFlipArt(f){
+  // Trump SVG flip poses are unapproved faceless placeholders. Never show them.
+  if(f.side==='p1')return null;
   if(f.onGround||f.move||!f.flipDir)return null;
   const direction=f.flipDir*f.face>=0?'forward':'backward';
   const frames=PC_FLIP_FRAMES[f.side]?.[direction];
@@ -2833,7 +2835,7 @@ function pcAerialKickArt(f){
   // Deliberately linger on the visible extended-leg contact drawings.
   // Rendering only: move frames, active collision frames and physics unchanged.
   const progress=Math.max(0,Math.min(1,f.moveFrame/total));
-  const held=progress<.22?progress/.22*.38:progress<.72?.38+(progress-.22)/.50*.24:.62+(progress-.72)/.28*.38;
+  const held=progress<.20?progress/.20*.38:progress<.82?.38+(progress-.20)/.62*.24:.62+(progress-.82)/.18*.38;
   return frames[Math.min(7,Math.floor(held*8))];
 }
 // Separate chamber, extension and recovery artwork for martial-arts kicks.
