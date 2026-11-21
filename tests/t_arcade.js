@@ -36,7 +36,9 @@ export async function run(t){
   t.eq(config.physics.jumpVel,-21.5,'high arcade jump velocity is configured');
   t.ok(html.includes("atk.key==='superUppercut'){ hs=13") && html.includes('atk.special){ hs=10'), 'super uppercuts and specials have dramatic impact freeze');
   t.ok(html.includes('if(atk.multiHit){ hs=Math.min(hs,3)'), 'multi-hit attacks cap hitstop to protect combo flow');
-  t.ok(html.includes('const tumble=airborne?Math.min(1,f.stateFrame/22):0'), 'airborne hits show a visual tumble');
+  t.ok(html.includes('const PC_AIR_REACTION=[') && html.includes('pcSampleReaction(PC_AIR_REACTION'), 'eight-keyframe airborne recoil and tumble');
+  t.ok(html.includes('const PC_GROUND_REACTION=[') && html.includes('pcSampleReaction(PC_GROUND_REACTION'), 'eight-keyframe KO impact and prone hold');
+  t.ok(html.includes('attacker.hp>PC_FINISH_HP) this.hp=1;'), 'heavy hits preserve finisher opportunity');
   t.ok(html.includes('const roll=t<.55?Math.sin(t/.55*Math.PI)*.22'), 'knockdown recovery includes a backward roll');
   t.ok(html.includes('function pcProjectileMotion(f)') && html.includes('pcProjectileMotion(f)||pcMotionFrame(f)'), 'projectile attacks have character-specific windup and follow-through');
   t.eq(config.moves.roundhouse.anim,'spinKick','roundhouse reuses original four-frame spin animation');
